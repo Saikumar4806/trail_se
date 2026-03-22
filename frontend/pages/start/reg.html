@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Register for the Subscription Delivery System" />
+  <title>Register — Subscription Delivery System</title>
+  <link rel="stylesheet" href="../../assets/css/start/reg.css" />
+</head>
+
+<body>
+
+  <div class="form-card">
+    <h1>Create Account</h1>
+    <p class="subtitle">Join the Subscription Delivery System</p>
+
+    <!-- Status message area -->
+    <div id="statusMessage" class="status-msg"></div>
+
+    <form id="registerForm" novalidate>
+
+      <!-- Name -->
+      <div class="field">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="name" placeholder="John Doe" required />
+        <span class="err" id="nameError"></span>
+      </div>
+
+      <!-- Email -->
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="you@example.com" required />
+        <span class="err" id="emailError"></span>
+      </div>
+
+      <!-- Password -->
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Min 6 characters" required />
+        <span class="err" id="passwordError"></span>
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="field">
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Re-enter password" required />
+        <span class="err" id="confirmPasswordError"></span>
+      </div>
+
+      <!-- Phone -->
+      <div class="field">
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" name="phone" placeholder="9876543210" required />
+        <span class="err" id="phoneError"></span>
+      </div>
+
+      <!-- Role -->
+      <div class="field">
+        <label for="role">Role</label>
+        <select id="role" name="role" required>
+          <option value="" disabled selected>Select a role</option>
+          <option value="customer">Customer</option>
+          <option value="admin">Admin</option>
+          <option value="delivery_partner">Delivery Partner</option>
+        </select>
+        <span class="err" id="roleError"></span>
+      </div>
+
+      <button type="submit" id="submitBtn">Register</button>
+    </form>
+
+    <p class="login-link">Already have an account? <a href="login.html">Sign in</a></p>
+  </div>
+
+  <script src="../../assets/js/start/reg.js"></script>
+</body>
+
+</html>

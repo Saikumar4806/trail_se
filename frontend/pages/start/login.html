@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Login to the Subscription Delivery System" />
+  <title>Login — Subscription Delivery System</title>
+  <link rel="stylesheet" href="../../assets/css/start/login.css" />
+</head>
+
+<body>
+
+  <div class="form-card">
+    <h1>Welcome Back</h1>
+    <p class="subtitle">Sign in to your account</p>
+
+    <!-- Status message area -->
+    <div id="statusMessage" class="status-msg"></div>
+
+    <form id="loginForm" novalidate>
+
+      <!-- Email -->
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="you@example.com" required />
+        <span class="err" id="emailError"></span>
+      </div>
+
+      <!-- Password -->
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password" required />
+        <span class="err" id="passwordError"></span>
+      </div>
+
+      <button type="submit" id="submitBtn">Sign In</button>
+    </form>
+
+    <p class="register-link">Don't have an account? <a href="reg.html">Register</a></p>
+  </div>
+
+  <script src="../../assets/js/start/login.js"></script>
+</body>
+
+</html>
