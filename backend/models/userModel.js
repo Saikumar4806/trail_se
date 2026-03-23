@@ -23,4 +23,30 @@ const createUser = async ({ name, email, password, phone, role }) => {
   return result;
 };
 
-module.exports = { findByEmail, createUser };
+/**
+ * Count all users in the system.
+ * @returns {number}
+ */
+const getTotalUsersCount = async () => {
+  const [rows] = await db.query("SELECT COUNT(*) AS totalUsers FROM users");
+  return rows[0]?.totalUsers || 0;
+};
+
+/**
+ * Count all delivery partners in the system.
+ * @returns {number}
+ */
+const getDeliveryPartnersCount = async () => {
+  const [rows] = await db.query(
+    "SELECT COUNT(*) AS activePartners FROM users WHERE LOWER(REPLACE(role, ' ', '_')) = ?",
+    ["delivery_partner"]
+  );
+  return rows[0]?.activePartners || 0;
+};
+
+module.exports = {
+  findByEmail,
+  createUser,
+  getTotalUsersCount,
+  getDeliveryPartnersCount,
+};

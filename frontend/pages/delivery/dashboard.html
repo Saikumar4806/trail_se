@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delivery Partner Dashboard - Subscription Delivery System</title>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background: #fff3e0; }
+    .navbar { background-color: #f57c00; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+    .navbar h2 { margin: 0; }
+    .logout-btn { background: #ff4c4c; color: white; border: none; padding: 10px 15px; cursor: pointer; border-radius: 4px; }
+    .container { max-width: 1200px; margin: 20px auto; padding: 20px; }
+    .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+    .feature-item { border: 1px solid #f2d7b6; border-radius: 8px; padding: 14px; background: #fffaf5; }
+    .feature-item h4 { margin: 0 0 8px 0; color: #8d4e00; }
+    .feature-item p { margin: 0; color: #555; font-size: 14px; line-height: 1.4; }
+    .demo-tag { display: inline-block; margin-top: 10px; font-size: 12px; color: #6d4c41; background: #ffe7cc; padding: 4px 8px; border-radius: 999px; }
+    h3 { margin-top: 0; }
+  </style>
+</head>
+<body>
+
+  <div class="navbar">
+    <h2 id="welcomeText">Partner Dashboard</h2>
+    <button class="logout-btn" id="logoutBtn">Logout</button>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <h3>Today's Deliveries</h3>
+      <p id="dashboardMessage">Loading data...</p>
+      <ul>
+        <li>Assigned Deliveries: <strong id="statAssigned">0</strong></li>
+        <li>Completed Today: <strong id="statCompleted">0</strong></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Delivery Partner Demo Features</h3>
+      <div class="feature-grid">
+        <div class="feature-item">
+          <h4>View Earnings</h4>
+          <p>See daily and monthly earnings summary, including base pay and incentives.</p>
+        </div>
+        <div class="feature-item">
+          <h4>View Assigned Routes</h4>
+          <p>Check route list, delivery sequence, and expected completion timeline.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../assets/js/delivery/dashboard.js"></script>
+</body>
+</html>

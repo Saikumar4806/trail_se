@@ -60,11 +60,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function getRedirectPath(role) {
     const routes = {
-      customer: "/frontend/pages/customer/dashboard.html",
-      admin: "/frontend/pages/admin/dashboard.html",
-      delivery_partner: "/frontend/pages/delivery/dashboard.html",
+      "customer": "../../pages/customer/dashboard.html",
+      "admin": "../../pages/admin/dashboard.html",
+      "delivery_partner": "../../pages/delivery/dashboard.html",
     };
-    return routes[role] || "/frontend/pages/start/login.html";
+    return routes[role] || "../../pages/start/login.html";
   }
 
   // --- Form submission ---
@@ -93,14 +93,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        // Store user info in localStorage for use across pages
-        localStorage.setItem("user", JSON.stringify(data.user));
+        // Store user info in localStorage for use across pages.
+        const user = { ...data.user, role: data.user.role.toLowerCase().replace(/ /g, "_") };
+        localStorage.setItem("user", JSON.stringify(user));
 
         showStatus("Login successful! Redirecting…", "success");
 
         // Redirect based on user role
         setTimeout(() => {
-          window.location.href = getRedirectPath(data.user.role);
+          window.location.href = getRedirectPath(user.role);
         }, 1000);
       } else {
         showStatus(data.message || "Login failed. Please try again.", "error");

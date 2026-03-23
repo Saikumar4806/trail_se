@@ -1,7 +1,4 @@
-const bcrypt = require("bcrypt");
 const { findByEmail, createUser } = require("../models/userModel");
-
-const SALT_ROUNDS = 10;
 
 /**
  * Handle user registration
@@ -20,22 +17,22 @@ const register = async (req, res) => {
       });
     }
 
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
-
-    // Create user in database
+    // Store password as plain text (for demo/testing only)
+    // Always store role as lowercase
     const result = await createUser({
       name,
       email,
-      password: hashedPassword,
+      password, // plain text
       phone,
-      role,
+      role: role.toLowerCase(),
     });
+
+    const userId = result.insertId;
 
     return res.status(201).json({
       success: true,
       message: "User registered successfully",
-      userId: result.insertId,
+      user: { id: userId, name, email, phone, role: role.toLowerCase() },
     });
   } catch (error) {
     console.error("Registration error:", error);
@@ -63,9 +60,8 @@ const login = async (req, res) => {
       });
     }
 
-    // Compare password with stored hash
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
+    // Compare plain text password
+    if (password !== user.password) {
       return res.status(401).json({
         success: false,
         message: "Invalid email or password",
@@ -81,7 +77,7 @@ const login = async (req, res) => {
         name: user.name,
         email: user.email,
         phone: user.phone,
-        role: user.role,
+        role: String(user.role).toLowerCase().replace(/\s+/g, "_"),
       },
     });
   } catch (error) {
