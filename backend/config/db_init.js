@@ -1,5 +1,5 @@
 const mysql = require('mysql2/promise');
-require('dotenv').config({ path: '../.env' });
+require('dotenv').config({ path: '../../.env' });
 
 async function setupDatabase() {
   try {
@@ -7,17 +7,17 @@ async function setupDatabase() {
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST || 'localhost',
       user: process.env.DB_USER || 'root',
-      password: process.env.DB_PASSWORD || 'Saikumar@2005',
+      password: process.env.DB_PASSWORD !== undefined ? process.env.DB_PASSWORD : 'Saikumar@2005',
     });
 
     console.log("Connected to MySQL server...");
 
     // Create the database if it doesn't exist
-    await connection.query('CREATE DATABASE IF NOT EXISTS subscription_db;');
-    console.log("Verified database 'subscription_db' exists.");
+    await connection.query('CREATE DATABASE IF NOT EXISTS SE;');
+    console.log("Verified database 'SE' exists.");
 
     // Switch to the newly created database
-    await connection.query('USE subscription_db;');
+    await connection.query('USE SE;');
 
     // Create the users table
     const createUsersTableQuery = `

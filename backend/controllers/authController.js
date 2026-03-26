@@ -1,3 +1,4 @@
+const bcrypt = require("bcrypt");
 const { findByEmail, createUser } = require("../models/userModel");
 
 /**
@@ -17,12 +18,14 @@ const register = async (req, res) => {
       });
     }
 
-    // Store password as plain text (for demo/testing only)
+    // Hash password with 10 salt rounds
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     // Always store role as lowercase
     const result = await createUser({
       name,
       email,
-      password, // plain text
+      password: hashedPassword, // hashed password
       phone,
       role: role.toLowerCase(),
     });
@@ -60,8 +63,9 @@ const login = async (req, res) => {
       });
     }
 
-    // Compare plain text password
-    if (password !== user.password) {
+    // Compare hashed password
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    if (!isPasswordCorrect) {
       return res.status(401).json({
         success: false,
         message: "Invalid email or password",
