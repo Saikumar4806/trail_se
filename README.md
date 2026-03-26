@@ -1,4 +1,4 @@
-# Subscription Delivery System (Web-Based)
+# Subscription Delivery Management System (Web-Based)
 
 Role-based subscription delivery system with a Node/Express + MySQL backend and a plain HTML/CSS/JS frontend. Authentication is email/password based and users are routed to dashboards by role.
 
@@ -33,13 +33,14 @@ PORT=5000
 DB_HOST=localhost
 DB_USER=root
 DB_PASSWORD=YOUR_MYSQL_PASSWORD
-DB_NAME=subscription_db
+DB_NAME=SE
 
 ```
 
 Notes:
 - `.env` is ignored by git (see `.gitignore`).
 - The backend loads it from `backend/server.js` using `../.env`.
+- Database: `SE`
 
 ## Database Setup
 
@@ -48,11 +49,11 @@ Notes:
 From the project root:
 
 ```bash
-node backend/db_init.js
+node backend/config/db_init.js
 ```
 
 This creates:
-- Database: `subscription_db`
+- Database: `SE`
 - Table: `users`
 
 ### 2) (Optional) Seed test users
@@ -62,7 +63,7 @@ Run the SQL in `database/test_users.sql` inside MySQL.
 Example (MySQL CLI):
 
 ```bash
-mysql -u root -p -D subscription_db < database/test_users.sql
+mysql -u root -p -D SE < database/test_users.sql
 ```
 
 ## Install Dependencies
@@ -148,7 +149,7 @@ Most common causes:
 Check:
 - MySQL service is running
 - `.env` has correct `DB_HOST/DB_USER/DB_PASSWORD/DB_NAME`
-- Database exists: `subscription_db`
+- Database exists: `SE`
 
 ### Port 5000 already in use
 
