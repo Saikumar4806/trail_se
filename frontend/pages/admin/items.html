@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Items - Admin</title>
+  <link rel="stylesheet" href="../../assets/css/Admin/admin.css">
+</head>
+<body>
+
+  <div class="navbar">
+    <div style="display: flex; align-items: center; gap: 15px;">
+      <button onclick="window.location.href='dashboard.html'" class="btn-secondary btn-sm" style="background: #555;">&larr; Back to Dashboard</button>
+      <h2 id="welcomeText" style="margin: 0;">Manage Inventory Items</h2>
+    </div>
+    <button class="logout-btn" id="logoutBtn">Logout</button>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <div class="item-management-container">
+        <!-- Add Item Form -->
+        <div class="item-form-section">
+          <h4>Add New Item</h4>
+          <form id="itemForm" class="admin-form">
+            <input type="hidden" id="itemId">
+            <div class="form-group">
+              <label for="itemName">Item Name</label>
+              <input type="text" id="itemName" required>
+            </div>
+            <div class="form-group">
+              <label for="itemPrice">Price</label>
+              <input type="number" id="itemPrice" step="0.01" required>
+            </div>
+            <div class="form-group">
+              <label for="itemCategory">Category</label>
+              <input type="text" id="itemCategory">
+            </div>
+            <div class="form-group">
+              <label for="itemQuantity">Quantity</label>
+              <input type="number" id="itemQuantity" value="0">
+            </div>
+            <div class="form-group">
+              <label for="itemImage">Image URL (optional)</label>
+              <input type="url" id="itemImage">
+            </div>
+            <div class="form-actions">
+              <button type="submit" id="saveItemBtn" class="btn-primary">Save Item</button>
+              <button type="button" id="cancelEditBtn" class="btn-secondary" style="display: none;">Cancel</button>
+            </div>
+          </form>
+          <div id="itemFormMessage" class="form-message"></div>
+        </div>
+
+        <!-- Items Table -->
+        <div class="items-list-section">
+          <h4>Items List</h4>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Quantity</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="itemsTableBody">
+                <tr><td colspan="6" class="text-center">Loading items...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../assets/js/admin/items.js"></script>
+</body>
+</html>

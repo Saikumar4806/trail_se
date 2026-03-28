@@ -4,8 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "nodemon server.js",
-    "db": "nodemon backend/config/db.js"
+    "test": "nodemon config/db_init.js && nodemon server.js",
+    "db": "node config/db_init.js"
   },
   "keywords": [],
   "author": "",

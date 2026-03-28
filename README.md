@@ -49,18 +49,16 @@ Notes:
 From the project root:
 
 ```bash
-node backend/config/db_init.js
+node backend/db_init.js
 ```
 
 This creates:
-- Database: `SE`
+- Database: `subscription_db`
 - Table: `users`
 
-### 2) (Optional) Seed test users
+### 2) (Optional) Seed extra test users
 
-Run the SQL in `database/test_users.sql` inside MySQL.
-
-Example (MySQL CLI):
+If you want more test accounts (customers, delivery partners), run the SQL in `database/test_users.sql` inside MySQL:
 
 ```bash
 mysql -u root -p -D SE < database/test_users.sql
@@ -87,6 +85,8 @@ npm run test
 ```
 
 Expected output:
+- It will run the database initialization (`node config/db_init.js`)
+- `Automatically created default admin: admin@gmail.com`
 - `Server started on port 5000`
 
 API base URL:
@@ -123,11 +123,13 @@ Endpoints:
 - **GET** `/api/dashboard/customer`
 - **GET** `/api/dashboard/partner`
 
-## Default Test Accounts (from `database/test_users.sql`)
+## Default Test Accounts 
 
-- **Admin**
+- **Admin (Auto-created on start)**
   - Email: `admin@gmail.com`
-  - Password: `admin123`
+  - Password: `admin1002`
+
+If you ran `database/test_users.sql`, you also get:
 - **Customer**
   - Email: `cus1@gmail.com`
   - Password: `cus123`

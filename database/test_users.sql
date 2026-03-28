@@ -1,5 +1,5 @@
 -- Insert default admin, customer, and delivery users for testing
-USE subscription_db;
+USE SE;
 
 -- Insert admin (predefined)
 
