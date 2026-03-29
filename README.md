@@ -24,7 +24,7 @@ Role-based subscription delivery system with a Node/Express + MySQL backend and 
 ## Environment Variables (`.env`)
 
 This project expects a root-level `.env` file at `./.env` (same folder as this `README.md`).
-
+****
 Example:
 
 ```env
@@ -81,16 +81,20 @@ From `backend/`:
 
 ```bash
 cd backend
-npm run test
+npm run start
 ```
 
 Expected output:
-- It will run the database initialization (`node config/db_init.js`)
-- `Automatically created default admin: admin@gmail.com`
 - `Server started on port 5000`
 
 API base URL:
 - `http://localhost:5000`
+
+**Alternative:** If you want to run with auto-reload and database initialization:
+
+```bash
+npm run test
+```
 
 ### 2) Run Frontend
 
@@ -105,9 +109,19 @@ With VS Code Live Server:
 - **Login**: `frontend/pages/start/login.html`
 - **Register**: `frontend/pages/start/reg.html`
 - **Dashboards**:
-  - `frontend/pages/admin/dashboard.html`
+  - `frontend/pages/admin/dashboard.html` (+ Manage Items page)
   - `frontend/pages/customer/dashboard.html`
   - `frontend/pages/delivery/dashboard.html`
+
+## UI Features
+
+- **Fixed Navigation Bar**: The navbar stays at the top while scrolling through dashboard content
+- **Back Button**: All dashboards and inner pages (Admin Items Management) have a "Back" button next to the "Logout" button for easy navigation
+- **Role-Based Navigation**: After login, users are automatically routed to their dashboard based on their role
+- **Responsive Design**: Dashboards are styled with role-specific color schemes
+  - Admin: Dark Gray (`#333`)
+  - Customer: Green (`#4CAF50`)
+  - Delivery Partner: Orange (`#f57c00`)
 
 ## API Endpoints
 

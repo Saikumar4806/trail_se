@@ -9,11 +9,11 @@
 <body>
 
   <div class="navbar">
-    <div style="display: flex; align-items: center; gap: 15px;">
-      <button onclick="window.location.href='dashboard.html'" class="btn-secondary btn-sm" style="background: #555;">&larr; Back to Dashboard</button>
-      <h2 id="welcomeText" style="margin: 0;">Manage Inventory Items</h2>
+    <h2 id="welcomeText">Manage Inventory Items</h2>
+    <div class="nav-buttons">
+      <button class="back-btn" id="backBtn" onclick="history.back()">Back</button>
+      <button class="logout-btn" id="logoutBtn">Logout</button>
     </div>
-    <button class="logout-btn" id="logoutBtn">Logout</button>
   </div>
 
   <div class="container">
