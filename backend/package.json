@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "nodemon config/db_init.js && nodemon server.js",
-    "db": "node config/db_init.js"
+    "db": "node config/db_init.js",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
