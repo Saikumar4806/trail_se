@@ -136,7 +136,7 @@ Endpoints:
 
 ## Troubleshooting
 
-### Login works but dashboard says “Unauthorized”
+### Login works but dashboard sagenerys “Unauthorized”
 
 Most common causes:
 - Backend not running on `http://localhost:5000`
