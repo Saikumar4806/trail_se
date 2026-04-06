@@ -1,0 +1,36 @@
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background: #eef2f5; }
+.navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background-color: #333; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+.navbar h2 { margin: 0; }
+.nav-buttons { display: flex; gap: 10px; }
+.back-btn { background: #007bff; color: white; border: none; padding: 10px 15px; cursor: pointer; border-radius: 4px; }
+.back-btn:hover { background: #0056b3; }
+.logout-btn { background: #ff4c4c; color: white; border: none; padding: 10px 15px; cursor: pointer; border-radius: 4px; }
+.container { max-width: 1200px; margin: 80px auto 20px auto; padding: 20px; }
+.card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+.feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.feature-item { border: 1px solid #d9dfe7; border-radius: 8px; padding: 14px; background: #fbfcfe; }
+.feature-item h4 { margin: 0 0 8px 0; color: #222; }
+.feature-item p { margin: 0; color: #555; font-size: 14px; line-height: 1.4; }
+.demo-tag { display: inline-block; margin-top: 10px; font-size: 12px; color: #333; background: #e8edf3; padding: 4px 8px; border-radius: 999px; }
+h3 { margin-top: 0; }
+
+/* Item Management Styles */
+.item-management-container { display: flex; flex-direction: column; gap: 20px; }
+.item-form-section, .items-list-section { background: #fbfcfe; padding: 20px; border: 1px solid #d9dfe7; border-radius: 8px; }
+.admin-form .form-group { margin-bottom: 15px; }
+.admin-form label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
+.admin-form input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+.form-actions { display: flex; gap: 10px; margin-top: 15px; }
+.btn-primary { background: #007bff; color: white; border: none; padding: 10px 15px; cursor: pointer; border-radius: 4px; }
+.btn-secondary { background: #6c757d; color: white; border: none; padding: 10px 15px; cursor: pointer; border-radius: 4px; }
+.btn-sm { padding: 5px 10px; font-size: 12px; }
+.btn-danger { background: #dc3545; color: white; border: none; cursor: pointer; border-radius: 4px; }
+.btn-edit { background: #ffc107; color: #212529; border: none; cursor: pointer; border-radius: 4px; }
+.table-responsive { overflow-x: auto; }
+.admin-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+.admin-table th, .admin-table td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
+.admin-table th { background: #f0f4f8; font-weight: bold; }
+.text-center { text-align: center; }
+.form-message { margin-top: 10px; font-size: 14px; }
+.success-msg { color: #28a745; }
+.error-msg { color: #dc3545; }

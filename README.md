@@ -1,4 +1,4 @@
-# Subscription Delivery System (Web-Based)
+# Subscription Delivery Management System (Web-Based)
 
 Role-based subscription delivery system with a Node/Express + MySQL backend and a plain HTML/CSS/JS frontend. Authentication is email/password based and users are routed to dashboards by role.
 
@@ -24,7 +24,7 @@ Role-based subscription delivery system with a Node/Express + MySQL backend and 
 ## Environment Variables (`.env`)
 
 This project expects a root-level `.env` file at `./.env` (same folder as this `README.md`).
-
+****
 Example:
 
 ```env
@@ -33,13 +33,14 @@ PORT=5000
 DB_HOST=localhost
 DB_USER=root
 DB_PASSWORD=YOUR_MYSQL_PASSWORD
-DB_NAME=subscription_db
+DB_NAME=SE
 
 ```
 
 Notes:
 - `.env` is ignored by git (see `.gitignore`).
 - The backend loads it from `backend/server.js` using `../.env`.
+- Database: `SE`
 
 ## Database Setup
 
@@ -55,14 +56,12 @@ This creates:
 - Database: `subscription_db`
 - Table: `users`
 
-### 2) (Optional) Seed test users
+### 2) (Optional) Seed extra test users
 
-Run the SQL in `database/test_users.sql` inside MySQL.
-
-Example (MySQL CLI):
+If you want more test accounts (customers, delivery partners), run the SQL in `database/test_users.sql` inside MySQL:
 
 ```bash
-mysql -u root -p -D subscription_db < database/test_users.sql
+mysql -u root -p -D SE < database/test_users.sql
 ```
 
 ## Install Dependencies
@@ -82,7 +81,7 @@ From `backend/`:
 
 ```bash
 cd backend
-npm run test
+npm run start
 ```
 
 Expected output:
@@ -90,6 +89,12 @@ Expected output:
 
 API base URL:
 - `http://localhost:5000`
+
+**Alternative:** If you want to run with auto-reload and database initialization:
+
+```bash
+npm run test
+```
 
 ### 2) Run Frontend
 
@@ -104,9 +109,19 @@ With VS Code Live Server:
 - **Login**: `frontend/pages/start/login.html`
 - **Register**: `frontend/pages/start/reg.html`
 - **Dashboards**:
-  - `frontend/pages/admin/dashboard.html`
+  - `frontend/pages/admin/dashboard.html` (+ Manage Items page)
   - `frontend/pages/customer/dashboard.html`
   - `frontend/pages/delivery/dashboard.html`
+
+## UI Features
+
+- **Fixed Navigation Bar**: The navbar stays at the top while scrolling through dashboard content
+- **Back Button**: All dashboards and inner pages (Admin Items Management) have a "Back" button next to the "Logout" button for easy navigation
+- **Role-Based Navigation**: After login, users are automatically routed to their dashboard based on their role
+- **Responsive Design**: Dashboards are styled with role-specific color schemes
+  - Admin: Dark Gray (`#333`)
+  - Customer: Green (`#4CAF50`)
+  - Delivery Partner: Orange (`#f57c00`)
 
 ## API Endpoints
 
@@ -122,11 +137,13 @@ Endpoints:
 - **GET** `/api/dashboard/customer`
 - **GET** `/api/dashboard/partner`
 
-## Default Test Accounts (from `database/test_users.sql`)
+## Default Test Accounts 
 
-- **Admin**
+- **Admin (Auto-created on start)**
   - Email: `admin@gmail.com`
-  - Password: `admin123`
+  - Password: `admin1002`
+
+If you ran `database/test_users.sql`, you also get:
 - **Customer**
   - Email: `cus1@gmail.com`
   - Password: `cus123`
@@ -148,7 +165,7 @@ Most common causes:
 Check:
 - MySQL service is running
 - `.env` has correct `DB_HOST/DB_USER/DB_PASSWORD/DB_NAME`
-- Database exists: `subscription_db`
+- Database exists: `SE`
 
 ### Port 5000 already in use
 

@@ -38,6 +38,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("dashboardMessage").textContent = "Cannot connect to server.";
   }
 
+
   document.getElementById("logoutBtn").addEventListener("click", () => {
     localStorage.removeItem("user");
     window.location.href = "../../pages/start/login.html";
