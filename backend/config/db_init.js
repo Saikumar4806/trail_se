@@ -9,7 +9,7 @@ async function setupDatabase() {
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST || 'localhost',
       user: process.env.DB_USER || 'root',
-      password: process.env.DB_PASSWORD !== undefined ? process.env.DB_PASSWORD : 'Saikumar@2005',
+      password: process.env.DB_PASSWORD !== undefined ? process.env.DB_PASSWORD : '',
     });
 
     console.log("Connected to MySQL server...");
@@ -26,11 +26,12 @@ async function setupDatabase() {
       CREATE TABLE IF NOT EXISTS users (
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(100) NOT NULL,
-        email VARCHAR(100) NOT NULL UNIQUE,
+        email VARCHAR(150) NOT NULL UNIQUE,
         password VARCHAR(255) NOT NULL,
-        phone VARCHAR(20) NOT NULL,
+        phone VARCHAR(15),
         role ENUM('customer', 'admin', 'delivery_partner') NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
       );
     `;
     await connection.query(createUsersTableQuery);
@@ -57,8 +58,10 @@ async function setupDatabase() {
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(100) NOT NULL,
         price DECIMAL(10,2) NOT NULL,
-        category VARCHAR(100),
+        unit VARCHAR(20) DEFAULT 'unit',
+        category ENUM('fruits','vegetables','dairy','nuts'),
         quantity INT DEFAULT 0,
+        quantity_unit VARCHAR(20),
         image_url VARCHAR(255),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -66,6 +69,82 @@ async function setupDatabase() {
     `;
     await connection.query(createItemsTableQuery);
     console.log("Verified 'items' table exists and is correctly structured.");
+
+    // Create the combos table
+    const createCombosTableQuery = `
+      CREATE TABLE IF NOT EXISTS combos (
+        combo_id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        name VARCHAR(100),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      );
+    `;
+    await connection.query(createCombosTableQuery);
+    console.log("Verified 'combos' table exists and is correctly structured.");
+
+    // Create the combo_items table
+    const createComboItemsTableQuery = `
+      CREATE TABLE IF NOT EXISTS combo_items (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        combo_id INT NOT NULL,
+        item_id INT NOT NULL,
+        price DECIMAL(10,2) NOT NULL,
+        quantity INT NOT NULL,
+        FOREIGN KEY (combo_id) REFERENCES combos(combo_id) ON DELETE CASCADE,
+        FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE
+      );
+    `;
+    await connection.query(createComboItemsTableQuery);
+    console.log("Verified 'combo_items' table exists and is correctly structured.");
+
+    // Create the addresses table
+    const createAddressesTableQuery = `
+      CREATE TABLE IF NOT EXISTS addresses (
+        address_id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        street VARCHAR(255) NOT NULL,
+        area VARCHAR(255),
+        city VARCHAR(100) NOT NULL,
+        state VARCHAR(100) NOT NULL,
+        pincode VARCHAR(10) NOT NULL,
+        landmark VARCHAR(255),
+        latitude DECIMAL(10,8) NOT NULL,
+        longitude DECIMAL(11,8) NOT NULL,
+        address_type ENUM('home', 'work', 'other') DEFAULT 'home',
+        is_default TINYINT(1) DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      );
+    `;
+    await connection.query(createAddressesTableQuery);
+    console.log("Verified 'addresses' table exists and is correctly structured.");
+
+    // Create the subscriptions table
+    const createSubscriptionsTableQuery = `
+      CREATE TABLE IF NOT EXISTS subscriptions (
+        subscription_id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        address_id INT NOT NULL,
+        combo_id INT NOT NULL,
+        plan_type ENUM('weekly', '1_month', '3_months', 'yearly') NOT NULL,
+        delivery_slot ENUM('morning', 'evening') NOT NULL,
+        start_date DATE NOT NULL,
+        end_date DATE,
+        status ENUM('active', 'paused', 'cancelled') DEFAULT 'active',
+        pause_start_date DATE,
+        pause_end_date DATE,
+        cutoff_time TIME,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (address_id) REFERENCES addresses(address_id) ON DELETE CASCADE,
+        FOREIGN KEY (combo_id) REFERENCES combos(combo_id) ON DELETE CASCADE
+      );
+    `;
+    await connection.query(createSubscriptionsTableQuery);
+    console.log("Verified 'subscriptions' table exists and is correctly structured.");
 
     console.log("Database setup is 100% complete! You can now run the server.");
     await connection.end();
