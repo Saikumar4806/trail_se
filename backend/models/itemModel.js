@@ -2,10 +2,10 @@ const db = require('../config/db');
 
 const ItemModel = {
   create: async (itemData) => {
-    const { name, price, category, quantity, image_url } = itemData;
+    const { name, price, unit, category, quantity, quantity_unit, image_url } = itemData;
     const [result] = await db.query(
-      'INSERT INTO items (name, price, category, quantity, image_url) VALUES (?, ?, ?, ?, ?)',
-      [name, price, category, quantity, image_url]
+      'INSERT INTO items (name, price, unit, category, quantity, quantity_unit, image_url) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [name, price, unit, category, quantity, quantity_unit, image_url]
     );
     return result;
   },
@@ -21,10 +21,10 @@ const ItemModel = {
   },
 
   update: async (id, itemData) => {
-    const { name, price, category, quantity, image_url } = itemData;
+    const { name, price, unit, category, quantity, quantity_unit, image_url } = itemData;
     const [result] = await db.query(
-      'UPDATE items SET name = ?, price = ?, category = ?, quantity = ?, image_url = ? WHERE id = ?',
-      [name, price, category, quantity, image_url, id]
+      'UPDATE items SET name = ?, price = ?, unit = ?, category = ?, quantity = ?, quantity_unit = ?, image_url = ? WHERE id = ?',
+      [name, price, unit, category, quantity, quantity_unit, image_url, id]
     );
     return result;
   },

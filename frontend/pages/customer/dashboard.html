@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Customer Dashboard - Subscription Delivery System</title>
-  <link rel="stylesheet" href="../../assets/css/Customer/customer.css">
+  <link rel="stylesheet" href="../../assets/css/Customer/dashboard.css">
 </head>
 <body>
 
@@ -17,33 +17,65 @@
   </div>
 
   <div class="container">
-    <div class="card">
-      <h3>Overview</h3>
-      <p id="dashboardMessage">Loading data...</p>
-      <ul>
-        <li>Active Subscriptions: <strong id="statActiveSubs">0</strong></li>
-        <li>Pending Deliveries: <strong id="statPendingDeliv">0</strong></li>
-      </ul>
+    <!-- Add Subscription Section -->
+    <div class="action-section">
+      <button class="add-subscription-btn" id="addSubscriptionBtn">+ Add Subscription</button>
     </div>
 
-    <div class="card">
-      <h3>Customer Demo Features</h3>
-      <div class="feature-grid">
-        <div class="feature-item">
-          <h4>Manage Subscription Plan</h4>
-          <p>Start, pause, resume, or cancel subscription plans based on your schedule.</p>
+    <!-- Subscriptions Section -->
+    <div class="subscriptions-section">
+      <h3>Your Subscriptions</h3>
+      <div class="subscriptions-list" id="subscriptionsList">
+        <!-- Demo Subscriptions -->
+        <div class="subscription-card">
+          <div class="subscription-header">
+            <h4>Milk Delivery</h4>
+            <span class="subscription-status active">Active</span>
+          </div>
+          <div class="subscription-details">
+            <p><strong>Frequency:</strong> Daily</p>
+            <p><strong>Quantity:</strong> 2 Liters</p>
+            <p><strong>Start Date:</strong> 2024-01-15</p>
+            <p><strong>Price:</strong> ₹500/Month</p>
+          </div>
+          <div class="subscription-actions">
+            <button class="edit-btn">Edit</button>
+            <button class="cancel-btn">Cancel</button>
+          </div>
         </div>
-        <div class="feature-item">
-          <h4>Track Delivery Status</h4>
-          <p>Check live order state such as scheduled, out-for-delivery, and delivered.</p>
+
+        <div class="subscription-card">
+          <div class="subscription-header">
+            <h4>Vegetable Box</h4>
+            <span class="subscription-status active">Active</span>
+          </div>
+          <div class="subscription-details">
+            <p><strong>Frequency:</strong> Twice a Week</p>
+            <p><strong>Quantity:</strong> 5 kg</p>
+            <p><strong>Start Date:</strong> 2024-02-01</p>
+            <p><strong>Price:</strong> ₹800/Month</p>
+          </div>
+          <div class="subscription-actions">
+            <button class="edit-btn">Edit</button>
+            <button class="cancel-btn">Cancel</button>
+          </div>
         </div>
-        <div class="feature-item">
-          <h4>Delivery Preferences</h4>
-          <p>Set preferred delivery time, address notes, and skip-day options.</p>
-        </div>
-        <div class="feature-item">
-          <h4>Payment and Invoice History</h4>
-          <p>View payment history, billing summary, and downloadable invoices.</p>
+
+        <div class="subscription-card">
+          <div class="subscription-header">
+            <h4>Bread & Bakery</h4>
+            <span class="subscription-status paused">Paused</span>
+          </div>
+          <div class="subscription-details">
+            <p><strong>Frequency:</strong> Every 2 Days</p>
+            <p><strong>Quantity:</strong> 1 Pack</p>
+            <p><strong>Start Date:</strong> 2024-01-20</p>
+            <p><strong>Price:</strong> ₹300/Month</p>
+          </div>
+          <div class="subscription-actions">
+            <button class="edit-btn">Edit</button>
+            <button class="cancel-btn">Cancel</button>
+          </div>
         </div>
       </div>
     </div>

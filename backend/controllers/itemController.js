@@ -3,13 +3,13 @@ const ItemModel = require('../models/itemModel');
 const itemController = {
   createItem: async (req, res) => {
     try {
-      const { name, price, category, quantity, image_url } = req.body;
+      const { name, price, unit, category, quantity, quantity_unit, image_url } = req.body;
       
       if (!name || !price) {
         return res.status(400).json({ success: false, message: 'Name and price are required' });
       }
 
-      await ItemModel.create({ name, price, category, quantity, image_url });
+      await ItemModel.create({ name, price, unit, category, quantity, quantity_unit, image_url });
       res.status(201).json({ success: true, message: 'Item created successfully' });
     } catch (error) {
       console.error('Error creating item:', error);
@@ -43,7 +43,7 @@ const itemController = {
   updateItem: async (req, res) => {
     try {
       const { id } = req.params;
-      const { name, price, category, quantity, image_url } = req.body;
+      const { name, price, unit, category, quantity, quantity_unit, image_url } = req.body;
 
       if (!name || !price) {
         return res.status(400).json({ success: false, message: 'Name and price are required' });
@@ -54,7 +54,7 @@ const itemController = {
         return res.status(404).json({ success: false, message: 'Item not found' });
       }
 
-      await ItemModel.update(id, { name, price, category, quantity, image_url });
+      await ItemModel.update(id, { name, price, unit, category, quantity, quantity_unit, image_url });
       res.status(200).json({ success: true, message: 'Item updated successfully' });
     } catch (error) {
       console.error('Error updating item:', error);

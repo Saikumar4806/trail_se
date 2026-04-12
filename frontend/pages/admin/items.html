@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Manage Items - Admin</title>
-  <link rel="stylesheet" href="../../assets/css/Admin/admin.css">
+  <link rel="stylesheet" href="../../assets/css/Admin/items.css">
 </head>
 <body>
 
@@ -33,12 +33,44 @@
               <input type="number" id="itemPrice" step="0.01" required>
             </div>
             <div class="form-group">
+              <label>Per Unit</label>
+              <div class="unit-input-group">
+                <input type="number" id="itemUnitValue" min="0" step="0.01" placeholder="e.g. 50" required>
+                <select id="itemUnitType" required>
+                  <option value="">Select unit</option>
+                  <option value="grams">grams</option>
+                  
+                  <option value="ml">ml</option>
+                  <option value="liter">liter</option>
+                  <option value="piece">piece</option>
+                  <option value="pack">pack</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
               <label for="itemCategory">Category</label>
-              <input type="text" id="itemCategory">
+              <select id="itemCategory" required>
+                <option value="">Select a category</option>
+                <option value="fruits">Fruits</option>
+                <option value="vegetables">Vegetables</option>
+                <option value="dairy">Dairy</option>
+                <option value="nuts">Nuts</option>
+              </select>
             </div>
             <div class="form-group">
               <label for="itemQuantity">Quantity</label>
-              <input type="number" id="itemQuantity" value="0">
+              <div class="unit-input-group">
+                <input type="number" id="itemQuantity" value="0" min="0" required>
+                <select id="itemQuantityUnit" required>
+                  <option value="">Select quantity unit</option>
+                  <option value="grams">grams</option>
+                  <option value="kg">kg</option>
+                  <option value="ml">ml</option>
+                  <option value="liter">liter</option>
+                  <option value="piece">piece</option>
+                  <option value="pack">pack</option>
+                </select>
+              </div>
             </div>
             <div class="form-group">
               <label for="itemImage">Image URL (optional)</label>
@@ -63,12 +95,14 @@
                   <th>Name</th>
                   <th>Category</th>
                   <th>Price</th>
+                  <th>Unit</th>
                   <th>Quantity</th>
+                  <th>Quantity Unit</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody id="itemsTableBody">
-                <tr><td colspan="6" class="text-center">Loading items...</td></tr>
+                <tr><td colspan="8" class="text-center">Loading items...</td></tr>
               </tbody>
             </table>
           </div>

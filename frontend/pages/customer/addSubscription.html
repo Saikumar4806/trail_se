@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Subscription - Subscription Delivery System</title>
+  <link rel="stylesheet" href="../../assets/css/Customer/addsubscription.css">
+</head>
+<body>
+
+  <div class="navbar">
+    <h2 id="welcomeText">Add Subscription</h2>
+    <div class="nav-buttons">
+      <div class="cart-wrapper">
+        <button class="cart-btn" id="cartBtn" type="button">Cart (<span id="cartCount">0</span>)</button>
+        <div class="cart-dropdown" id="cartDropdown" style="display: none;">
+          <h4 class="cart-title">Your Cart</h4>
+          <div id="cartItems" class="cart-items">
+            <p class="cart-empty">No items selected.</p>
+          </div>
+          <div class="cart-footer">
+            <span>Total</span>
+            <strong id="cartGrandTotal">Rs 0.00</strong>
+          </div>
+        </div>
+      </div>
+      <button class="back-btn" id="backBtn" onclick="history.back()">Back</button>
+      <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Title Section -->
+    <div class="page-header">
+      <div class="header-content">
+        <h1 class="page-title">Start Your Fresh Journey 🍓</h1>
+        <p class="page-subtitle">Choose the perfect plan for your lifestyle and enjoy fresh deliveries at your doorstep</p>
+      </div>
+      <div class="header-actions">
+        <button class="cancel-page-btn">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Plans Section -->
+    <div class="plans-section">
+      <h2 class="section-title">Select Your Plan</h2>
+      
+      <div class="plans-grid">
+        <!-- Weekly Plan -->
+        <div class="plan-card" data-plan="Weekly">
+          <div class="plan-header">
+            <h3 class="plan-name">Weekly</h3>
+            <p class="plan-price">₹299<span class="plan-duration">/week</span></p>
+          </div>
+          <div class="plan-body">
+            <p class="plan-tagline">Perfect for trying us out</p>
+            <ul class="plan-features">
+              <li>One delivery per week</li>
+              <li>Fresh produce selection</li>
+              <li>Flexible cancellation</li>
+            </ul>
+          </div>
+          <button class="plan-select-btn">Choose Plan</button>
+        </div>
+
+        <!-- 1 Month Plan -->
+        <div class="plan-card" data-plan="1 Month">
+          <div class="plan-header">
+            <h3 class="plan-name">1 Month</h3>
+            <p class="plan-price">₹999<span class="plan-duration">/month</span></p>
+          </div>
+          <div class="plan-body">
+            <p class="plan-tagline">Our most popular choice</p>
+            <ul class="plan-features">
+              <li>4 deliveries per month</li>
+              <li>Curated selections</li>
+              <li>5% discount included</li>
+            </ul>
+          </div>
+          <button class="plan-select-btn">Choose Plan</button>
+        </div>
+
+        <!-- 3 Months Plan -->
+        <div class="plan-card" data-plan="3 Months">
+          <div class="plan-header">
+            <h3 class="plan-name">3 Months</h3>
+            <p class="plan-price">₹2,499<span class="plan-duration">/quarter</span></p>
+          </div>
+          <div class="plan-body">
+            <p class="plan-tagline">Great value with commitment</p>
+            <ul class="plan-features">
+              <li>12 deliveries total</li>
+              <li>Premium selection</li>
+              <li>10% discount included</li>
+            </ul>
+          </div>
+          <button class="plan-select-btn">Choose Plan</button>
+        </div>
+
+        <!-- Yearly Plan -->
+        <div class="plan-card featured" data-plan="Yearly">
+          <div class="plan-badge">Best Value</div>
+          <div class="plan-header">
+            <h3 class="plan-name">Yearly</h3>
+            <p class="plan-price">₹8,999<span class="plan-duration">/year</span></p>
+          </div>
+          <div class="plan-body">
+            <p class="plan-tagline">Maximum savings and freshness</p>
+            <ul class="plan-features">
+              <li>52 deliveries annually</li>
+              <li>VIP member benefits</li>
+              <li>20% discount included</li>
+            </ul>
+          </div>
+          <button class="plan-select-btn">Choose Plan</button>
+        </div>
+      </div>
+      
+      <!-- Selected Plan Display -->
+      <div class="selected-plan-display" id="selectedPlanDisplay" style="display: none;">
+        <p>✓ You have selected: <strong id="selectedPlanName"></strong></p>
+      </div>
+    </div>
+
+    <!-- Items Selection Section -->
+    <div class="items-section">
+      <h2 class="section-title">Choose Your Items</h2>
+      <p class="items-subtitle">Add items to your subscription for a fresh and customized experience</p>
+
+      <div class="combo-name-group">
+        <label for="comboName" class="combo-name-label">Name Your Combo</label>
+        <input
+          type="text"
+          id="comboName"
+          class="combo-name-input"
+          placeholder="Enter a combo name (e.g., Weekly Fresh Box)"
+          maxlength="100"
+        />
+      </div>
+
+      <div id="itemsContainer" class="items-container">
+        <p class="loading-text">Loading items...</p>
+      </div>
+
+      <div class="save-selection-wrap">
+        <button class="action-btn payment-btn" id="saveSelectionBtn" type="button">Save Selection</button>
+      </div>
+    </div>
+
+    <!-- Action Buttons Section -->
+    <div class="action-buttons-section">
+      <button class="action-btn address-btn" id="addAddressBtn">Add Address</button>
+      <button class="action-btn payment-btn" id="makePaymentBtn">Make Payment</button>
+    </div>
+  </div>
+
+  <!-- Add Address Modal -->
+  <div class="modal-overlay" id="addressModal" style="display: none;">
+    <div class="modal-content address-modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Add New Address</h2>
+        <button class="modal-close-btn" id="closeAddressModal" type="button">&times;</button>
+      </div>
+
+      <form class="address-form" id="addressForm">
+        <div class="form-group">
+          <label for="addressStreet" class="form-label">Street Address</label>
+          <input type="text" id="addressStreet" class="form-input" placeholder="Enter street address" required />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="addressArea" class="form-label">Area</label>
+            <input type="text" id="addressArea" class="form-input" placeholder="Enter area/locality" required />
+          </div>
+          <div class="form-group">
+            <label for="addressCity" class="form-label">City</label>
+            <input type="text" id="addressCity" class="form-input" placeholder="Enter city" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="addressState" class="form-label">State</label>
+            <input type="text" id="addressState" class="form-input" placeholder="Enter state" required />
+          </div>
+          <div class="form-group">
+            <label for="addressPincode" class="form-label">Pincode</label>
+            <input type="text" id="addressPincode" class="form-input" placeholder="Enter pincode" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="addressLandmark" class="form-label">Landmark</label>
+          <input type="text" id="addressLandmark" class="form-input" placeholder="Enter landmark (optional)" />
+        </div>
+
+        <div class="form-group">
+          <label for="addressType" class="form-label">Address Type</label>
+          <select id="addressType" class="form-input" required>
+            <option value="">Select address type</option>
+            <option value="home">Home</option>
+            <option value="work">Work</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label for="defaultAddress" class="checkbox-label">
+            <input type="checkbox" id="defaultAddress" class="checkbox-input" />
+            <span>Set as default address</span>
+          </label>
+        </div>
+
+        <div class="form-group">
+          <button type="button" class="map-btn" id="selectMapBtn">Select on Map</button>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="modal-btn cancel-btn" id="cancelAddressBtn">Cancel</button>
+          <button type="submit" class="modal-btn save-btn">Save Address</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../../assets/js/customer/customer.js"></script>
+
+</body>
+</html>
