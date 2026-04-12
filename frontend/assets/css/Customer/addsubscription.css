@@ -294,6 +294,40 @@ h3 {
   margin-left: 4px; 
 }
 
+/* Price Breakdown Visualization */
+.price-breakdown {
+  margin-bottom: 16px;
+}
+
+.breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  padding: 2px 0;
+}
+
+.breakdown-row.final {
+  border-top: 2px solid #333;
+  padding-top: 4px;
+  margin-top: 4px;
+  font-weight: 600;
+  color: #2e7d32;
+}
+
+.breakdown-label {
+  color: #666;
+}
+
+.breakdown-value {
+  color: #333;
+  font-weight: 500;
+}
+
+.breakdown-divider {
+  height: 2px;
+  background: #333;
+}
+
 .plan-body { 
   flex: 1; 
   margin-bottom: 16px; 
@@ -371,6 +405,70 @@ h3 {
 .selected-plan-display strong { 
   color: #1b5e20; 
   font-size: 18px; 
+}
+
+/* Delivery Slot Selection Section */
+.delivery-slot-section {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-top: 30px;
+}
+
+.slot-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.slot-option {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.slot-option:hover {
+  border-color: #4CAF50;
+  background-color: #f9fffa;
+}
+
+.slot-radio {
+  cursor: pointer;
+  margin-right: 12px;
+  width: 18px;
+  height: 18px;
+  accent-color: #4CAF50;
+}
+
+.slot-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.slot-time {
+  color: #2e7d32;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.slot-period {
+  color: #666;
+  font-size: 13px;
+}
+
+.slot-option input[type="radio"]:checked + .slot-label {
+  color: #2e7d32;
+}
+
+.slot-option input[type="radio"]:checked {
+  accent-color: #4CAF50;
 }
 
 /* Items Selection Section */
@@ -638,92 +736,6 @@ h3 {
   color: #333; 
 }
 
-/* Address Form */
-.address-form { 
-  padding: 20px; 
-}
-
-.form-group { 
-  margin-bottom: 18px; 
-}
-
-.form-label { 
-  display: block; 
-  margin-bottom: 6px; 
-  color: #333; 
-  font-size: 14px; 
-  font-weight: 600; 
-}
-
-.form-input { 
-  width: 100%; 
-  border: 1px solid #d0d0d0; 
-  border-radius: 6px; 
-  padding: 12px; 
-  font-size: 14px; 
-  color: #333; 
-  outline: none; 
-  transition: border-color 0.2s ease, box-shadow 0.2s ease; 
-  box-sizing: border-box; 
-}
-
-.form-input:focus { 
-  border-color: #4CAF50; 
-  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1); 
-}
-
-.form-input::placeholder { 
-  color: #aaa; 
-}
-
-/* Form Row for side-by-side fields */
-.form-row { 
-  display: grid; 
-  grid-template-columns: 1fr 1fr; 
-  gap: 16px; 
-}
-
-/* Checkbox Group */
-.checkbox-group { 
-  margin-bottom: 12px; 
-}
-
-.checkbox-label { 
-  display: flex; 
-  align-items: center; 
-  gap: 10px; 
-  cursor: pointer; 
-  color: #333; 
-  font-size: 14px; 
-  font-weight: 500; 
-}
-
-.checkbox-input { 
-  cursor: pointer; 
-  width: 18px; 
-  height: 18px; 
-  accent-color: #4CAF50; 
-}
-
-/* Map Button */
-.map-btn { 
-  width: 100%; 
-  background-color: #e8f5e9; 
-  color: #2e7d32; 
-  border: 1px solid #c8e6c9; 
-  border-radius: 6px; 
-  padding: 12px; 
-  font-size: 14px; 
-  font-weight: 600; 
-  cursor: pointer; 
-  transition: all 0.2s ease; 
-}
-
-.map-btn:hover { 
-  background-color: #d4edda; 
-  border-color: #b3dbb3; 
-}
-
 /* Modal Actions */
 .modal-actions { 
   display: flex; 
@@ -761,14 +773,46 @@ h3 {
   box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3); 
 }
 
+/* Payment Modal */
+.payment-modal {
+  max-width: 400px;
+}
+
+.payment-content {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.payment-icon {
+  font-size: 60px;
+  color: #4CAF50;
+  margin-bottom: 16px;
+  animation: paymentCheckmark 0.5s ease-out;
+}
+
+@keyframes paymentCheckmark {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.payment-message {
+  margin: 0;
+  color: #333;
+  font-size: 16px;
+  font-weight: 500;
+}
+
 /* Modal Mobile Responsive */
 @media (max-width: 768px) {
   .modal-content { 
     width: 95%; 
     max-width: 100%; 
-  }
-  .form-row { 
-    grid-template-columns: 1fr; 
   }
   .modal-actions { 
     flex-direction: column; 

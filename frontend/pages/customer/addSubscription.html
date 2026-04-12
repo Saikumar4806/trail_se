@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Add Subscription - Subscription Delivery System</title>
   <link rel="stylesheet" href="../../assets/css/Customer/addsubscription.css">
+  <link rel="stylesheet" href="../../assets/css/Customer/add_address.css">
 </head>
 <body>
 
@@ -52,6 +53,7 @@
             <h3 class="plan-name">Weekly</h3>
             <p class="plan-price">₹299<span class="plan-duration">/week</span></p>
           </div>
+
           <div class="plan-body">
             <p class="plan-tagline">Perfect for trying us out</p>
             <ul class="plan-features">
@@ -69,6 +71,7 @@
             <h3 class="plan-name">1 Month</h3>
             <p class="plan-price">₹999<span class="plan-duration">/month</span></p>
           </div>
+          
           <div class="plan-body">
             <p class="plan-tagline">Our most popular choice</p>
             <ul class="plan-features">
@@ -86,6 +89,7 @@
             <h3 class="plan-name">3 Months</h3>
             <p class="plan-price">₹2,499<span class="plan-duration">/quarter</span></p>
           </div>
+          
           <div class="plan-body">
             <p class="plan-tagline">Great value with commitment</p>
             <ul class="plan-features">
@@ -104,6 +108,7 @@
             <h3 class="plan-name">Yearly</h3>
             <p class="plan-price">₹8,999<span class="plan-duration">/year</span></p>
           </div>
+          
           <div class="plan-body">
             <p class="plan-tagline">Maximum savings and freshness</p>
             <ul class="plan-features">
@@ -119,6 +124,29 @@
       <!-- Selected Plan Display -->
       <div class="selected-plan-display" id="selectedPlanDisplay" style="display: none;">
         <p>✓ You have selected: <strong id="selectedPlanName"></strong></p>
+      </div>
+    </div>
+
+    <!-- Delivery Slot Selection Section -->
+    <div class="delivery-slot-section">
+      <h2 class="section-title">Select Delivery Slot</h2>
+      <p class="items-subtitle">Choose your preferred delivery time</p>
+
+      <div class="slot-options">
+        <label class="slot-option">
+          <input type="radio" name="deliverySlot" value="morning" class="slot-radio" />
+          <span class="slot-label">
+            <span class="slot-time">Morning</span>
+            <span class="slot-period">6:00 AM - 10:00 AM</span>
+          </span>
+        </label>
+        <label class="slot-option">
+          <input type="radio" name="deliverySlot" value="evening" class="slot-radio" />
+          <span class="slot-label">
+            <span class="slot-time">Evening</span>
+            <span class="slot-period">2:00 PM - 6:00 PM</span>
+          </span>
+        </label>
       </div>
     </div>
 
@@ -224,6 +252,27 @@
     </div>
   </div>
 
+  <!-- Payment Modal -->
+  <div class="modal-overlay" id="paymentModal" style="display: none;">
+    <div class="modal-content payment-modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Payment</h2>
+        <button class="modal-close-btn" id="closePaymentModal" type="button">&times;</button>
+      </div>
+
+      <div class="payment-content">
+        <div class="payment-icon">✓</div>
+        <p class="payment-message">Payment Processing...</p>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="modal-btn cancel-btn" id="cancelPaymentBtn">Cancel</button>
+        <button type="button" class="modal-btn save-btn" id="donePaymentBtn">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../assets/js/customer/add_address.js"></script>
   <script src="../../assets/js/customer/customer.js"></script>
 
 </body>
