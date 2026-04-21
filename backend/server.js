@@ -8,6 +8,7 @@ const dashboardRoutes = require("./routes/dashboardRoutes");
 const itemRoutes = require("./routes/itemRoutes");
 const comboRoutes = require("./routes/comboRoutes");
 const addressRoutes = require("./routes/addressRoutes");
+const subscriptionRoutes = require("./routes/subscriptionRoutes");
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -27,6 +28,7 @@ app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/items", itemRoutes);
 app.use("/api", comboRoutes);
 app.use("/api/addresses", addressRoutes);
+app.use("/api/subscriptions", subscriptionRoutes);
 
 // --------------- Start Server ---------------
 app.listen(port, () => {
