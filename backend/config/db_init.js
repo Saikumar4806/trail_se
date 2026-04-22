@@ -152,6 +152,7 @@ async function setupDatabase() {
         subscription_id INT NOT NULL,
         customer_id INT NOT NULL,
         address_id INT NOT NULL,
+        partner_id INT DEFAULT NULL,
         order_date DATE NOT NULL,
         delivery_date DATE NOT NULL,
         delivery_slot ENUM('morning','evening') NOT NULL,
@@ -167,6 +168,20 @@ async function setupDatabase() {
     `;
     await connection.query(createOrdersTableQuery);
     console.log("Verified 'orders' table exists and is correctly structured.");
+
+    // Add partner_id column if it doesn't exist (for existing tables)
+    try {
+      await connection.query(
+        `ALTER TABLE orders ADD COLUMN partner_id INT DEFAULT NULL AFTER address_id`
+      );
+      console.log("Added 'partner_id' column to orders table.");
+    } catch (alterErr) {
+      if (alterErr.code === 'ER_DUP_FIELDNAME') {
+        console.log("'partner_id' column already exists in orders table.");
+      } else {
+        throw alterErr;
+      }
+    }
 
     console.log("Database setup is 100% complete! You can now run the server.");
     await connection.end();

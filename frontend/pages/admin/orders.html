@@ -24,7 +24,18 @@
 				<label for="orderDate">Select Date:</label>
 				<input type="date" id="orderDate">
 				<button id="loadOrdersBtn" class="btn-primary">Check Orders</button>
+
+				<span class="divider">|</span>
+
+				<label for="routeSlot">Slot:</label>
+				<select id="routeSlot">
+					<option value="morning">Morning</option>
+					<option value="evening">Evening</option>
+				</select>
+				<button id="generateRoutesBtn" class="btn-success">🚚 Generate Routes</button>
 			</div>
+
+			<div id="routeResult" class="route-result" style="display: none;"></div>
 
 			<p id="ordersMessage" class="form-message"></p>
 

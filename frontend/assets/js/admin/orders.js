@@ -141,6 +141,74 @@ document.addEventListener("DOMContentLoaded", async () => {
 	loadOrdersBtn.addEventListener("click", loadOrders);
 	await loadOrders();
 
+	// ─── Generate Routes ───
+	const generateRoutesBtn = document.getElementById("generateRoutesBtn");
+	if (generateRoutesBtn) {
+		generateRoutesBtn.addEventListener("click", async () => {
+			const selectedDate = String(orderDateInput.value || "").trim();
+			const slot = document.getElementById("routeSlot").value;
+
+			if (!selectedDate) {
+				ordersMessage.textContent = "Please select a date first.";
+				return;
+			}
+
+			generateRoutesBtn.disabled = true;
+			generateRoutesBtn.textContent = "⏳ Generating...";
+			ordersMessage.textContent = "";
+
+			try {
+				const res = await fetch("http://localhost:5000/api/admin/generate-routes", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ date: selectedDate, slot }),
+				});
+				const result = await res.json();
+
+				const routeResultDiv = document.getElementById("routeResult");
+
+				if (!result.success) {
+					ordersMessage.textContent = result.message || "Failed to generate routes.";
+					routeResultDiv.style.display = "none";
+					return;
+				}
+
+				const assignments = result.data || [];
+				if (assignments.length === 0) {
+					ordersMessage.textContent = result.message || "No routes generated.";
+					routeResultDiv.style.display = "none";
+					return;
+				}
+
+				ordersMessage.textContent = `✅ ${result.message} (${assignments.length} partners assigned)`;
+
+				routeResultDiv.style.display = "block";
+				routeResultDiv.innerHTML = `
+					<h4>📍 Route Assignments</h4>
+					${assignments.map(a => `
+						<div class="assignment-card">
+							<strong>🚚 ${a.partner_name}</strong>
+							<span class="badge">${a.total_orders} orders</span>
+							<ul>
+								${a.route.map((r, i) => `<li><b>Stop ${i + 1}:</b> Order #${r.order_id} — ${r.customer_name} — ${r.address}</li>`).join("")}
+							</ul>
+						</div>
+					`).join("")}
+				`;
+
+				// Reload orders to show updated partner_id
+				allOrders = await fetchOrdersByDate(selectedDate);
+				renderOrders(allOrders);
+			} catch (error) {
+				console.error("Generate routes error:", error);
+				ordersMessage.textContent = "Network error generating routes.";
+			} finally {
+				generateRoutesBtn.disabled = false;
+				generateRoutesBtn.textContent = "🚚 Generate Routes";
+			}
+		});
+	}
+
 	document.getElementById("logoutBtn").addEventListener("click", () => {
 		localStorage.removeItem("user");
 		window.location.href = "../../pages/start/login.html";
