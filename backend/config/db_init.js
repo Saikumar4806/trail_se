@@ -145,21 +145,6 @@ async function setupDatabase() {
     await connection.query(createSubscriptionsTableQuery);
     console.log("Verified 'subscriptions' table exists and is correctly structured.");
 
-    // Create the subscription_pauses table
-    const createSubscriptionPausesTableQuery = `
-      CREATE TABLE IF NOT EXISTS subscription_pauses (
-        pause_id INT AUTO_INCREMENT PRIMARY KEY,
-        subscription_id INT NOT NULL,
-        pause_date DATE NOT NULL,
-        resume_date DATE,
-        reason VARCHAR(255),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (subscription_id) REFERENCES subscriptions(subscription_id) ON DELETE CASCADE
-      );
-    `;
-    await connection.query(createSubscriptionPausesTableQuery);
-    console.log("Verified 'subscription_pauses' table exists and is correctly structured.");
-
     // Create the orders table
     const createOrdersTableQuery = `
       CREATE TABLE IF NOT EXISTS orders (
