@@ -6,6 +6,7 @@
   "scripts": {
     "test": "nodemon config/db_init.js && nodemon server.js",
     "db": "node config/db_init.js",
+    "seed": "node config/seed_data.js",
     "start": "nodemon server.js"
   },
   "keywords": [],
