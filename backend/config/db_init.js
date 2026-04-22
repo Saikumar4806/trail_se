@@ -145,6 +145,29 @@ async function setupDatabase() {
     await connection.query(createSubscriptionsTableQuery);
     console.log("Verified 'subscriptions' table exists and is correctly structured.");
 
+    // Create the orders table
+    const createOrdersTableQuery = `
+      CREATE TABLE IF NOT EXISTS orders (
+        order_id INT AUTO_INCREMENT PRIMARY KEY,
+        subscription_id INT NOT NULL,
+        customer_id INT NOT NULL,
+        address_id INT NOT NULL,
+        order_date DATE NOT NULL,
+        delivery_date DATE NOT NULL,
+        delivery_slot ENUM('morning','evening') NOT NULL,
+        combo_id INT,
+        total_amount DECIMAL(10,2) NOT NULL,
+        status ENUM('out_for_delivery','delivered') DEFAULT 'out_for_delivery',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (subscription_id) REFERENCES subscriptions(subscription_id) ON DELETE CASCADE,
+        FOREIGN KEY (customer_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (address_id) REFERENCES addresses(address_id) ON DELETE CASCADE
+      );
+    `;
+    await connection.query(createOrdersTableQuery);
+    console.log("Verified 'orders' table exists and is correctly structured.");
+
     console.log("Database setup is 100% complete! You can now run the server.");
     await connection.end();
 
