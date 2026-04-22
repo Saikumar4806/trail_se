@@ -1,6 +1,37 @@
 const ComboModel = require('../models/comboModel');
 const db = require('../config/db');
 
+const toSqlDate = (date) => date.toISOString().slice(0, 10);
+
+const getCalculatedEndDate = (startDateValue, planType) => {
+  const startDate = new Date(startDateValue);
+
+  if (Number.isNaN(startDate.getTime())) {
+    throw new Error('Invalid start_date');
+  }
+
+  const endDate = new Date(startDate);
+
+  switch (String(planType).trim()) {
+    case 'weekly':
+      endDate.setUTCDate(endDate.getUTCDate() + 7);
+      break;
+    case '1_month':
+      endDate.setUTCMonth(endDate.getUTCMonth() + 1);
+      break;
+    case '3_months':
+      endDate.setUTCMonth(endDate.getUTCMonth() + 3);
+      break;
+    case 'yearly':
+      endDate.setUTCFullYear(endDate.getUTCFullYear() + 1);
+      break;
+    default:
+      throw new Error('Invalid plan_type');
+  }
+
+  return toSqlDate(endDate);
+};
+
 const comboController = {
   completeCheckout: async (req, res) => {
     let connection;
@@ -47,6 +78,10 @@ const comboController = {
         quantity: Number(item.quantity)
       }));
 
+      const comboTotalAmount = normalizedItems
+        .reduce((sum, item) => sum + (item.price * item.quantity), 0)
+        .toFixed(2);
+
       const hasInvalidItem = normalizedItems.some((item) => (
         !Number.isInteger(item.item_id) || item.item_id <= 0 ||
         Number.isNaN(item.price) || item.price < 0 ||
@@ -91,8 +126,8 @@ const comboController = {
       );
 
       const [comboInsert] = await connection.query(
-        'INSERT INTO combos (user_id, name) VALUES (?, ?)',
-        [Number(user_id), String(combo.combo_name || 'My Combo').trim()]
+        'INSERT INTO combos (user_id, name, total_amount) VALUES (?, ?, ?)',
+        [Number(user_id), String(combo.combo_name || 'My Combo').trim(), comboTotalAmount]
       );
 
       const comboId = comboInsert.insertId;
@@ -103,17 +138,21 @@ const comboController = {
         [comboItemValues]
       );
 
+      const resolvedStartDate = start_date || toSqlDate(new Date());
+      const calculatedEndDate = getCalculatedEndDate(resolvedStartDate, plan_type);
+
       const [subscriptionInsert] = await connection.query(
         `INSERT INTO subscriptions
-          (user_id, address_id, combo_id, plan_type, delivery_slot, start_date)
-         VALUES (?, ?, ?, ?, ?, ?)`,
+          (user_id, address_id, combo_id, plan_type, delivery_slot, start_date, end_date)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [
           Number(user_id),
           addressInsert.insertId,
           comboId,
           plan_type,
           delivery_slot,
-          start_date || new Date().toISOString().slice(0, 10)
+          resolvedStartDate,
+          calculatedEndDate
         ]
       );
 
@@ -125,6 +164,7 @@ const comboController = {
         data: {
           address_id: addressInsert.insertId,
           combo_id: comboId,
+          total_amount: Number(comboTotalAmount),
           subscription_id: subscriptionInsert.insertId,
           inserted_combo_items: comboItemValues.length
         }
@@ -132,6 +172,10 @@ const comboController = {
     } catch (error) {
       if (connection) {
         await connection.rollback();
+      }
+
+      if (error.message === 'Invalid start_date') {
+        return res.status(400).json({ success: false, message: 'Invalid start_date' });
       }
 
       console.error('Error completing checkout:', error);
@@ -162,6 +206,10 @@ const comboController = {
         price: Number(item.price),
         quantity: Number(item.quantity)
       }));
+
+      const comboTotalAmount = normalizedItems
+        .reduce((sum, item) => sum + (item.price * item.quantity), 0)
+        .toFixed(2);
 
       const hasInvalidItem = normalizedItems.some((item) => (
         !Number.isInteger(item.item_id) || item.item_id <= 0 ||
@@ -194,10 +242,16 @@ const comboController = {
 
           const comboInsert = await ComboModel.createCombo({
             user_id: Number(user_id),
-            name: String(combo_name || 'My Combo').trim()
+            name: String(combo_name || 'My Combo').trim(),
+            total_amount: comboTotalAmount
           }, connection);
 
           resolvedComboId = comboInsert.insertId;
+        } else {
+          await connection.query(
+            'UPDATE combos SET total_amount = ? WHERE combo_id = ?',
+            [comboTotalAmount, resolvedComboId]
+          );
         }
 
         const insertResult = await ComboModel.insertComboItems({
@@ -213,6 +267,7 @@ const comboController = {
           message: 'Selection saved successfully',
           data: {
             combo_id: resolvedComboId,
+            total_amount: Number(comboTotalAmount),
             inserted_count: insertResult.affectedRows
           }
         });

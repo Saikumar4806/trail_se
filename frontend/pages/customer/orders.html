@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order History - Subscription Delivery System</title>
+  <link rel="stylesheet" href="../../assets/css/Customer/orders.css">
+</head>
+<body>
+
+  <div class="navbar">
+    <h2 id="welcomeText">Order History</h2>
+    <div class="nav-buttons">
+      <button class="back-btn" onclick="window.location.href='./dashboard.html'">← Back to Dashboard</button>
+      <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="orders-section">
+      <h3>Your Order History</h3>
+      
+      <div class="filters-section">
+        <label for="statusFilter">Filter by Status:</label>
+        <select id="statusFilter">
+          <option value="">All</option>
+          <option value="out_for_delivery">Out for Delivery</option>
+          <option value="delivered">Delivered</option>
+        </select>
+      </div>
+
+      <div class="orders-table-wrapper">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Subscription ID</th>
+              <th>Order Date</th>
+              <th>Delivery Date</th>
+              <th>Slot</th>
+              <th>Total Amount</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="ordersTableBody">
+            <!-- Demo orders will be populated here -->
+          </tbody>
+        </table>
+      </div>
+
+      <div id="noOrdersMessage" class="no-orders-message" style="display: none;">
+        <p>No orders found.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../assets/js/customer/orders.js"></script>
+</body>
+</html>

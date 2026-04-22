@@ -7,27 +7,29 @@ const getSubscriptionsByUserId = async (userId) => {
 
   const [rows] = await db.query(
     `SELECT
-      subscription_id,
-      user_id,
-      address_id,
-      combo_id,
-      plan_type,
-      delivery_slot,
-      start_date,
-      end_date,
-      status,
-      pause_count,
+      subscriptions.subscription_id,
+      subscriptions.user_id,
+      subscriptions.address_id,
+      subscriptions.combo_id,
+      combos.total_amount AS total_price,
+      subscriptions.plan_type,
+      subscriptions.delivery_slot,
+      subscriptions.start_date,
+      subscriptions.end_date,
+      subscriptions.status,
+      subscriptions.pause_count,
       EXISTS (
         SELECT 1
         FROM subscription_pauses sp
         WHERE sp.subscription_id = subscriptions.subscription_id
           AND sp.pause_date = ?
       ) AS is_paused_today,
-      created_at,
-      updated_at
+      subscriptions.created_at,
+      subscriptions.updated_at
     FROM subscriptions
-    WHERE user_id = ?
-    ORDER BY created_at DESC`,
+    LEFT JOIN combos ON combos.combo_id = subscriptions.combo_id
+    WHERE subscriptions.user_id = ?
+    ORDER BY subscriptions.created_at DESC`,
     [today, userId]
   );
 
@@ -83,7 +85,8 @@ const pauseSubscriptionForTodayById = async (subscriptionId, reason = null) => {
 
     await connection.query(
       `UPDATE subscriptions
-       SET pause_count = COALESCE(pause_count, 0) + 1
+       SET status = 'paused',
+           pause_count = COALESCE(pause_count, 0) + 1
        WHERE subscription_id = ?`,
       [subscriptionId]
     );

@@ -9,6 +9,8 @@ const itemRoutes = require("./routes/itemRoutes");
 const comboRoutes = require("./routes/comboRoutes");
 const addressRoutes = require("./routes/addressRoutes");
 const subscriptionRoutes = require("./routes/subscriptionRoutes");
+const orderRoutes = require("./routes/orderRoutes");
+const { startCronJobs } = require("./utils/cronJobs");
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -29,6 +31,9 @@ app.use("/api/items", itemRoutes);
 app.use("/api", comboRoutes);
 app.use("/api/addresses", addressRoutes);
 app.use("/api/subscriptions", subscriptionRoutes);
+app.use("/api", orderRoutes);
+
+startCronJobs();
 
 // --------------- Start Server ---------------
 app.listen(port, () => {

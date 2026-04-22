@@ -261,6 +261,15 @@ function getSelectedItemsPayload() {
   }).filter((entry) => entry.quantity > 0);
 }
 
+function getCartTotalAmount() {
+  return Object.entries(state.selected).reduce((sum, [itemId, quantity]) => {
+    const item = state.itemsById[itemId];
+    const price = Number(item?.price) || 0;
+    const qty = Number(quantity) || 0;
+    return sum + (price * qty);
+  }, 0);
+}
+
 function updateCart() {
   const cartItemsContainer = document.getElementById('cartItems');
   const cartGrandTotal = document.getElementById('cartGrandTotal');
@@ -336,9 +345,11 @@ function setupSaveSelection() {
     }
 
     try {
+      const totalAmount = getCartTotalAmount();
       state.pendingCombo = {
         combo_name: comboName,
-        items
+        items,
+        total_amount: Number(totalAmount.toFixed(2))
       };
       alert('Selection saved for checkout. It will be added after payment is completed.');
     } catch (error) {

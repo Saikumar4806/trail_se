@@ -60,6 +60,7 @@ const renderSubscriptions = (subscriptions) => {
             <button class="pause-btn" data-subscription-id="${subscription.subscription_id}" ${isPausedToday ? "disabled" : ""}>
               ${isPausedToday ? "Paused for today" : "Pause"}
             </button>
+            <button class="edit-btn" data-subscription-id="${subscription.subscription_id}">Edit</button>
           </div>
         </div>
       `;

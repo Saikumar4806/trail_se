@@ -355,6 +355,55 @@ h3 {
   border-color: #bbdefb; 
 }
 
+.edit-btn { 
+  padding: 10px 14px; 
+  border: 1px solid transparent; 
+  border-radius: 4px; 
+  cursor: pointer; 
+  font-size: 13px; 
+  font-weight: 600; 
+  transition: all 0.2s ease; 
+  flex: 1; 
+  text-align: center; 
+  background-color: #e3f2fd; 
+  color: #1565c0; 
+  border-color: #bbdefb; 
+}
+
+.edit-btn:hover { 
+  background-color: #bbdefb; 
+  border-color: #90caf9; 
+}
+
+.action-buttons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.order-history-btn {
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.order-history-btn:hover {
+  background-color: #1976D2;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.order-history-btn:active {
+  transform: scale(0.98);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .subscriptions-list { 

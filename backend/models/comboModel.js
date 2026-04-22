@@ -1,10 +1,10 @@
 const db = require('../config/db');
 
 const ComboModel = {
-  createCombo: async ({ user_id, name }, connection = db) => {
+  createCombo: async ({ user_id, name, total_amount = 0 }, connection = db) => {
     const [result] = await connection.query(
-      'INSERT INTO combos (user_id, name) VALUES (?, ?)',
-      [user_id, name]
+      'INSERT INTO combos (user_id, name, total_amount) VALUES (?, ?, ?)',
+      [user_id, name, total_amount]
     );
 
     return result;

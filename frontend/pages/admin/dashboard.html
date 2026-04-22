@@ -35,6 +35,18 @@
           <p>Manage subscription items, adjust prices, edit details, or remove products from the delivery network.</p>
           <button class="btn-primary" onclick="window.location.href='items.html'" style="margin-top: 10px;">Go to Items</button>
         </div>
+        <div class="feature-item">
+          <h4>Generate Demo Orders</h4>
+          <p>Create today's delivery orders for active subscriptions (excluding paused and duplicate orders).</p>
+          <button class="btn-secondary" id="generateDemoOrdersBtn" style="margin-top: 10px;">Generate Today Demo Orders</button>
+          <p class="demo-tag">Orders will be generated at midnight automatically. For demo, you can use this button.</p>
+          <p id="generateDemoOrdersMsg" class="form-message"></p>
+        </div>
+        <div class="feature-item">
+          <h4>View Orders By Date</h4>
+          <p>Check all generated orders for any selected date.</p>
+          <button class="btn-primary" id="viewOrdersBtn" style="margin-top: 10px;">Open Orders Section</button>
+        </div>
       </div>
     </div>
   </div>

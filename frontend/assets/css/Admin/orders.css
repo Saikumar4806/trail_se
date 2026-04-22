@@ -1,0 +1,183 @@
+body {
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	margin: 0;
+	padding: 0;
+	background: #eef2f5;
+}
+
+.navbar {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 1000;
+	background-color: #333;
+	color: white;
+	padding: 15px 20px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.navbar h2 {
+	margin: 0;
+}
+
+.nav-buttons {
+	display: flex;
+	gap: 10px;
+}
+
+.back-btn {
+	background: #007bff;
+	color: white;
+	border: none;
+	padding: 10px 15px;
+	cursor: pointer;
+	border-radius: 4px;
+}
+
+.back-btn:hover {
+	background: #0056b3;
+}
+
+.logout-btn {
+	background: #ff4c4c;
+	color: white;
+	border: none;
+	padding: 10px 15px;
+	cursor: pointer;
+	border-radius: 4px;
+}
+
+.container {
+	max-width: 1200px;
+	margin: 80px auto 20px auto;
+	padding: 20px;
+}
+
+.card {
+	background: white;
+	padding: 20px;
+	border-radius: 8px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+h3 {
+	margin-top: 0;
+}
+
+.filters-section {
+	margin-bottom: 16px;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+
+.filters-section label {
+	font-weight: 600;
+	color: #333;
+}
+
+.filters-section input[type="date"] {
+	padding: 8px 10px;
+	border: 1px solid #ced4da;
+	border-radius: 4px;
+	font-size: 14px;
+}
+
+.btn-primary {
+	background: #007bff;
+	color: white;
+	border: none;
+	padding: 10px 15px;
+	cursor: pointer;
+	border-radius: 4px;
+}
+
+.btn-primary:hover {
+	background: #0056b3;
+}
+
+.form-message {
+	margin: 8px 0 14px;
+	font-size: 14px;
+	color: #555;
+}
+
+.orders-table-wrapper {
+	overflow-x: auto;
+}
+
+.orders-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.orders-table thead {
+	background-color: #f5f7fa;
+	border-bottom: 2px solid #d9dfe7;
+}
+
+.orders-table th,
+.orders-table td {
+	padding: 12px;
+	text-align: left;
+	font-size: 14px;
+}
+
+.orders-table td {
+	border-bottom: 1px solid #eee;
+	color: #333;
+}
+
+.status-badge {
+	display: inline-block;
+	padding: 5px 10px;
+	border-radius: 999px;
+	font-size: 12px;
+	font-weight: 600;
+}
+
+.status-badge.out_for_delivery {
+	background-color: #fff3cd;
+	color: #856404;
+}
+
+.status-badge.delivered {
+	background-color: #d4edda;
+	color: #155724;
+}
+
+.view-btn {
+	background: #6c757d;
+	color: white;
+	border: none;
+	padding: 6px 10px;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.view-btn:hover {
+	background: #5a6268;
+}
+
+.no-orders-message {
+	text-align: center;
+	padding: 24px;
+	color: #666;
+}
+
+@media (max-width: 768px) {
+	.navbar {
+		flex-direction: column;
+		gap: 10px;
+		align-items: flex-start;
+	}
+
+	.nav-buttons {
+		width: 100%;
+		justify-content: space-between;
+	}
+}

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Admin Orders - Subscription Delivery System</title>
+	<link rel="stylesheet" href="../../assets/css/Admin/orders.css">
+</head>
+<body>
+
+	<div class="navbar">
+		<h2 id="welcomeText">Admin Orders</h2>
+		<div class="nav-buttons">
+			<button class="back-btn" onclick="window.location.href='./dashboard.html'">Back to Dashboard</button>
+			<button class="logout-btn" id="logoutBtn">Logout</button>
+		</div>
+	</div>
+
+	<div class="container">
+		<div class="card">
+			<h3>Orders Section</h3>
+
+			<div class="filters-section">
+				<label for="orderDate">Select Date:</label>
+				<input type="date" id="orderDate">
+				<button id="loadOrdersBtn" class="btn-primary">Check Orders</button>
+			</div>
+
+			<p id="ordersMessage" class="form-message"></p>
+
+			<div class="orders-table-wrapper">
+				<table class="orders-table">
+					<thead>
+						<tr>
+							<th>Order ID</th>
+							<th>Subscription ID</th>
+							<th>Customer ID</th>
+							<th>Address ID</th>
+							<th>Order Date</th>
+							<th>Delivery Date</th>
+							<th>Slot</th>
+							<th>Total Amount</th>
+							<th>Status</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody id="ordersTableBody"></tbody>
+				</table>
+			</div>
+
+			<div id="noOrdersMessage" class="no-orders-message" style="display: none;">
+				<p>No orders found for selected date.</p>
+			</div>
+		</div>
+	</div>
+
+	<script src="../../assets/js/admin/orders.js"></script>
+</body>
+</html>
