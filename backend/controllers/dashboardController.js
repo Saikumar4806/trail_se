@@ -51,16 +51,30 @@ const getAdminDashboard = async (req, res) => {
 /**
  * Controller for Delivery Partner Dashboard Data
  * GET /api/dashboard/partner
+ * Returns delivery assignments, earnings, and status breakdown for today
  */
 const getPartnerDashboard = async (req, res) => {
   try {
-    // In Sprint 5 this will fetch assigned routes
+    // Demo data structure showing what will be fetched in future sprints
+    // In Sprint 5+ this will fetch actual assigned routes, orders, and earnings
+    const dashboardData = {
+      message: "Welcome to your Delivery Dashboard! Here you can track today's deliveries, earnings, and performance.",
+      stats: {
+        assignedDeliveries: 0,
+        completedToday: 0,
+        todayEarnings: 0.00,
+        deliveryStatus: {
+          assigned: 0,
+          inTransit: 0,
+          delivered: 0,
+          failed: 0
+        }
+      }
+    };
+
     return res.status(200).json({
       success: true,
-      data: {
-        message: "Welcome to the Delivery Partner Dashboard!",
-        stats: { assignedDeliveries: 0, completedToday: 0 },
-      },
+      data: dashboardData,
     });
   } catch (error) {
     console.error("Dashboard error:", error);

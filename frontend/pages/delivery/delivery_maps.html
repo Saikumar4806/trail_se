@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delivery Maps - Subscription Delivery System</title>
+  <link rel="stylesheet" href="../../assets/css/DeliveryPartner/delivery_maps.css">
+</head>
+<body>
+
+  <div class="navbar">
+    <h2 id="welcomeText">Delivery Route</h2>
+    <div class="nav-buttons">
+      <button class="back-btn" id="backBtn">Back to Dashboard</button>
+      <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Map Section -->
+    <div class="map-section">
+      <div class="map-header">
+        <h3>📍 Live Delivery Map</h3>
+        <span class="map-status">Tracking Mode: Active</span>
+      </div>
+      <div class="map-container" id="mapContainer">
+        <div class="map-placeholder">
+          <div class="map-icon">🗺️</div>
+          <p>Map will be displayed here</p>
+          <small>Integration with mapping service coming soon</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Deliveries Table Section -->
+    <div class="deliveries-section">
+      <div class="section-header">
+        <h3>🚚 Today's Deliveries</h3>
+        <div class="filter-controls">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="pending">Pending</button>
+          <button class="filter-btn" data-filter="delivered">Delivered</button>
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="deliveries-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Address</th>
+              <th>Slot</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="deliveriesTableBody">
+            <tr>
+              <td colspan="8" class="no-data">Loading deliveries...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Summary Section -->
+      <div class="summary-section">
+        <div class="summary-item">
+          <span class="summary-label">Total Deliveries:</span>
+          <span class="summary-value" id="totalCount">0</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Completed:</span>
+          <span class="summary-value completed" id="completedCount">0</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Pending:</span>
+          <span class="summary-value pending" id="pendingCount">0</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Total Amount:</span>
+          <span class="summary-value" id="totalAmount">₹0.00</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../assets/js/delivery/delivery_maps.js"></script>
+</body>
+</html>

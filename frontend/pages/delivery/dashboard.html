@@ -4,39 +4,52 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Delivery Partner Dashboard - Subscription Delivery System</title>
-  <link rel="stylesheet" href="../../assets/css/DeliveryPartner/delivery.css">
+  <link rel="stylesheet" href="../../assets/css/DeliveryPartner/dashboard.css">
 </head>
 <body>
 
   <div class="navbar">
-    <h2 id="welcomeText">Partner Dashboard</h2>
+    <h2 id="welcomeText">Delivery Partner Dashboard</h2>
     <div class="nav-buttons">
-      <button class="back-btn" id="backBtn" onclick="history.back()">Back</button>
       <button class="logout-btn" id="logoutBtn">Logout</button>
     </div>
   </div>
 
   <div class="container">
-    <div class="card">
-      <h3>Today's Deliveries</h3>
-      <p id="dashboardMessage">Loading data...</p>
-      <ul>
-        <li>Assigned Deliveries: <strong id="statAssigned">0</strong></li>
-        <li>Completed Today: <strong id="statCompleted">0</strong></li>
-      </ul>
+    <!-- Key Metrics -->
+    <div class="metrics-section">
+      <div class="metric-card">
+        <div class="metric-label">Today's Orders</div>
+        <div class="metric-value" id="todayOrders">0</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Completed</div>
+        <div class="metric-value" id="completedOrders">0</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Today's Earnings</div>
+        <div class="metric-value" id="todayEarnings">₹0.00</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Total Earnings</div>
+        <div class="metric-value" id="totalEarnings">₹0.00</div>
+      </div>
     </div>
 
-    <div class="card">
-      <h3>Delivery Partner Demo Features</h3>
-      <div class="feature-grid">
-        <div class="feature-item">
-          <h4>View Earnings</h4>
-          <p>See daily and monthly earnings summary, including base pay and incentives.</p>
-        </div>
-        <div class="feature-item">
-          <h4>View Assigned Routes</h4>
-          <p>Check route list, delivery sequence, and expected completion timeline.</p>
-        </div>
+    <!-- Start Delivery Button -->
+    <div class="start-delivery-section">
+      <button class="start-delivery-btn" id="startDeliveryBtn">Start Delivery</button>
+    </div>
+
+    <!-- Orders List -->
+    <div class="orders-section">
+      <div class="section-header">
+        <h3>Today's Delivery Orders</h3>
+        <span class="order-count">Total: <strong id="totalOrderCount">0</strong></span>
+      </div>
+
+      <div class="orders-container" id="ordersContainer">
+        <div class="no-orders">No orders assigned for today</div>
       </div>
     </div>
   </div>
