@@ -1,6 +1,16 @@
 let selectedLat = null;
 let selectedLng = null;
 let marker = null;
+const BOUNDARY_EDGE_TOLERANCE = 0.00015;
+
+const latDisplayEl = document.getElementById('latDisplay');
+const lngDisplayEl = document.getElementById('lngDisplay');
+const latInputEl = document.getElementById('latInput');
+const lngInputEl = document.getElementById('lngInput');
+const setPointBtn = document.getElementById('setPointBtn');
+const locateMeBtn = document.getElementById('locateMeBtn');
+const saveLocationBtn = document.getElementById('saveLocationBtn');
+const cancelMapBtn = document.getElementById('cancelMapBtn');
 
 // ──── University of Hyderabad Campus Boundary ────
 const UOH_CENTER = [17.4565, 78.3247];
@@ -42,11 +52,19 @@ const boundaryPolygon = L.polygon(UOH_BOUNDARY, {
 }).addTo(map);
 
 boundaryPolygon.bindPopup('<strong>University of Hyderabad Campus</strong><br>Delivery area boundary');
+boundaryPolygon.on('click', function (e) {
+  selectPoint(e.latlng.lat, e.latlng.lng, 'Location selected');
+});
 
 // ──── Helper: check if point is inside boundary ────
 function isInsideBoundary(lat, lng) {
   const point = L.latLng(lat, lng);
-  return boundaryPolygon.getBounds().contains(point) && isPointInPolygon(point, UOH_BOUNDARY);
+  if (!boundaryPolygon.getBounds().contains(point)) {
+    return false;
+  }
+
+  return isPointInPolygon(point, UOH_BOUNDARY)
+    || isPointOnPolygonEdge(point, UOH_BOUNDARY, BOUNDARY_EDGE_TOLERANCE);
 }
 
 function isPointInPolygon(point, polygon) {
@@ -61,12 +79,48 @@ function isPointInPolygon(point, polygon) {
   return inside;
 }
 
+function isPointOnPolygonEdge(point, polygon, tolerance) {
+  const px = point.lat;
+  const py = point.lng;
+
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    const x1 = polygon[j][0];
+    const y1 = polygon[j][1];
+    const x2 = polygon[i][0];
+    const y2 = polygon[i][1];
+    const distance = distancePointToSegment(px, py, x1, y1, x2, y2);
+    if (distance <= tolerance) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function distancePointToSegment(px, py, x1, y1, x2, y2) {
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+
+  if (dx === 0 && dy === 0) {
+    return Math.hypot(px - x1, py - y1);
+  }
+
+  const t = Math.max(0, Math.min(1, ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy)));
+  const sx = x1 + t * dx;
+  const sy = y1 + t * dy;
+  return Math.hypot(px - sx, py - sy);
+}
+
 // ──── Coords & Marker ────
 function updateCoords(lat, lng) {
   selectedLat = lat;
   selectedLng = lng;
-  document.getElementById('latDisplay').textContent = lat.toFixed(6);
-  document.getElementById('lngDisplay').textContent = lng.toFixed(6);
+  const latText = lat.toFixed(6);
+  const lngText = lng.toFixed(6);
+  latDisplayEl.textContent = latText;
+  lngDisplayEl.textContent = lngText;
+  if (latInputEl) latInputEl.value = latText;
+  if (lngInputEl) lngInputEl.value = lngText;
 }
 
 function placeMarker(lat, lng) {
@@ -98,14 +152,41 @@ function showToast(message) {
   setTimeout(() => toast.classList.remove('show'), 2500);
 }
 
+function isValidCoordinate(lat, lng) {
+  return Number.isFinite(lat)
+    && Number.isFinite(lng)
+    && lat >= -90 && lat <= 90
+    && lng >= -180 && lng <= 180;
+}
+
+function selectPoint(lat, lng, successMessage) {
+  if (!isValidCoordinate(lat, lng)) {
+    showToast('⚠️ Enter valid latitude and longitude values');
+    return false;
+  }
+
+  if (!isInsideBoundary(lat, lng)) {
+    showToast('⚠️ Location must be within University of Hyderabad campus!');
+    return false;
+  }
+
+  placeMarker(lat, lng);
+  map.setView([lat, lng], 17);
+  if (successMessage) {
+    showToast(successMessage);
+  }
+  return true;
+}
+
+function setManualPoint() {
+  const lat = Number.parseFloat(latInputEl.value);
+  const lng = Number.parseFloat(lngInputEl.value);
+  selectPoint(lat, lng, 'Location selected');
+}
+
 // ──── Map Click (restricted to boundary) ────
 map.on('click', function (e) {
-  if (!isInsideBoundary(e.latlng.lat, e.latlng.lng)) {
-    showToast('⚠️ Please select a location within University of Hyderabad campus!');
-    return;
-  }
-  placeMarker(e.latlng.lat, e.latlng.lng);
-  showToast('Location selected');
+  selectPoint(e.latlng.lat, e.latlng.lng, 'Location selected');
 });
 
 // ──── Locate User ────
@@ -128,9 +209,7 @@ function locateUser() {
         return;
       }
 
-      map.setView([lat, lng], 17);
-      placeMarker(lat, lng);
-      showToast('Current location detected');
+      selectPoint(lat, lng, 'Current location detected');
     },
     function () {
       showToast('Unable to detect location. Click on the map instead.');
@@ -142,9 +221,23 @@ function locateUser() {
 // Start centered on campus (don't auto-locate since user may not be on campus)
 map.setView(UOH_CENTER, UOH_ZOOM);
 
-document.getElementById('locateMeBtn').addEventListener('click', locateUser);
+locateMeBtn.addEventListener('click', locateUser);
 
-document.getElementById('saveLocationBtn').addEventListener('click', function () {
+if (setPointBtn) {
+  setPointBtn.addEventListener('click', setManualPoint);
+}
+
+[latInputEl, lngInputEl].forEach((input) => {
+  if (!input) return;
+  input.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      setManualPoint();
+    }
+  });
+});
+
+saveLocationBtn.addEventListener('click', function () {
   if (selectedLat === null || selectedLng === null) {
     showToast('Please select a location on the map first');
     return;
@@ -164,6 +257,6 @@ document.getElementById('saveLocationBtn').addEventListener('click', function ()
   window.close();
 });
 
-document.getElementById('cancelMapBtn').addEventListener('click', function () {
+cancelMapBtn.addEventListener('click', function () {
   window.close();
 });
