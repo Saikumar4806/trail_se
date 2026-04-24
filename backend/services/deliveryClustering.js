@@ -123,12 +123,30 @@ async function getPartnerRoute(partnerId, deliveryDate) {
 
 /**
  * Spawn the Python route_clustering.py child process.
- * Supports both python3 and python with automatic fallback.
+ * Uses the full path to Python executable to avoid PATH issues.
  */
 function runPythonClustering(payload) {
   const scriptPath = path.join(__dirname, "route_clustering.py");
+  
+  // Get python paths to try in order
+  const pythonPaths = [
+    // Windows Python 3.12+ installation
+    path.join(process.env.LOCALAPPDATA || "", "Programs", "Python", "Python312", "python.exe"),
+    path.join(process.env.LOCALAPPDATA || "", "Programs", "Python", "Python311", "python.exe"),
+    path.join(process.env.LOCALAPPDATA || "", "Programs", "Python", "Python310", "python.exe"),
+    // Standard PATH commands
+    "python3",
+    "python"
+  ];
 
-  const tryPython = (pythonCmd) => {
+  const tryPython = (pythonCmds, index = 0) => {
+    if (index >= pythonCmds.length) {
+      return Promise.reject(
+        new Error("Python not found. Please ensure Python 3.10+ is installed with scikit-learn.")
+      );
+    }
+
+    const pythonCmd = pythonCmds[index];
     return new Promise((resolve, reject) => {
       const pythonProcess = spawn(pythonCmd, [scriptPath]);
       let dataString = "";
@@ -143,18 +161,22 @@ function runPythonClustering(payload) {
       });
 
       pythonProcess.on("error", (error) => {
-        // If python3 not found, try python
-        if (error.code === "ENOENT" && pythonCmd === "python3") {
-          console.log("python3 not found, trying python...");
-          return tryPython("python")
-            .then(resolve)
-            .catch(reject);
-        }
-        reject(error);
+        // Try next Python path
+        console.log(`Python command failed (${pythonCmd}), trying next...`);
+        return tryPython(pythonCmds, index + 1)
+          .then(resolve)
+          .catch(reject);
       });
 
       pythonProcess.on("close", (code) => {
         if (code !== 0) {
+          // Try next Python path if this one failed
+          if (errorString.includes("ModuleNotFoundError") || errorString.includes("No module named")) {
+            console.log(`Sklearn not found in ${pythonCmd}, trying next...`);
+            return tryPython(pythonCmds, index + 1)
+              .then(resolve)
+              .catch(reject);
+          }
           return reject(
             new Error(`Python process exited with code ${code}: ${errorString}`)
           );
@@ -171,7 +193,7 @@ function runPythonClustering(payload) {
     });
   };
 
-  return tryPython("python3");
+  return tryPython(pythonPaths);
 }
 
 module.exports = { generateDeliveryRoutes, getPartnerRoute };

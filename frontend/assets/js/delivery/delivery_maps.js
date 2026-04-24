@@ -1,10 +1,14 @@
 const API_BASE = "http://localhost:5000/api";
-const DEFAULT_LAT = 20.5937;
-const DEFAULT_LNG = 78.9629;
-const DEFAULT_ZOOM = 5;
-const ROUTE_ZOOM = 13;
 
-const ROUTE_COLOR = "#2ecc71";
+// ──── University of Hyderabad defaults ────
+const DEFAULT_LAT = 17.4565;
+const DEFAULT_LNG = 78.3247;
+const DEFAULT_ZOOM = 15;
+const ROUTE_ZOOM = 15;
+
+const ROUTE_COLOR = "#3498db";
+const DELIVERED_COLOR = "#2ecc71";
+const PENDING_COLOR = "#e74c3c";
 
 let map;
 let markersLayer;
@@ -58,7 +62,7 @@ function clearMap() {
   routePolylines = [];
 }
 
-// Clean dot marker icon
+// Dot marker icon with configurable color
 function createDotIcon(color = "#e74c3c") {
   return L.divIcon({
     className: "dot-marker",
@@ -80,9 +84,32 @@ function createPartnerIcon() {
   });
 }
 
-// ─────────── OSRM Road Routing ───────────
-async function fetchOSRMRoute(waypoints) {
-  // waypoints: array of [lng, lat] (OSRM uses lng,lat order)
+// ─────────── OSRM Trip API (nearest neighbor optimization) ───────────
+async function fetchOSRMTrip(waypoints) {
+  // waypoints: array of [lat, lng]
+  // OSRM expects lng,lat order
+  const coordsStr = waypoints.map((wp) => `${wp[1]},${wp[0]}`).join(";");
+  const url = `https://router.project-osrm.org/trip/v1/driving/${coordsStr}?overview=full&geometries=geojson&source=first&roundtrip=false`;
+
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.code === "Ok" && data.trips && data.trips.length > 0) {
+      // GeoJSON coordinates are [lng, lat], convert to [lat, lng] for Leaflet
+      const routeCoords = data.trips[0].geometry.coordinates.map((c) => [c[1], c[0]]);
+      // Return optimized waypoint order + route coordinates
+      const waypointOrder = data.waypoints.map((wp) => wp.waypoint_index);
+      return { routeCoords, waypointOrder };
+    }
+  } catch (err) {
+    console.warn("OSRM trip failed, trying route API:", err);
+  }
+
+  // Fallback to basic route API
+  return await fetchOSRMRouteFallback(waypoints);
+}
+
+async function fetchOSRMRouteFallback(waypoints) {
   const coordsStr = waypoints.map((wp) => `${wp[1]},${wp[0]}`).join(";");
   const url = `https://router.project-osrm.org/route/v1/driving/${coordsStr}?overview=full&geometries=geojson`;
 
@@ -90,11 +117,11 @@ async function fetchOSRMRoute(waypoints) {
     const res = await fetch(url);
     const data = await res.json();
     if (data.code === "Ok" && data.routes && data.routes.length > 0) {
-      // GeoJSON coordinates are [lng, lat], convert to [lat, lng] for Leaflet
-      return data.routes[0].geometry.coordinates.map((c) => [c[1], c[0]]);
+      const routeCoords = data.routes[0].geometry.coordinates.map((c) => [c[1], c[0]]);
+      return { routeCoords, waypointOrder: null };
     }
   } catch (err) {
-    console.warn("OSRM routing failed, falling back to straight line:", err);
+    console.warn("OSRM routing failed completely:", err);
   }
   return null;
 }
@@ -103,7 +130,6 @@ async function plotRoute(orders) {
   clearMap();
 
   if (!orders || orders.length === 0) {
-    // Re-add partner marker if exists
     if (partnerMarker) partnerMarker.addTo(markersLayer);
     document.getElementById("mapStatus").textContent = "No Route Loaded";
     document.getElementById("mapStatus").classList.remove("active-status");
@@ -123,14 +149,17 @@ async function plotRoute(orders) {
     allLatLngs.push([partnerLat, partnerLng]);
   }
 
-  // Add delivery point markers
+  // Add delivery point markers with color based on status (Task 3)
   orders.forEach((order, index) => {
     const lat = parseFloat(order.latitude);
     const lng = parseFloat(order.longitude);
     allLatLngs.push([lat, lng]);
 
+    const isDelivered = order.status === "delivered";
+    const markerColor = isDelivered ? DELIVERED_COLOR : PENDING_COLOR;
+
     const marker = L.marker([lat, lng], {
-      icon: createDotIcon("#e74c3c"),
+      icon: createDotIcon(markerColor),
     }).addTo(markersLayer);
 
     marker.bindPopup(`
@@ -140,7 +169,7 @@ async function plotRoute(orders) {
         <b>Customer:</b> ${order.customer_name}<br>
         <b>Address:</b> ${order.street}, ${order.area}<br>
         <b>Amount:</b> ₹${parseFloat(order.total_amount).toFixed(2)}<br>
-        <b>Status:</b> ${order.status === "delivered" ? "✅ Delivered" : "⏳ Pending"}
+        <b>Status:</b> ${isDelivered ? "✅ Delivered" : "⏳ Pending"}
       </div>
     `);
   });
@@ -154,12 +183,11 @@ async function plotRoute(orders) {
     waypoints.push([parseFloat(o.latitude), parseFloat(o.longitude)]);
   });
 
-  // Fetch road route from OSRM
+  // Fetch optimized route from OSRM Trip API (Task 2)
   if (waypoints.length >= 2) {
-    const routeCoords = await fetchOSRMRoute(waypoints);
-    if (routeCoords) {
-      // Draw road-following route
-      const polyline = L.polyline(routeCoords, {
+    const result = await fetchOSRMTrip(waypoints);
+    if (result && result.routeCoords) {
+      const polyline = L.polyline(result.routeCoords, {
         color: ROUTE_COLOR,
         weight: 5,
         opacity: 0.85,
@@ -168,7 +196,7 @@ async function plotRoute(orders) {
       }).addTo(map);
       routePolylines.push(polyline);
     } else {
-      // Fallback: straight lines
+      // Ultimate fallback: straight lines
       const polyline = L.polyline(allLatLngs, {
         color: ROUTE_COLOR,
         weight: 4,
@@ -206,7 +234,6 @@ function setMyLocation() {
       partnerLat = position.coords.latitude;
       partnerLng = position.coords.longitude;
 
-      // Place / update partner marker immediately
       if (partnerMarker) {
         markersLayer.removeLayer(partnerMarker);
       }
@@ -325,13 +352,47 @@ function renderDeliveries() {
   updateSummary();
 }
 
+// ─────────── Mark Delivered (Task 4: persists to DB) ───────────
 async function markDeliveryDone(orderId) {
   const delivery = deliveries.find((d) => d.order_id === orderId);
-  if (delivery) {
+  if (!delivery) return;
+
+  // Disable button to prevent double-click
+  const btn = document.querySelector(`button[onclick="markDeliveryDone(${orderId})"]`);
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "Saving...";
+  }
+
+  try {
+    // Call API to persist the status change (Task 4)
+    const res = await fetch(`${API_BASE}/orders/${orderId}/deliver`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+    });
+    const data = await res.json();
+
+    if (!data.success) {
+      showNotification("❌ " + (data.message || "Failed to update status."), "error");
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = "Mark Done";
+      }
+      return;
+    }
+
+    // Update local state
     delivery.status = "delivered";
     renderDeliveries();
     await plotRoute(deliveries);
     showNotification(`✅ Order #${orderId} marked as delivered!`, "success");
+  } catch (err) {
+    console.error("Error marking delivery done:", err);
+    showNotification("❌ Network error. Could not update status.", "error");
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = "Mark Done";
+    }
   }
 }
 

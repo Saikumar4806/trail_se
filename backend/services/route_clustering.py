@@ -31,47 +31,57 @@ def optimize_route(cluster_points):
 
 
 def main():
-    input_data = sys.stdin.read()
-    if not input_data:
-        print(json.dumps([]))
-        return
+    try:
+        input_data = sys.stdin.read()
+        if not input_data:
+            sys.stderr.write("ERROR: No input data provided. Script expects JSON data via stdin.\n")
+            sys.exit(1)
 
-    data = json.loads(input_data)
-    orders = data.get("orders", [])
-    k = data.get("k", 1)
+        data = json.loads(input_data)
+        orders = data.get("orders", [])
+        k = data.get("k", 1)
 
-    if not orders:
-        print(json.dumps([]))
-        return
+        if not orders:
+            print(json.dumps([]))
+            return
 
-    # Adjust k if more partners than orders
-    k = min(k, len(orders))
-    if k < 1:
-        k = 1
+        # Adjust k if more partners than orders
+        k = min(k, len(orders))
+        if k < 1:
+            k = 1
 
-    # Extract coordinates for clustering
-    coords = [[o["latitude"], o["longitude"]] for o in orders]
+        # Extract coordinates for clustering
+        coords = [[o["latitude"], o["longitude"]] for o in orders]
 
-    # Apply K-Means Clustering
-    kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)
-    kmeans.fit(coords)
+        # Apply K-Means Clustering
+        kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)
+        kmeans.fit(coords)
 
-    # Group orders by cluster
-    clusters = {i: [] for i in range(k)}
-    for i, label in enumerate(kmeans.labels_):
-        clusters[int(label)].append(orders[i])
+        # Group orders by cluster
+        clusters = {i: [] for i in range(k)}
+        for i, label in enumerate(kmeans.labels_):
+            clusters[int(label)].append(orders[i])
 
-    # Apply Nearest Neighbor route optimization to each cluster
-    final_assignments = []
-    for cluster_id, cluster_orders in clusters.items():
-        optimized_route = optimize_route(cluster_orders)
-        final_assignments.append({
-            "cluster_id": int(cluster_id),
-            "total_orders": len(optimized_route),
-            "route": optimized_route
-        })
+        # Apply Nearest Neighbor route optimization to each cluster
+        final_assignments = []
+        for cluster_id, cluster_orders in clusters.items():
+            optimized_route = optimize_route(cluster_orders)
+            final_assignments.append({
+                "cluster_id": int(cluster_id),
+                "total_orders": len(optimized_route),
+                "route": optimized_route
+            })
 
-    print(json.dumps(final_assignments))
+        print(json.dumps(final_assignments))
+    except json.JSONDecodeError as e:
+        sys.stderr.write(f"ERROR: Invalid JSON input: {e}\n")
+        sys.exit(1)
+    except KeyError as e:
+        sys.stderr.write(f"ERROR: Missing required field: {e}\n")
+        sys.exit(1)
+    except Exception as e:
+        sys.stderr.write(f"ERROR: {str(e)}\n")
+        sys.exit(1)
 
 
 if __name__ == "__main__":

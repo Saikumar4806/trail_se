@@ -1,0 +1,316 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+  color: white;
+  padding: 18px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.navbar h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.back-btn, .logout-btn {
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.back-btn:hover, .logout-btn:hover {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.container {
+  margin-top: 80px;
+  padding: 20px;
+  display: flex;
+  gap: 20px;
+  height: calc(100vh - 80px);
+}
+
+/* ─── Info Panel ─── */
+.tracking-info-panel {
+  width: 380px;
+  min-width: 380px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.12);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  overflow-y: auto;
+}
+
+.info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.info-header h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.tracking-status {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: #fff3cd;
+  color: #856404;
+}
+
+.tracking-status.delivered {
+  background: #d4edda;
+  color: #155724;
+}
+
+.tracking-status.in-transit {
+  background: #cce5ff;
+  color: #004085;
+}
+
+.tracking-status.demo-active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.info-details {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.info-label {
+  font-weight: 700;
+  color: #2c3e50;
+  font-size: 13px;
+  min-width: 110px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.info-value {
+  color: #555;
+  font-size: 14px;
+  text-align: right;
+  flex: 1;
+}
+
+/* ─── Demo Controls ─── */
+.demo-controls {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.demo-btn {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.35);
+}
+
+.demo-btn:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.45);
+}
+
+.demo-btn:active:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.demo-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.demo-btn.stop {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  box-shadow: 0 6px 20px rgba(231, 76, 60, 0.35);
+}
+
+.demo-btn.stop:hover:not(:disabled) {
+  box-shadow: 0 10px 30px rgba(231, 76, 60, 0.45);
+}
+
+.progress-bar-container {
+  width: 100%;
+  height: 28px;
+  background: #f0f0f0;
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #2ecc71 0%, #27ae60 50%, #2ecc71 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s linear infinite;
+  border-radius: 14px;
+  width: 0%;
+  transition: width 0.5s ease;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.progress-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+/* ─── Map Section ─── */
+.map-section {
+  flex: 1;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.12);
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+}
+
+/* ─── Leaflet overrides ─── */
+.leaflet-control-zoom a {
+  background: #ffffff !important;
+  color: #2ecc71 !important;
+  border: 2px solid #c8e6c9 !important;
+  font-weight: 700 !important;
+  transition: all 0.3s ease !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: #e8f5e9 !important;
+  border-color: #a5d6a7 !important;
+}
+
+/* ─── Custom Markers ─── */
+.delivery-partner-marker {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  animation: markerPulse 2s infinite;
+}
+
+@keyframes markerPulse {
+  0%, 100% { box-shadow: 0 4px 15px rgba(102, 126, 234, 0.5); }
+  50% { box-shadow: 0 4px 25px rgba(102, 126, 234, 0.8), 0 0 0 8px rgba(102, 126, 234, 0.15); }
+}
+
+.customer-marker {
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 4px 12px rgba(46, 204, 113, 0.4);
+}
+
+.route-popup {
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 900px) {
+  .container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .tracking-info-panel {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .map-section {
+    min-height: 400px;
+  }
+}

@@ -2,6 +2,8 @@ const {
   getOrdersByCustomerId,
   getOrdersByDate,
   generateDailyOrders,
+  markOrderDelivered,
+  getLatestOrderBySubscription,
 } = require("../services/orderService");
 
 const getUserOrders = async (req, res) => {
@@ -74,8 +76,76 @@ const generateTodayDemoOrders = async (req, res) => {
   }
 };
 
+const markDelivered = async (req, res) => {
+  try {
+    const orderId = Number(req.params.id);
+
+    if (!orderId || Number.isNaN(orderId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Valid order ID is required.",
+      });
+    }
+
+    const updated = await markOrderDelivered(orderId);
+
+    if (!updated) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found or already delivered.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Order marked as delivered.",
+    });
+  } catch (error) {
+    console.error("Mark delivered error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error.",
+    });
+  }
+};
+
+const getTrackingInfo = async (req, res) => {
+  try {
+    const subscriptionId = Number(req.query.subscription_id);
+
+    if (!subscriptionId || Number.isNaN(subscriptionId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Valid subscription_id is required.",
+      });
+    }
+
+    const order = await getLatestOrderBySubscription(subscriptionId);
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "No orders found for this subscription.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: order,
+    });
+  } catch (error) {
+    console.error("Get tracking info error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error.",
+    });
+  }
+};
+
 module.exports = {
   getUserOrders,
   getAdminOrdersByDate,
   generateTodayDemoOrders,
+  markDelivered,
+  getTrackingInfo,
 };

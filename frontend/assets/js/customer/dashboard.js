@@ -61,6 +61,7 @@ const renderSubscriptions = (subscriptions) => {
               ${isPausedToday ? "Paused for today" : "Pause"}
             </button>
             <button class="edit-btn" data-subscription-id="${subscription.subscription_id}">Edit</button>
+            <button class="track-btn" onclick="window.location.href='./tracking.html?subscription_id=${subscription.subscription_id}'">🗺️ Track</button>
           </div>
         </div>
       `;
