@@ -22,7 +22,7 @@
         <!-- Add Item Form -->
         <div class="item-form-section">
           <h4>Add New Item</h4>
-          <form id="itemForm" class="admin-form">
+          <form id="itemForm" class="admin-form" enctype="multipart/form-data">
             <input type="hidden" id="itemId">
             <div class="form-group">
               <label for="itemName">Item Name</label>
@@ -73,8 +73,13 @@
               </div>
             </div>
             <div class="form-group">
-              <label for="itemImage">Image URL (optional)</label>
-              <input type="url" id="itemImage">
+              <label for="itemImage">Item Image (optional)</label>
+              <input type="file" id="itemImage" accept="image/*">
+              <small class="field-help">Upload JPG, PNG, WEBP, or GIF (max 5MB).</small>
+              <div id="currentImageWrap" class="current-image-wrap" style="display: none;">
+                <span>Current image:</span>
+                <a id="currentImageLink" href="#" target="_blank" rel="noopener noreferrer">View image</a>
+              </div>
             </div>
             <div class="form-actions">
               <button type="submit" id="saveItemBtn" class="btn-primary">Save Item</button>

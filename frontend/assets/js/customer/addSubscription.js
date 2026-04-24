@@ -60,12 +60,6 @@ function groupItemsByCategory(items) {
 
 // Render all categories with items
 function renderCategories(categories, container) {
-    const categoryEmojis = {
-        fruits: '🍎',
-        vegetables: '🥦',
-        dairy: '🥛',
-        nuts: '🥜'
-    };
     const categoryOrder = ['fruits', 'vegetables', 'dairy', 'nuts'];
     
     let html = '';
@@ -74,12 +68,11 @@ function renderCategories(categories, container) {
         const items = categories[categoryName] || [];
         if (items.length === 0) continue;
         
-        const emoji = categoryEmojis[categoryName] || '•';
         const capitalizedName = categoryName.charAt(0).toUpperCase() + categoryName.slice(1);
         
         html += `
             <div class="items-category">
-                <h3 class="category-title">${emoji} ${capitalizedName}</h3>
+                <h3 class="category-title">${capitalizedName}</h3>
                 <div class="items-grid">
                     ${items.map(item => createItemCard(item)).join('')}
                 </div>
@@ -90,12 +83,11 @@ function renderCategories(categories, container) {
     for (const [categoryName, items] of Object.entries(categories)) {
         if (categoryOrder.includes(categoryName) || items.length === 0) continue;
 
-        const emoji = categoryEmojis[categoryName] || '•';
         const capitalizedName = categoryName.charAt(0).toUpperCase() + categoryName.slice(1);
 
         html += `
             <div class="items-category">
-                <h3 class="category-title">${emoji} ${capitalizedName}</h3>
+                <h3 class="category-title">${capitalizedName}</h3>
                 <div class="items-grid">
                     ${items.map(item => createItemCard(item)).join('')}
                 </div>
@@ -106,6 +98,7 @@ function renderCategories(categories, container) {
     if (html) {
         container.innerHTML = html;
         setupQuantityControls();
+        setupItemImageFallbacks();
     } else {
         container.innerHTML = '<p class="no-items-text">No items available at the moment.</p>';
     }
@@ -113,21 +106,11 @@ function renderCategories(categories, container) {
 
 // Create HTML for individual item card
 function createItemCard(item) {
-    // Parse category emoji (fallback to fruit emoji if not mapped)
-    const emojiMap = {
-        'Fruits': '🍎',
-        'Vegetables': '🥦',
-        'Dairy': '🥛',
-        'Nuts': '🥜'
-    };
-    
-    const normalizedCategory = (item.category || '').toString().trim().toLowerCase();
-    const categoryKey = normalizedCategory.charAt(0).toUpperCase() + normalizedCategory.slice(1);
-    const emoji = emojiMap[categoryKey] || '📦';
+    const imageMarkup = buildItemImageMarkup(item);
     
     return `
         <div class="item-card" data-item-id="${item.id}">
-            <div class="item-image-placeholder">${emoji}</div>
+            <div class="item-image-wrapper">${imageMarkup}</div>
             <h4 class="item-name">${item.name}</h4>
             <p class="item-price">₹${item.price} / ${item.unit || item.quantity_unit || 'unit'}</p>
             <div class="quantity-control">
@@ -137,6 +120,37 @@ function createItemCard(item) {
             </div>
         </div>
     `;
+}
+
+function buildItemImageMarkup(item) {
+    const imageUrl = typeof item.image_url === 'string' ? item.image_url.trim() : '';
+    if (!imageUrl) {
+        return '<div class="item-image-missing">No image</div>';
+    }
+
+    const safeSrc = escapeHtmlAttribute(imageUrl);
+    const safeAlt = escapeHtmlAttribute(item.name || 'Item image');
+    return `<img class="item-image" src="${safeSrc}" alt="${safeAlt}" loading="lazy">`;
+}
+
+function escapeHtmlAttribute(value) {
+    return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+}
+
+function setupItemImageFallbacks() {
+    const images = document.querySelectorAll('.item-image');
+    images.forEach((img) => {
+        img.addEventListener('error', () => {
+            const wrapper = img.closest('.item-image-wrapper');
+            if (wrapper) {
+                wrapper.innerHTML = '<div class="item-image-missing">No image</div>';
+            }
+        }, { once: true });
+    });
 }
 
 // Setup event listeners for quantity controls

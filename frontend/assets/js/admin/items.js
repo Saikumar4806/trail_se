@@ -35,6 +35,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       const itemUnitValueInput = document.getElementById("itemUnitValue");
       const itemUnitTypeInput = document.getElementById("itemUnitType");
       const itemQuantityUnitInput = document.getElementById("itemQuantityUnit");
+      const itemImageInput = document.getElementById("itemImage");
+      const currentImageWrap = document.getElementById("currentImageWrap");
+      const currentImageLink = document.getElementById("currentImageLink");
+      let editingImageUrl = "";
     
       // Fetch and display all items
       const fetchItems = async () => {
@@ -89,23 +93,28 @@ document.addEventListener("DOMContentLoaded", async () => {
           ? `${itemUnitValueInput.value} ${itemUnitTypeInput.value}`
           : "";
         
-        const itemData = {
-          name: document.getElementById("itemName").value,
-          price: document.getElementById("itemPrice").value,
-          unit: composedUnit,
-          category: document.getElementById("itemCategory").value,
-          quantity: document.getElementById("itemQuantity").value,
-          quantity_unit: itemQuantityUnitInput.value,
-          image_url: document.getElementById("itemImage").value
-        };
+        const imageFile = itemImageInput.files && itemImageInput.files[0]
+          ? itemImageInput.files[0]
+          : null;
+
+        const itemData = new FormData();
+        itemData.append("name", document.getElementById("itemName").value);
+        itemData.append("price", document.getElementById("itemPrice").value);
+        itemData.append("unit", composedUnit);
+        itemData.append("category", document.getElementById("itemCategory").value);
+        itemData.append("quantity", document.getElementById("itemQuantity").value);
+        itemData.append("quantity_unit", itemQuantityUnitInput.value);
+        if (imageFile) {
+          itemData.append("image", imageFile);
+        }
+        if (isEditing && editingImageUrl) {
+          itemData.append("existing_image_url", editingImageUrl);
+        }
     
         try {
           const response = await fetch(url, {
             method: method,
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify(itemData)
+            body: itemData
           });
     
           const result = await response.json();
@@ -141,7 +150,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("itemCategory").value = category !== 'null' ? category : '';
         document.getElementById("itemQuantity").value = quantity;
         itemQuantityUnitInput.value = quantityUnit !== 'null' ? quantityUnit : '';
-        document.getElementById("itemImage").value = imageUrl !== 'null' ? imageUrl : '';
+        editingImageUrl = imageUrl !== 'null' ? imageUrl : '';
+        itemImageInput.value = "";
+        if (currentImageWrap && currentImageLink) {
+          if (editingImageUrl) {
+            currentImageLink.href = editingImageUrl;
+            currentImageWrap.style.display = "flex";
+          } else {
+            currentImageWrap.style.display = "none";
+            currentImageLink.href = "#";
+          }
+        }
         
         saveItemBtn.textContent = "Update Item";
         cancelEditBtn.style.display = "inline-block";
@@ -183,6 +202,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       function resetFormState() {
         itemForm.reset();
         itemIdInput.value = "";
+        editingImageUrl = "";
+        if (itemImageInput) {
+          itemImageInput.value = "";
+        }
+        if (currentImageWrap && currentImageLink) {
+          currentImageWrap.style.display = "none";
+          currentImageLink.href = "#";
+        }
         saveItemBtn.textContent = "Save Item";
         cancelEditBtn.style.display = "none";
         formMessage.textContent = "";

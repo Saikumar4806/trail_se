@@ -589,15 +589,30 @@ h3 {
   transform: translateY(-4px);
 }
 
-.item-image-placeholder { 
-  font-size: 40px; 
-  height: 60px; 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  background: #f8fefb; 
-  border-radius: 8px; 
-  margin-bottom: 10px; 
+.item-image-wrapper {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8fefb;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.item-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.item-image-missing {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: #7f8c8d;
 }
 
 .item-name { 
