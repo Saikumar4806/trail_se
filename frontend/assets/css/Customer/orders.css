@@ -1,8 +1,9 @@
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
   margin: 0;
   padding: 0;
-  background: #f4f7f6;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
 }
 
 .navbar {
@@ -11,192 +12,223 @@ body {
   left: 0;
   right: 0;
   z-index: 1000;
-  background-color: #2196F3;
+  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
   color: white;
-  padding: 15px 20px;
+  padding: 18px 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 .navbar h2 {
   margin: 0;
-  font-size: 24px;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
 .nav-buttons {
   display: flex;
-  gap: 10px;
+  gap: 12px;
 }
 
 .back-btn {
-  background: #1976D2;
+  background: rgba(255, 255, 255, 0.25);
   color: white;
-  border: none;
-  padding: 10px 15px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  padding: 12px 24px;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 8px;
   font-weight: 600;
-  transition: all 0.3s ease;
+  font-size: 14px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .back-btn:hover {
-  background: #1565C0;
+  background: rgba(255, 255, 255, 0.35);
+  border-color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .logout-btn {
-  background: #ff4c4c;
+  background: rgba(255, 255, 255, 0.25);
   color: white;
-  border: none;
-  padding: 10px 15px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  padding: 12px 24px;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 8px;
   font-weight: 600;
-  transition: all 0.3s ease;
+  font-size: 14px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .logout-btn:hover {
-  background: #ff3333;
+  background: rgba(255, 255, 255, 0.35);
+  border-color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .container {
   max-width: 1200px;
-  margin: 80px auto 20px auto;
+  margin: 100px auto 40px;
   padding: 20px;
 }
 
 .orders-section {
   background: white;
-  padding: 25px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 35px;
+  border-radius: 16px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
 }
 
 .orders-section h3 {
-  color: #2196F3;
+  color: #2c3e50;
   margin-top: 0;
-  margin-bottom: 20px;
-  font-size: 24px;
+  margin-bottom: 30px;
+  font-size: 26px;
+  font-weight: 700;
 }
 
 .filters-section {
-  margin-bottom: 25px;
+  margin-bottom: 30px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
 }
 
 .filters-section label {
-  font-weight: 600;
-  color: #333;
+  font-weight: 700;
+  color: #2c3e50;
+  font-size: 15px;
 }
 
 .filters-section select {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: 10px 14px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
   font-size: 14px;
   cursor: pointer;
-  background: white;
-  transition: all 0.2s ease;
+  background: #f9f9f9;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  color: #2c3e50;
 }
 
 .filters-section select:focus {
   outline: none;
-  border-color: #2196F3;
-  box-shadow: 0 0 4px rgba(33, 150, 243, 0.2);
+  border-color: #2ecc71;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.15);
 }
 
 .orders-table-wrapper {
   overflow-x: auto;
   margin-bottom: 20px;
+  border-radius: 12px;
+  border: 1px solid #ecf0f1;
 }
 
 .orders-table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
+  font-size: 14px;
 }
 
 .orders-table thead {
-  background-color: #f5f5f5;
-  border-bottom: 2px solid #2196F3;
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  border-bottom: 2px solid #1a252f;
 }
 
 .orders-table th {
-  padding: 15px;
+  padding: 18px 15px;
   text-align: left;
-  font-weight: 600;
-  color: #2196F3;
-  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .orders-table td {
-  padding: 15px;
-  border-bottom: 1px solid #eee;
+  padding: 16px 15px;
+  border-bottom: 1px solid #ecf0f1;
   font-size: 14px;
-  color: #333;
+  color: #34495e;
 }
 
 .orders-table tbody tr {
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .orders-table tbody tr:hover {
-  background-color: #f9f9f9;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  background-color: #f8f9fa;
+  box-shadow: inset 0 0 10px rgba(46, 204, 113, 0.05);
 }
 
 .status-badge {
   display: inline-block;
-  padding: 6px 12px;
-  border-radius: 20px;
+  padding: 8px 16px;
+  border-radius: 8px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   text-align: center;
-  min-width: 100px;
+  min-width: 110px;
 }
 
 .status-badge.out_for_delivery {
-  background-color: #FFF3E0;
-  color: #E65100;
+  background-color: #fff3cd;
+  color: #856404;
 }
 
 .status-badge.delivered {
-  background-color: #E8F5E9;
-  color: #2E7D32;
+  background-color: #d4edda;
+  color: #155724;
 }
 
 .action-cell {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   align-items: center;
 }
 
 .view-btn {
-  background-color: #2196F3;
+  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
   color: white;
   border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
+  padding: 8px 18px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 12px;
-  font-weight: 600;
-  transition: all 0.2s ease;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(46, 204, 113, 0.2);
 }
 
 .view-btn:hover {
-  background-color: #1976D2;
   transform: translateY(-2px);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 12px rgba(46, 204, 113, 0.4);
+}
+
+.view-btn:active {
+  transform: translateY(0);
 }
 
 .no-orders-message {
   text-align: center;
-  padding: 40px;
-  color: #999;
+  padding: 60px 40px;
+  color: #95a5a6;
   font-size: 16px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ecf0f1 100%);
+  border-radius: 12px;
+  font-weight: 500;
 }
 
 /* Responsive Design */

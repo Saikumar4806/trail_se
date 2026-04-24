@@ -1,8 +1,13 @@
+* {
+  box-sizing: border-box;
+}
+
 body { 
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; 
   margin: 0; 
   padding: 0; 
-  background: #f4f7f6; 
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
 }
 
 .navbar { 
@@ -11,16 +16,20 @@ body {
   left: 0; 
   right: 0; 
   z-index: 1000; 
-  background-color: #4CAF50; 
+  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
   color: white; 
-  padding: 15px 20px; 
+  padding: 18px 30px; 
   display: flex; 
   justify-content: space-between; 
-  align-items: center; 
+  align-items: center;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 .navbar h2 { 
-  margin: 0; 
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
 .nav-buttons { 
@@ -33,17 +42,22 @@ body {
 }
 
 .cart-btn { 
-  background: #ffffff; 
-  color: #2e7d32; 
-  border: none; 
-  padding: 10px 15px; 
+  background: rgba(255, 255, 255, 0.25);
+  color: white; 
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  padding: 12px 24px; 
   cursor: pointer; 
-  border-radius: 4px; 
-  font-weight: 600; 
+  border-radius: 8px; 
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .cart-btn:hover { 
-  background: #f1f8f2; 
+  background: rgba(255, 255, 255, 0.35);
+  border-color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .cart-dropdown { 
@@ -115,57 +129,80 @@ body {
 }
 
 .back-btn { 
-  background: #007bff; 
+  background: rgba(255, 255, 255, 0.25);
   color: white; 
-  border: none; 
-  padding: 10px 15px; 
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  padding: 12px 24px; 
   cursor: pointer; 
-  border-radius: 4px; 
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .back-btn:hover { 
-  background: #0056b3; 
+  background: rgba(255, 255, 255, 0.35);
+  border-color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .logout-btn { 
-  background: #ff4c4c; 
+  background: rgba(255, 255, 255, 0.25);
   color: white; 
-  border: none; 
-  padding: 10px 15px; 
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  padding: 12px 24px; 
   cursor: pointer; 
-  border-radius: 4px; 
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.logout-btn:hover { 
+  background: rgba(255, 255, 255, 0.35);
+  border-color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .container { 
   max-width: 1200px; 
-  margin: 80px auto 20px auto; 
+  margin: 100px auto 40px; 
   padding: 20px; 
 }
 
 .card { 
   background: white; 
   padding: 20px; 
-  border-radius: 8px; 
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+  border-radius: 16px; 
+  box-shadow: 0 10px 35px rgba(0,0,0,0.08); 
   margin-bottom: 20px; 
 }
 
 .feature-grid { 
   display: grid; 
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
-  gap: 14px; 
+  gap: 24px; 
 }
 
 .feature-item { 
   border: 1px solid #d7ead9; 
-  border-radius: 8px; 
-  padding: 14px; 
-  background: #f9fffa; 
+  border-radius: 12px; 
+  padding: 20px; 
+  background: #f9fffa;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feature-item:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 20px rgba(46, 204, 113, 0.15);
 }
 
 .feature-item h4 { 
   margin: 0 0 8px 0; 
-  color: #2e7d32; 
+  color: #2ecc71;
+  font-weight: 700;
 }
 
 .feature-item p { 
@@ -195,59 +232,63 @@ h3 {
 }
 
 .add-subscription-btn { 
-  background-color: #4CAF50; 
+  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
   color: white; 
   border: none; 
-  padding: 12px 24px; 
-  font-size: 16px; 
-  font-weight: 600; 
+  padding: 18px 60px; 
+  font-size: 18px;
+  font-weight: 700; 
   cursor: pointer; 
-  border-radius: 6px; 
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
-  transition: all 0.3s ease; 
+  border-radius: 50px;
+  box-shadow: 0 10px 30px rgba(46, 204, 113, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .add-subscription-btn:hover { 
-  background-color: #45a049; 
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15); 
+  transform: scale(1.08);
+  box-shadow: 0 15px 40px rgba(46, 204, 113, 0.4);
 }
 
 .add-subscription-btn:active { 
-  transform: scale(0.98); 
+  transform: scale(0.97); 
 }
 
 .subscriptions-section { 
   background: white; 
-  padding: 25px; 
-  border-radius: 8px; 
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+  padding: 35px; 
+  border-radius: 16px; 
+  box-shadow: 0 10px 35px rgba(0,0,0,0.08); 
 }
 
 .subscriptions-section h3 { 
-  color: #2e7d32; 
+  color: #2c3e50; 
   margin-top: 0; 
-  margin-bottom: 20px; 
-  font-size: 22px; 
+  margin-bottom: 30px; 
+  font-size: 26px;
+  font-weight: 700;
 }
 
 .subscriptions-list { 
   display: grid; 
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
-  gap: 20px; 
+  gap: 24px; 
 }
 
 .subscription-card { 
   background: #ffffff; 
-  border: 1px solid #e0e0e0; 
-  border-radius: 8px; 
-  padding: 20px; 
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
-  transition: all 0.3s ease; 
+  border: 2px solid #e0e0e0;
+  border-radius: 12px; 
+  padding: 25px; 
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
 }
 
 .subscription-card:hover { 
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
-  border-color: #4CAF50; 
+  transform: translateY(-8px);
+  box-shadow: 0 15px 40px rgba(46, 204, 113, 0.15);
+  border-color: #2ecc71; 
 }
 
 .subscription-header { 
@@ -261,31 +302,34 @@ h3 {
 
 .subscription-header h4 { 
   margin: 0; 
-  color: #333; 
-  font-size: 18px; 
+  color: #2c3e50; 
+  font-size: 18px;
+  font-weight: 700;
 }
 
 .subscription-status { 
   display: inline-block; 
-  padding: 6px 12px; 
-  border-radius: 20px; 
+  padding: 8px 16px; 
+  border-radius: 8px; 
   font-size: 12px; 
-  font-weight: 600; 
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .subscription-status.active { 
-  background-color: #e8f5e9; 
-  color: #2e7d32; 
+  background-color: #d4edda; 
+  color: #155724; 
 }
 
 .subscription-status.paused { 
-  background-color: #fff3e0; 
-  color: #e65100; 
+  background-color: #fff3cd; 
+  color: #856404; 
 }
 
 .subscription-status.cancelled { 
-  background-color: #ffebee; 
-  color: #c62828; 
+  background-color: #f8d7da; 
+  color: #721c24; 
 }
 
 .subscription-details { 
@@ -299,80 +343,88 @@ h3 {
 }
 
 .subscription-details strong { 
-  color: #333; 
+  color: #2c3e50; 
+  font-weight: 700;
 }
 
 .subscription-actions { 
   display: flex; 
-  gap: 8px; 
+  gap: 12px; 
   margin-top: 15px; 
   padding-top: 15px; 
   border-top: 1px solid #f0f0f0; 
 }
 
 .pause-btn, .unpause-btn, .check-pauses-btn { 
-  padding: 10px 14px; 
-  border: 1px solid transparent; 
-  border-radius: 4px; 
+  padding: 10px 18px; 
+  border: none;
+  border-radius: 8px; 
   cursor: pointer; 
-  font-size: 13px; 
-  font-weight: 600; 
-  transition: all 0.2s ease; 
+  font-size: 12px; 
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
   flex: 1; 
   text-align: center; 
 }
 
 .pause-btn { 
-  background-color: #fff3e0; 
-  color: #e65100; 
-  border-color: #ffe0b2; 
+  background-color: #fff3cd; 
+  color: #856404;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
 .pause-btn:hover { 
-  background-color: #ffe0b2; 
-  border-color: #ffcc80; 
+  background-color: #ffe0b2;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
 }
 
 .unpause-btn { 
-  background-color: #e8f5e9; 
-  color: #2e7d32; 
-  border-color: #c8e6c9; 
+  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
 }
 
 .unpause-btn:hover { 
-  background-color: #c8e6c9; 
-  border-color: #a5d6a7; 
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(46, 204, 113, 0.4);
 }
 
 .check-pauses-btn { 
-  background-color: #f0f4f8; 
-  color: #1976d2; 
-  border-color: #e1eef7; 
+  background-color: #e1f5ff; 
+  color: #0277bd;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
 .check-pauses-btn:hover { 
-  background-color: #e1eef7; 
-  border-color: #bbdefb; 
+  background-color: #b3e5fc;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
 }
 
 .edit-btn { 
-  padding: 10px 14px; 
-  border: 1px solid transparent; 
-  border-radius: 4px; 
+  padding: 10px 18px; 
+  border: none;
+  border-radius: 8px; 
   cursor: pointer; 
-  font-size: 13px; 
-  font-weight: 600; 
-  transition: all 0.2s ease; 
+  font-size: 12px; 
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   flex: 1; 
   text-align: center; 
   background-color: #e3f2fd; 
-  color: #1565c0; 
-  border-color: #bbdefb; 
+  color: #0277bd;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
 .edit-btn:hover { 
-  background-color: #bbdefb; 
-  border-color: #90caf9; 
+  background-color: #bbdefb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
 }
 
 .action-buttons {
@@ -383,25 +435,27 @@ h3 {
 }
 
 .order-history-btn {
-  background-color: #2196F3;
+  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
   color: white;
   border: none;
-  padding: 12px 24px;
-  font-size: 16px;
-  font-weight: 600;
+  padding: 12px 30px;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   cursor: pointer;
-  border-radius: 6px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  transition: all 0.3s ease;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .order-history-btn:hover {
-  background-color: #1976D2;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(46, 204, 113, 0.4);
 }
 
 .order-history-btn:active {
-  transform: scale(0.98);
+  transform: translateY(-1px);
 }
 
 /* Responsive Design */

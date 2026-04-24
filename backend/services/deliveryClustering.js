@@ -123,38 +123,55 @@ async function getPartnerRoute(partnerId, deliveryDate) {
 
 /**
  * Spawn the Python route_clustering.py child process.
+ * Supports both python3 and python with automatic fallback.
  */
 function runPythonClustering(payload) {
-  return new Promise((resolve, reject) => {
-    const scriptPath = path.join(__dirname, "..", "route_clustering.py");
-    const pythonProcess = spawn("python", [scriptPath]);
-    let dataString = "";
-    let errorString = "";
+  const scriptPath = path.join(__dirname, "route_clustering.py");
 
-    pythonProcess.stdout.on("data", (data) => {
-      dataString += data.toString();
+  const tryPython = (pythonCmd) => {
+    return new Promise((resolve, reject) => {
+      const pythonProcess = spawn(pythonCmd, [scriptPath]);
+      let dataString = "";
+      let errorString = "";
+
+      pythonProcess.stdout.on("data", (data) => {
+        dataString += data.toString();
+      });
+
+      pythonProcess.stderr.on("data", (data) => {
+        errorString += data.toString();
+      });
+
+      pythonProcess.on("error", (error) => {
+        // If python3 not found, try python
+        if (error.code === "ENOENT" && pythonCmd === "python3") {
+          console.log("python3 not found, trying python...");
+          return tryPython("python")
+            .then(resolve)
+            .catch(reject);
+        }
+        reject(error);
+      });
+
+      pythonProcess.on("close", (code) => {
+        if (code !== 0) {
+          return reject(
+            new Error(`Python process exited with code ${code}: ${errorString}`)
+          );
+        }
+        try {
+          resolve(JSON.parse(dataString));
+        } catch (err) {
+          reject(new Error("Failed to parse Python output: " + dataString));
+        }
+      });
+
+      pythonProcess.stdin.write(JSON.stringify(payload));
+      pythonProcess.stdin.end();
     });
+  };
 
-    pythonProcess.stderr.on("data", (data) => {
-      errorString += data.toString();
-    });
-
-    pythonProcess.on("close", (code) => {
-      if (code !== 0) {
-        return reject(
-          new Error(`Python process exited with code ${code}: ${errorString}`)
-        );
-      }
-      try {
-        resolve(JSON.parse(dataString));
-      } catch (err) {
-        reject(new Error("Failed to parse Python output: " + dataString));
-      }
-    });
-
-    pythonProcess.stdin.write(JSON.stringify(payload));
-    pythonProcess.stdin.end();
-  });
+  return tryPython("python3");
 }
 
 module.exports = { generateDeliveryRoutes, getPartnerRoute };

@@ -1,8 +1,9 @@
 body { 
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; 
   margin: 0; 
   padding: 0; 
-  background: #eef2f5; 
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
 }
 
 .navbar { 
@@ -11,16 +12,20 @@ body {
   left: 0; 
   right: 0; 
   z-index: 1000; 
-  background-color: #333; 
+  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
   color: white; 
-  padding: 15px 20px; 
+  padding: 18px 30px; 
   display: flex; 
   justify-content: space-between; 
-  align-items: center; 
+  align-items: center;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 .navbar h2 { 
-  margin: 0; 
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
 .nav-buttons { 
@@ -29,25 +34,41 @@ body {
 }
 
 .back-btn { 
-  background: #007bff; 
+  background: rgba(255, 255, 255, 0.25);
   color: white; 
-  border: none; 
-  padding: 10px 15px; 
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  padding: 12px 24px; 
   cursor: pointer; 
-  border-radius: 4px; 
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .back-btn:hover { 
-  background: #0056b3; 
+  background: rgba(255, 255, 255, 0.35);
+  border-color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .logout-btn { 
-  background: #ff4c4c; 
+  background: rgba(255, 255, 255, 0.25);
   color: white; 
-  border: none; 
-  padding: 10px 15px; 
-  cursor: pointer; 
-  border-radius: 4px; 
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  padding: 12px 24px; 
+  cursor: 100px auto 40px; 
+  padding: 20px; 
+}
+
+.card { 
+  background: white; 
+  padding: 30px; 
+  border-radius: 16px; 
+  box-shadow: 0 10px 35px rgba(0,0,0,0.08);
+  border-color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .container { 
@@ -72,19 +93,28 @@ h3 {
 .feature-grid { 
   display: grid; 
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
-  gap: 14px; 
+  gap: 24px; 
 }
 
 .feature-item { 
-  border: 1px solid #d9dfe7; 
-  border-radius: 8px; 
-  padding: 14px; 
-  background: #fbfcfe; 
+  border: 2px solid #e0e0e0;
+  border-radius: 12px; 
+  padding: 20px; 
+  background: #f9f9f9;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feature-item:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 20px rgba(46, 204, 113, 0.15);
+  border-color: #2ecc71;
 }
 
 .feature-item h4 { 
   margin: 0 0 8px 0; 
-  color: #222; 
+  color: #2c3e50;
+  font-weight: 700;
+  letter-spacing: -0.3px;
 }
 
 .feature-item p { 
@@ -97,29 +127,46 @@ h3 {
 .demo-tag { 
   display: inline-block; 
   margin-top: 10px; 
-  font-size: 12px; 
-  color: #333; 
-  background: #e8edf3; 
-  padding: 4px 8px; 
-  border-radius: 999px; 
-}
-
-/* Button Styles */
-.btn-primary { 
-  background: #007bff; 
+  font-size: 1linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
   color: white; 
   border: none; 
-  padding: 10px 15px; 
+  padding: 12px 28px; 
   cursor: pointer; 
-  border-radius: 4px; 
+  border-radius: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-primary:hover { 
-  background: #0056b3; 
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(46, 204, 113, 0.4);
+}
+
+.btn-primary:active {
+  transform: translateY(-1px);
 }
 
 .btn-secondary { 
-  background: #6c757d; 
+  background: #ecf0f1; 
+  color: #2c3e50; 
+  border: none; 
+  padding: 12px 28px; 
+  cursor: pointer; 
+  border-radius: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-secondary:hover {
+  background: #d5dbdb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12); 
   color: white; 
   border: none; 
   padding: 10px 15px; 
