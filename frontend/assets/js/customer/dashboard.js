@@ -1,6 +1,8 @@
 const API_URL = "http://localhost:5000/api/subscriptions/user";
 const PAUSE_API_BASE_URL = "http://localhost:5000/api/subscriptions";
 
+let pauseDeadlineIntervalId = null;
+
 const formatDate = (dateValue) => {
   if (!dateValue) return "N/A";
 
@@ -18,11 +20,59 @@ const formatPrice = (priceValue) => {
 
 const getStatusLabel = (subscription) => {
   if (Number(subscription.is_paused_today) === 1) {
-    return "Paused for today";
+    return "Tomorrow's order paused";
   }
 
   return subscription.status || "N/A";
 };
+
+const formatCountdownTime = (milliseconds) => {
+  const clampedMs = Math.max(0, milliseconds);
+  const totalSeconds = Math.floor(clampedMs / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  return [hours, minutes, seconds]
+    .map((value) => String(value).padStart(2, "0"))
+    .join(":");
+};
+
+const getMillisecondsUntilMidnight = () => {
+  const now = new Date();
+  const midnight = new Date(now);
+  midnight.setHours(24, 0, 0, 0);
+  return midnight.getTime() - now.getTime();
+};
+
+const updatePauseDeadlineTimer = () => {
+  const timerCard = document.getElementById("pauseDeadlineCard");
+  const timerValue = document.getElementById("pauseDeadlineTime");
+  if (!timerCard || !timerValue) return;
+
+  const remainingMs = getMillisecondsUntilMidnight();
+  const oneHourMs = 60 * 60 * 1000;
+
+  timerValue.textContent = formatCountdownTime(remainingMs);
+  timerCard.classList.toggle("urgent", remainingMs <= oneHourMs);
+};
+
+const startPauseDeadlineTimer = () => {
+  updatePauseDeadlineTimer();
+
+  if (pauseDeadlineIntervalId) {
+    clearInterval(pauseDeadlineIntervalId);
+  }
+
+  pauseDeadlineIntervalId = setInterval(updatePauseDeadlineTimer, 1000);
+};
+
+window.addEventListener("beforeunload", () => {
+  if (pauseDeadlineIntervalId) {
+    clearInterval(pauseDeadlineIntervalId);
+    pauseDeadlineIntervalId = null;
+  }
+});
 
 const renderSubscriptions = (subscriptions) => {
   const container = document.getElementById("subscriptionsContainer");
@@ -35,18 +85,33 @@ const renderSubscriptions = (subscriptions) => {
 
   container.innerHTML = subscriptions
     .map((subscription) => {
-      const status = (subscription.status || "active").toLowerCase();
-      const safeStatusClass = ["active", "paused", "cancelled"].includes(status)
-        ? status
+      const isPausedForTomorrow = Number(subscription.is_paused_today) === 1;
+      const isCancelled = (subscription.status || "").toLowerCase() === "cancelled";
+      const displayStatus = isPausedForTomorrow
+        ? "Tomorrow paused"
+        : (subscription.status || "N/A");
+
+      const normalizedStatus = (isPausedForTomorrow
+        ? "paused"
+        : (subscription.status || "active")
+      ).toLowerCase();
+
+      const safeStatusClass = ["active", "paused", "cancelled"].includes(normalizedStatus)
+        ? normalizedStatus
         : "active";
 
-      const isPausedToday = Number(subscription.is_paused_today) === 1;
+      const pauseAction = isPausedForTomorrow ? "unpause" : "pause";
+      const pauseButtonClass = isPausedForTomorrow ? "unpause-btn" : "pause-btn";
+      const isPauseDisabled = isCancelled;
+      const pauseButtonLabel = isCancelled
+        ? "Cancelled"
+        : (isPausedForTomorrow ? "Unpause Tomorrow" : "Pause Tomorrow");
 
       return `
         <div class="subscription-card" data-subscription-id="${subscription.subscription_id}">
           <div class="subscription-header">
             <h4>${subscription.plan_type || "N/A"}</h4>
-            <span class="subscription-status ${safeStatusClass}">${subscription.status || "N/A"}</span>
+            <span class="subscription-status ${safeStatusClass}">${displayStatus}</span>
           </div>
           <div class="subscription-details">
             <p><strong>Plan Type:</strong> ${subscription.plan_type || "N/A"}</p>
@@ -57,8 +122,8 @@ const renderSubscriptions = (subscriptions) => {
             <p><strong>Total Price:</strong> ${formatPrice(subscription.total_price)}</p>
           </div>
           <div class="subscription-actions">
-            <button class="pause-btn" data-subscription-id="${subscription.subscription_id}" ${isPausedToday ? "disabled" : ""}>
-              ${isPausedToday ? "Paused for today" : "Pause"}
+            <button class="${pauseButtonClass}" data-action="${pauseAction}" data-subscription-id="${subscription.subscription_id}" ${isPauseDisabled ? "disabled" : ""}>
+              ${pauseButtonLabel}
             </button>
             <button class="edit-btn" data-subscription-id="${subscription.subscription_id}">Edit</button>
             <button class="track-btn" onclick="window.location.href='./tracking.html?subscription_id=${subscription.subscription_id}'">🗺️ Track</button>
@@ -115,22 +180,31 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
+  startPauseDeadlineTimer();
+
   const subscriptionsContainer = document.getElementById("subscriptionsContainer");
   if (subscriptionsContainer) {
     subscriptionsContainer.addEventListener("click", async (event) => {
-      const pauseBtn = event.target.closest(".pause-btn");
-      if (!pauseBtn || pauseBtn.disabled) return;
+      const actionBtn = event.target.closest(".pause-btn, .unpause-btn");
+      if (!actionBtn || actionBtn.disabled) return;
 
-      const subscriptionId = Number(pauseBtn.getAttribute("data-subscription-id"));
+      const subscriptionId = Number(actionBtn.getAttribute("data-subscription-id"));
       if (!subscriptionId || Number.isNaN(subscriptionId)) return;
 
-      const originalText = pauseBtn.textContent;
+      const actionType = actionBtn.getAttribute("data-action") || "pause";
+      const endpointAction = actionType === "unpause" ? "unpause" : "pause";
+      const loadingText = actionType === "unpause" ? "Unpausing..." : "Pausing...";
+      const genericFailureText = actionType === "unpause"
+        ? "Failed to unpause tomorrow's order."
+        : "Failed to pause tomorrow's order.";
+
+      const originalText = actionBtn.textContent;
 
       try {
-        pauseBtn.disabled = true;
-        pauseBtn.textContent = "Pausing...";
+        actionBtn.disabled = true;
+        actionBtn.textContent = loadingText;
 
-        const response = await fetch(`${PAUSE_API_BASE_URL}/${subscriptionId}/pause`, {
+        const response = await fetch(`${PAUSE_API_BASE_URL}/${subscriptionId}/${endpointAction}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -146,9 +220,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         await fetchAndRenderSubscriptions(user.id);
       } catch (error) {
         console.error("Pause subscription error:", error);
-        alert(error.message || "Failed to pause subscription for today.");
-        pauseBtn.disabled = false;
-        pauseBtn.textContent = originalText;
+        alert(error.message || genericFailureText);
+        actionBtn.disabled = false;
+        actionBtn.textContent = originalText;
       }
     });
   }

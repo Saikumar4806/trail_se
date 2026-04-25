@@ -27,7 +27,13 @@
 
     <!-- Subscriptions Section -->
     <div class="subscriptions-section">
-      <h3>Your Subscriptions</h3>
+      <div class="subscriptions-header">
+        <h3>Your Subscriptions</h3>
+        <div class="pause-deadline-card" id="pauseDeadlineCard" aria-live="polite">
+          <span class="pause-deadline-label">Pause Tomorrow's Order In</span>
+          <span class="pause-deadline-time" id="pauseDeadlineTime">--:--:--</span>
+        </div>
+      </div>
       <div class="subscriptions-list" id="subscriptionsContainer"></div>
     </div>
   </div>

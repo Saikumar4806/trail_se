@@ -11,6 +11,7 @@ const addressRoutes = require("./routes/addressRoutes");
 const subscriptionRoutes = require("./routes/subscriptionRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const deliveryClusteringRoutes = require("./routes/deliveryClusteringRoutes");
+const adminUserRoutes = require("./routes/adminUserRoutes");
 const { startCronJobs } = require("./utils/cronJobs");
 
 const app = express();
@@ -35,6 +36,7 @@ app.use("/api/addresses", addressRoutes);
 app.use("/api/subscriptions", subscriptionRoutes);
 app.use("/api", orderRoutes);
 app.use("/api", deliveryClusteringRoutes);
+app.use("/api/admin", adminUserRoutes);
 
 startCronJobs();
 

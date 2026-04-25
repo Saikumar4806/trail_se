@@ -262,12 +262,59 @@ h3 {
   box-shadow: 0 10px 35px rgba(0,0,0,0.08); 
 }
 
-.subscriptions-section h3 { 
+.subscriptions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.subscriptions-section h3,
+.subscriptions-header h3 { 
   color: #2c3e50; 
   margin-top: 0; 
-  margin-bottom: 30px; 
+  margin-bottom: 0;
   font-size: 26px;
   font-weight: 700;
+}
+
+.pause-deadline-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #f0fbf4 0%, #e7f8ee 100%);
+  border: 1px solid rgba(39, 174, 96, 0.35);
+  box-shadow: 0 4px 12px rgba(39, 174, 96, 0.15);
+}
+
+.pause-deadline-label {
+  color: #2c3e50;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.pause-deadline-time {
+  color: #1e8449;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  font-variant-numeric: tabular-nums;
+}
+
+.pause-deadline-card.urgent {
+  background: linear-gradient(135deg, #fff5eb 0%, #ffeedb 100%);
+  border-color: rgba(230, 126, 34, 0.45);
+  box-shadow: 0 4px 12px rgba(230, 126, 34, 0.18);
+}
+
+.pause-deadline-card.urgent .pause-deadline-time {
+  color: #d35400;
 }
 
 .subscriptions-list { 
@@ -381,6 +428,14 @@ h3 {
   box-shadow: 0 4px 12px rgba(0,0,0,0.12);
 }
 
+.pause-btn:disabled,
+.unpause-btn:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
 .unpause-btn { 
   background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
   color: white;
@@ -482,6 +537,16 @@ h3 {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .subscriptions-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .pause-deadline-card {
+    align-items: flex-start;
+    width: 100%;
+  }
+
   .subscriptions-list { 
     grid-template-columns: 1fr; 
   }

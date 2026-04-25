@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Subscription Rates - Admin</title>
+  <link rel="stylesheet" href="../../assets/css/Admin/subscription_rates.css">
+</head>
+<body>
+
+  <div class="navbar">
+    <h2 id="welcomeText">Manage Subscription Rates</h2>
+    <div class="nav-buttons">
+      <button class="back-btn" id="backBtn" onclick="history.back()">Back</button>
+      <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <div class="management-container">
+        <!-- Add Subscription Rate Form -->
+        <div class="form-section">
+          <h4>Add New Base Subscription Rate</h4>
+          <form id="rateForm" class="admin-form">
+            <input type="hidden" id="rateId">
+            <div class="form-group">
+              <label for="ratePlanName">Plan Name</label>
+              <input type="text" id="ratePlanName" placeholder="e.g., Basic, Premium, Deluxe" required>
+            </div>
+            <div class="form-group">
+              <label for="ratePlanDescription">Description</label>
+              <textarea id="ratePlanDescription" rows="3" placeholder="Describe the subscription plan..."></textarea>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="rateFrequency">Frequency</label>
+                <select id="rateFrequency" required>
+                  <option value="">Select frequency</option>
+                  <option value="daily">Daily</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="biweekly">Bi-weekly</option>
+                  <option value="monthly">Monthly</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="ratePrice">Base Price (₹)</label>
+                <input type="number" id="ratePrice" step="0.01" min="0" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="rateDeliveryDays">Delivery Days Per Week</label>
+              <input type="number" id="rateDeliveryDays" min="1" max="7" value="1" required>
+            </div>
+            <div class="form-group">
+              <label for="rateStatus">Status</label>
+              <select id="rateStatus" required>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+            <div class="form-actions">
+              <button type="submit" id="saveRateBtn" class="btn-primary">Save Rate</button>
+              <button type="button" id="cancelEditBtn" class="btn-secondary" style="display: none;">Cancel</button>
+            </div>
+          </form>
+          <div id="rateFormMessage" class="form-message"></div>
+        </div>
+
+        <!-- Subscription Rates Table -->
+        <div class="list-section">
+          <h4>Subscription Rates List</h4>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Plan Name</th>
+                  <th>Frequency</th>
+                  <th>Price (₹)</th>
+                  <th>Delivery Days/Week</th>
+                  <th>Description</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="ratesTableBody">
+                <tr><td colspan="8" class="text-center">Loading subscription rates...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../assets/js/admin/subscription_rates.js"></script>
+</body>
+</html>

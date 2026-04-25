@@ -38,6 +38,7 @@ body {
   gap: 12px;
 }
 
+.back-btn,
 .logout-btn {
   background: rgba(255, 255, 255, 0.25);
   color: white;
@@ -50,6 +51,7 @@ body {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.back-btn:hover,
 .logout-btn:hover {
   background: rgba(255, 255, 255, 0.35);
   border-color: white;

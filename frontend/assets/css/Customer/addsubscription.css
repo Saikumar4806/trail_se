@@ -148,8 +148,18 @@ body {
   color: white; 
   border: 2px solid rgba(255, 255, 255, 0.5);
   padding: 12px 24px; 
-  cursor: 100px auto 40px; 
-  padding: 20px; 
+  cursor: pointer; 
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.logout-btn:hover { 
+  background: rgba(255, 255, 255, 0.35);
+  border-color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .card { 
@@ -379,13 +389,33 @@ h3 {
   letter-spacing: 0.5px;
 }
 
+.plan-features {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.plan-features li {
+  position: relative;
+  padding-left: 18px;
+  color: #4b5563;
+  font-size: 14px;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
 .plan-features li::before { 
-  content: "✓"; 
+  content: ""; 
   position: absolute; 
-  left: -16px; 
-  color: #2ecc71; 
-  font-weight: 800; 
-  font-size: 16px;
+  left: 0;
+  top: 7px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #2ecc71;
+  box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.16);
 }
 
 .plan-select-btn { 
@@ -413,28 +443,35 @@ h3 {
   transform: translateY(-1px);
 }
 
+.plan-card.selected .plan-select-btn {
+  background: linear-gradient(135deg, #239b56 0%, #1e8449 100%);
+  box-shadow: 0 6px 18px rgba(30, 132, 73, 0.35);
+}
+
 /* Selected Plan Display */
 .selected-plan-display { 
-  background: linear-gradient(135deg, #e8f8f5 0%, #e0f5f2 100%);
-  border-left: 5px solid #2ecc71; 
+  background: linear-gradient(135deg, #f0fbf6 0%, #e7f8ef 100%);
+  border: 1px solid rgba(46, 204, 113, 0.35);
   padding: 20px; 
-  border-radius: 8px; 
+  border-radius: 12px; 
   margin-top: 20px; 
   text-align: center;
-  box-shadow: 0 4px 12px rgba(46, 204, 113, 0.15);
+  box-shadow: 0 8px 20px rgba(46, 204, 113, 0.12);
 }
 
 .selected-plan-display p { 
   margin: 0; 
   color: #2c3e50; 
-  font-size: 16px; 
-  font-weight: 600; 
+  font-size: 15px; 
+  font-weight: 600;
+  letter-spacing: 0.2px;
 }
 
 .selected-plan-display strong { 
-  color: #2ecc71; 
+  color: #1e8449;
   font-size: 20px;
   font-weight: 800;
+  margin-left: 4px;
 }
 
 /* Delivery Slot Selection Section */

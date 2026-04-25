@@ -21,7 +21,7 @@
       <h3>System Overview</h3>
       <p id="dashboardMessage">Loading data...</p>
       <ul>
-        <li>Total Users: <strong id="statUsers">0</strong></li>
+        <li>Total Customers: <strong id="statUsers">0</strong></li>
         <li>Active Delivery Partners: <strong id="statPartners">0</strong></li>
         <li>Today's Orders: <strong id="statOrders">0</strong></li>
       </ul>
@@ -36,10 +36,34 @@
           <button class="btn-primary" onclick="window.location.href='items.html'" style="margin-top: 10px;">Go to Items</button>
         </div>
         <div class="feature-item">
+          <h4>Manage Delivery Partners</h4>
+          <p>Add, edit, and manage delivery partners. Track vehicle details, status, and assignments.</p>
+          <button class="btn-primary" onclick="window.location.href='delivery_partners.html'" style="margin-top: 10px;">Manage Partners</button>
+        </div>
+        <div class="feature-item">
+          <h4>Manage Customers</h4>
+          <p>Administer all customers in the system. View roles, status, and perform customer management operations.</p>
+          <button class="btn-primary" onclick="window.location.href='users.html'" style="margin-top: 10px;">Manage Customers</button>
+        </div>
+        <div class="feature-item">
+          <h4>Manage Time Slots</h4>
+          <p>Configure delivery time slots with capacity limits and day-wise availability settings.</p>
+          <button class="btn-primary" onclick="window.location.href='time_slots.html'" style="margin-top: 10px;">Manage Slots</button>
+        </div>
+        <div class="feature-item">
+          <h4>Base Subscription Rates</h4>
+          <p>Set and manage base subscription plan rates, frequencies, and pricing structures.</p>
+          <button class="btn-primary" onclick="window.location.href='subscription_rates.html'" style="margin-top: 10px;">Manage Rates</button>
+        </div>
+        <div class="feature-item">
+          <h4>Calculate Salaries</h4>
+          <p>Calculate and manage delivery partner salaries, bonuses, incentives, and payment status.</p>
+          <button class="btn-primary" onclick="window.location.href='salaries.html'" style="margin-top: 10px;">Calculate Salaries</button>
+        </div>
+        <div class="feature-item">
           <h4>Generate Demo Orders</h4>
-          <p>Create today's delivery orders for active subscriptions (excluding paused and duplicate orders).</p>
+          <p>Create today's delivery orders for active subscriptions (excluding paused and duplicate orders). Orders are generated at midnight automatically—use this button for demo purposes.</p>
           <button class="btn-secondary" id="generateDemoOrdersBtn" style="margin-top: 10px;">Generate Today Demo Orders</button>
-          <p class="demo-tag">Orders will be generated at midnight automatically. For demo, you can use this button.</p>
           <p id="generateDemoOrdersMsg" class="form-message"></p>
         </div>
         <div class="feature-item">

@@ -72,6 +72,14 @@ const login = async (req, res) => {
       });
     }
 
+    const normalizedStatus = String(user.status || "active").toLowerCase();
+    if (normalizedStatus === "blocked") {
+      return res.status(403).json({
+        success: false,
+        message: "Your account is blocked. Please contact admin.",
+      });
+    }
+
     // Return user data (excluding password)
     return res.status(200).json({
       success: true,
@@ -82,6 +90,7 @@ const login = async (req, res) => {
         email: user.email,
         phone: user.phone,
         role: String(user.role).toLowerCase().replace(/\s+/g, "_"),
+        status: normalizedStatus,
       },
     });
   } catch (error) {

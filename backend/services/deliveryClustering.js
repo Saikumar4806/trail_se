@@ -125,32 +125,84 @@ async function getPartnerRoute(partnerId, deliveryDate) {
  * Spawn the Python route_clustering.py child process.
  * Uses the full path to Python executable to avoid PATH issues.
  */
+function getPythonCommands() {
+  const commands = [];
+  const customPythonPath = String(process.env.PYTHON_PATH || "").trim();
+
+  if (customPythonPath) {
+    commands.push({ command: customPythonPath, args: [] });
+  }
+
+  if (process.platform === "win32") {
+    const localAppData = process.env.LOCALAPPDATA;
+
+    if (localAppData) {
+      commands.push(
+        {
+          command: path.join(localAppData, "Programs", "Python", "Python312", "python.exe"),
+          args: [],
+        },
+        {
+          command: path.join(localAppData, "Programs", "Python", "Python311", "python.exe"),
+          args: [],
+        },
+        {
+          command: path.join(localAppData, "Programs", "Python", "Python310", "python.exe"),
+          args: [],
+        }
+      );
+    }
+
+    commands.push({ command: "python", args: [] }, { command: "py", args: ["-3"] });
+  } else {
+    commands.push({ command: "python3", args: [] }, { command: "python", args: [] });
+  }
+
+  // Remove duplicates while preserving order.
+  const seen = new Set();
+  return commands.filter(({ command, args }) => {
+    const key = `${command} ${args.join(" ")}`;
+    if (seen.has(key)) {
+      return false;
+    }
+    seen.add(key);
+    return true;
+  });
+}
+
 function runPythonClustering(payload) {
   const scriptPath = path.join(__dirname, "route_clustering.py");
-  
-  // Get python paths to try in order
-  const pythonPaths = [
-    // Windows Python 3.12+ installation
-    path.join(process.env.LOCALAPPDATA || "", "Programs", "Python", "Python312", "python.exe"),
-    path.join(process.env.LOCALAPPDATA || "", "Programs", "Python", "Python311", "python.exe"),
-    path.join(process.env.LOCALAPPDATA || "", "Programs", "Python", "Python310", "python.exe"),
-    // Standard PATH commands
-    "python3",
-    "python"
-  ];
 
-  const tryPython = (pythonCmds, index = 0) => {
-    if (index >= pythonCmds.length) {
+  const pythonCommands = getPythonCommands();
+
+  const tryPython = (commands, index = 0) => {
+    if (index >= commands.length) {
       return Promise.reject(
         new Error("Python not found. Please ensure Python 3.10+ is installed with scikit-learn.")
       );
     }
 
-    const pythonCmd = pythonCmds[index];
+    const currentCommand = commands[index];
+    const pythonCmd = currentCommand.command;
+    const pythonArgs = [...currentCommand.args, scriptPath];
+
     return new Promise((resolve, reject) => {
-      const pythonProcess = spawn(pythonCmd, [scriptPath]);
+      const pythonProcess = spawn(pythonCmd, pythonArgs);
       let dataString = "";
       let errorString = "";
+      let movedToNext = false;
+
+      const tryNextCommand = (logMessage) => {
+        if (movedToNext) {
+          return;
+        }
+
+        movedToNext = true;
+        console.log(logMessage);
+        return tryPython(commands, index + 1)
+          .then(resolve)
+          .catch(reject);
+      };
 
       pythonProcess.stdout.on("data", (data) => {
         dataString += data.toString();
@@ -160,27 +212,37 @@ function runPythonClustering(payload) {
         errorString += data.toString();
       });
 
-      pythonProcess.on("error", (error) => {
-        // Try next Python path
-        console.log(`Python command failed (${pythonCmd}), trying next...`);
-        return tryPython(pythonCmds, index + 1)
-          .then(resolve)
-          .catch(reject);
-      });
-
-      pythonProcess.on("close", (code) => {
-        if (code !== 0) {
-          // Try next Python path if this one failed
-          if (errorString.includes("ModuleNotFoundError") || errorString.includes("No module named")) {
-            console.log(`Sklearn not found in ${pythonCmd}, trying next...`);
-            return tryPython(pythonCmds, index + 1)
-              .then(resolve)
-              .catch(reject);
-          }
-          return reject(
-            new Error(`Python process exited with code ${code}: ${errorString}`)
+      pythonProcess.on("error", (error = {}) => {
+        if (error.code === "ENOENT" || error.code === "EACCES") {
+          return tryNextCommand(
+            `Python command failed (${pythonCmd}): ${error.code}. Trying next...`
           );
         }
+
+        return reject(
+          new Error(`Failed to start Python process (${pythonCmd}): ${error.message || "Unknown error"}`)
+        );
+      });
+
+      pythonProcess.on("close", (code, signal) => {
+        if (movedToNext) {
+          return;
+        }
+
+        if (signal) {
+          return reject(new Error(`Python process terminated by signal ${signal}.`));
+        }
+
+        if (code !== 0) {
+          if (errorString.includes("ModuleNotFoundError") || errorString.includes("No module named")) {
+            return tryNextCommand(`Required Python module missing in ${pythonCmd}, trying next...`);
+          }
+
+          return reject(
+            new Error(`Python process exited with code ${code}: ${errorString || dataString}`)
+          );
+        }
+
         try {
           resolve(JSON.parse(dataString));
         } catch (err) {
@@ -188,12 +250,19 @@ function runPythonClustering(payload) {
         }
       });
 
+      pythonProcess.stdin.on("error", (error = {}) => {
+        if (movedToNext || error.code === "EPIPE") {
+          return;
+        }
+        reject(new Error(`Failed to send payload to Python process: ${error.message || "Unknown error"}`));
+      });
+
       pythonProcess.stdin.write(JSON.stringify(payload));
       pythonProcess.stdin.end();
     });
   };
 
-  return tryPython(pythonPaths);
+  return tryPython(pythonCommands);
 }
 
 module.exports = { generateDeliveryRoutes, getPartnerRoute };

@@ -281,18 +281,27 @@ h3 {
 
 /* ─── Generate Routes ─── */
 .btn-success {
-	background: #28a745;
+	background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
 	color: white;
 	border: none;
-	padding: 10px 15px;
+	padding: 12px 30px;
+	font-size: 14px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
 	cursor: pointer;
-	border-radius: 4px;
-	font-weight: 600;
-	transition: background 0.2s;
+	border-radius: 8px;
+	box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-success:hover {
-	background: #218838;
+	transform: translateY(-3px);
+	box-shadow: 0 8px 20px rgba(46, 204, 113, 0.4);
+}
+
+.btn-success:active {
+	transform: translateY(-1px);
 }
 
 .btn-success:disabled {

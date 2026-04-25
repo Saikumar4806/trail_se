@@ -30,12 +30,27 @@ async function setupDatabase() {
         password VARCHAR(255) NOT NULL,
         phone VARCHAR(15),
         role ENUM('customer', 'admin', 'delivery_partner') NOT NULL,
+        status ENUM('active', 'blocked') NOT NULL DEFAULT 'active',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
       );
     `;
     await connection.query(createUsersTableQuery);
     console.log("Verified 'users' table exists and is correctly structured.");
+
+    // Add status column if it doesn't exist (for existing databases)
+    try {
+      await connection.query(
+        "ALTER TABLE users ADD COLUMN status ENUM('active', 'blocked') NOT NULL DEFAULT 'active' AFTER role"
+      );
+      console.log("Added 'status' column to users table.");
+    } catch (alterErr) {
+      if (alterErr.code === 'ER_DUP_FIELDNAME') {
+        console.log("'status' column already exists in users table.");
+      } else {
+        throw alterErr;
+      }
+    }
 
     // Automatically create the default admin user with hashed password
     const adminEmail = 'admin@gmail.com';

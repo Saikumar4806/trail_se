@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Delivery Partners - Admin</title>
+  <link rel="stylesheet" href="../../assets/css/Admin/delivery_partners.css">
+</head>
+<body>
+
+  <div class="navbar">
+    <h2 id="welcomeText">Manage Delivery Partners</h2>
+    <div class="nav-buttons">
+      <button class="back-btn" id="backBtn" onclick="history.back()">Back</button>
+      <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <div class="management-container">
+        <!-- Partners Table -->
+        <div class="list-section">
+          <h4>Delivery Partners List</h4>
+          <div id="partnerMessage" class="form-message"></div>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="partnersTableBody">
+                <tr><td colspan="6" class="text-center">Loading partners...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../assets/js/admin/delivery_partners.js"></script>
+</body>
+</html>

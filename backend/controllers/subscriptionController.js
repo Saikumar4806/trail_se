@@ -1,6 +1,7 @@
 const {
   getSubscriptionsByUserId,
   pauseSubscriptionForTodayById,
+  unpauseSubscriptionForTodayById,
 } = require("../models/subscriptionModel");
 
 const getUserSubscriptions = async (req, res) => {
@@ -49,6 +50,13 @@ const pauseSubscriptionForToday = async (req, res) => {
     const result = await pauseSubscriptionForTodayById(subscriptionId, reason);
 
     if (!result.success) {
+      if (result.code === "cancelled") {
+        return res.status(400).json({
+          success: false,
+          message: "Cancelled subscriptions cannot be paused.",
+        });
+      }
+
       return res.status(404).json({
         success: false,
         message: "Subscription not found.",
@@ -58,7 +66,7 @@ const pauseSubscriptionForToday = async (req, res) => {
     if (result.alreadyPausedToday) {
       return res.status(200).json({
         success: true,
-        message: "Subscription already paused for today.",
+        message: "Tomorrow's order is already paused.",
         data: {
           subscription_id: subscriptionId,
           pause_date: result.pauseDate,
@@ -70,7 +78,7 @@ const pauseSubscriptionForToday = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: "Subscription paused for today.",
+      message: "Tomorrow's order paused successfully.",
       data: {
         subscription_id: subscriptionId,
         pause_date: result.pauseDate,
@@ -87,7 +95,65 @@ const pauseSubscriptionForToday = async (req, res) => {
   }
 };
 
+const unpauseSubscriptionForToday = async (req, res) => {
+  try {
+    const subscriptionId = Number(req.params.id);
+
+    if (!subscriptionId || Number.isNaN(subscriptionId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Valid subscription id is required.",
+      });
+    }
+
+    const result = await unpauseSubscriptionForTodayById(subscriptionId);
+
+    if (!result.success) {
+      if (result.code === "cancelled") {
+        return res.status(400).json({
+          success: false,
+          message: "Cancelled subscriptions cannot be unpaused.",
+        });
+      }
+
+      return res.status(404).json({
+        success: false,
+        message: "Subscription not found.",
+      });
+    }
+
+    if (result.alreadyUnpausedToday) {
+      return res.status(200).json({
+        success: true,
+        message: "Tomorrow's order is not paused.",
+        data: {
+          subscription_id: subscriptionId,
+          pause_date: result.pauseDate,
+          alreadyUnpausedToday: true,
+        },
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Tomorrow's order unpaused successfully.",
+      data: {
+        subscription_id: subscriptionId,
+        pause_date: result.pauseDate,
+        alreadyUnpausedToday: false,
+      },
+    });
+  } catch (error) {
+    console.error("Unpause subscription error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error.",
+    });
+  }
+};
+
 module.exports = {
   getUserSubscriptions,
   pauseSubscriptionForToday,
+  unpauseSubscriptionForToday,
 };

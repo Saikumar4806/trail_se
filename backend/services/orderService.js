@@ -5,11 +5,28 @@ const toSqlDate = (date) => {
   if (Number.isNaN(d.getTime())) {
     throw new Error("Invalid date provided");
   }
-  return d.toISOString().slice(0, 10);
+
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 };
 
 const generateDailyOrders = async (targetDate = new Date()) => {
   const sqlDate = toSqlDate(targetDate);
+
+  await db.query(
+    `UPDATE subscriptions s
+     SET s.status = 'active'
+     WHERE s.status = 'paused'
+       AND NOT EXISTS (
+         SELECT 1
+         FROM subscription_pauses sp
+         WHERE sp.subscription_id = s.subscription_id
+           AND sp.pause_date = ?
+       )`,
+    [sqlDate]
+  );
 
   const [result] = await db.query(
     `INSERT INTO orders
@@ -39,7 +56,7 @@ const generateDailyOrders = async (targetDate = new Date()) => {
        ON c.combo_id = s.combo_id
      LEFT JOIN subscription_pauses sp
        ON sp.subscription_id = s.subscription_id
-      AND sp.pause_date = ?
+      AND sp.pause_date = DATE_SUB(?, INTERVAL 1 DAY)
      LEFT JOIN orders o
        ON o.subscription_id = s.subscription_id
       AND o.order_date = ?

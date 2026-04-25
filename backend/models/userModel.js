@@ -24,6 +24,47 @@ const createUser = async ({ name, email, password, phone, role }) => {
 };
 
 /**
+ * Find a user by ID.
+ * @param {number} id
+ * @returns {object|null} user row or null
+ */
+const findById = async (id) => {
+  const [rows] = await db.query("SELECT * FROM users WHERE id = ?", [id]);
+  return rows.length > 0 ? rows[0] : null;
+};
+
+/**
+ * List users by role for admin management.
+ * @param {string} role
+ * @returns {Array<object>}
+ */
+const getUsersByRole = async (role) => {
+  const normalizedRole = String(role || "").toLowerCase().trim();
+  const [rows] = await db.query(
+    `SELECT id, name, email, phone, role, status, created_at, updated_at
+     FROM users
+     WHERE LOWER(REPLACE(role, ' ', '_')) = ?
+     ORDER BY id DESC`,
+    [normalizedRole]
+  );
+  return rows;
+};
+
+/**
+ * Update user status.
+ * @param {number} id
+ * @param {string} status
+ * @returns {object} update result
+ */
+const updateUserStatus = async (id, status) => {
+  const [result] = await db.query(
+    "UPDATE users SET status = ? WHERE id = ?",
+    [status, id]
+  );
+  return result;
+};
+
+/**
  * Count all users in the system.
  * @returns {number}
  */
@@ -46,7 +87,10 @@ const getDeliveryPartnersCount = async () => {
 
 module.exports = {
   findByEmail,
+  findById,
   createUser,
+  getUsersByRole,
+  updateUserStatus,
   getTotalUsersCount,
   getDeliveryPartnersCount,
 };

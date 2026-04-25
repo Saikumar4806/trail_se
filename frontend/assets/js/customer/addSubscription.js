@@ -221,7 +221,7 @@ function setupPlanSelection() {
             }
             
             // Change button text to show it's selected
-            btn.textContent = '✓ Selected';
+            btn.textContent = 'Selected';
             
             // Reset other buttons
             planSelectBtns.forEach((button) => {

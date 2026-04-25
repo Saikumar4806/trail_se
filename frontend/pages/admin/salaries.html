@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculate Salaries - Admin</title>
+  <link rel="stylesheet" href="../../assets/css/Admin/salaries.css">
+</head>
+<body>
+
+  <div class="navbar">
+    <h2 id="welcomeText">Calculate Delivery Partner Salaries</h2>
+    <div class="nav-buttons">
+      <button class="back-btn" id="backBtn" onclick="history.back()">Back</button>
+      <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <div class="salary-container">
+        <!-- Salary Calculation Filters -->
+        <div class="filter-section">
+          <h4>Calculate Salaries</h4>
+          <div class="filter-controls">
+            <div class="filter-group">
+              <label for="salaryMonth">Select Month</label>
+              <input type="month" id="salaryMonth" required>
+            </div>
+            <div class="filter-group">
+              <label for="salaryPartner">Delivery Partner</label>
+              <select id="salaryPartner">
+                <option value="">All Partners</option>
+              </select>
+            </div>
+            <button id="calculateBtn" class="btn-primary">Calculate Salaries</button>
+            <button id="generateReportBtn" class="btn-secondary">Generate Report</button>
+          </div>
+          <div id="filterMessage" class="form-message"></div>
+        </div>
+
+        <!-- Salary Calculation Summary -->
+        <div class="summary-section">
+          <h4>Summary Statistics</h4>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <h5>Total Partners</h5>
+              <p class="stat-value" id="statTotalPartners">0</p>
+            </div>
+            <div class="stat-card">
+              <h5>Total Deliveries</h5>
+              <p class="stat-value" id="statTotalDeliveries">0</p>
+            </div>
+            <div class="stat-card">
+              <h5>Total Salary Amount</h5>
+              <p class="stat-value" id="statTotalSalary">₹0.00</p>
+            </div>
+            <div class="stat-card">
+              <h5>Average Salary</h5>
+              <p class="stat-value" id="statAverageSalary">₹0.00</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Salary Details Table -->
+        <div class="list-section">
+          <h4>Salary Breakdown by Partner</h4>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Partner ID</th>
+                  <th>Partner Name</th>
+                  <th>Total Deliveries</th>
+                  <th>Base Rate (₹/delivery)</th>
+                  <th>Base Salary (₹)</th>
+                  <th>Bonus/Incentive (₹)</th>
+                  <th>Deductions (₹)</th>
+                  <th>Net Salary (₹)</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="salaryTableBody">
+                <tr><td colspan="10" class="text-center">Select month and click calculate to view salaries...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Salary Payment Section -->
+        <div class="payment-section">
+          <h4>Payment Management</h4>
+          <div class="payment-controls">
+            <button id="approveAllBtn" class="btn-success">Approve All Salaries</button>
+            <button id="payAllBtn" class="btn-primary">Mark as Paid</button>
+            <button id="downloadPayslipsBtn" class="btn-secondary">Download Payslips</button>
+          </div>
+          <div id="paymentMessage" class="form-message"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../assets/js/admin/salaries.js"></script>
+</body>
+</html>

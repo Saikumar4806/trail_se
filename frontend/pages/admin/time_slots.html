@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Time Slots - Admin</title>
+  <link rel="stylesheet" href="../../assets/css/Admin/time_slots.css">
+</head>
+<body>
+
+  <div class="navbar">
+    <h2 id="welcomeText">Manage Time Slots</h2>
+    <div class="nav-buttons">
+      <button class="back-btn" id="backBtn" onclick="history.back()">Back</button>
+      <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <div class="management-container">
+        <!-- Add Time Slot Form -->
+        <div class="form-section">
+          <h4>Add New Time Slot</h4>
+          <form id="slotForm" class="admin-form">
+            <input type="hidden" id="slotId">
+            <div class="form-group">
+              <label for="slotName">Slot Name</label>
+              <input type="text" id="slotName" placeholder="e.g., Morning, Evening" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="slotStartTime">Start Time</label>
+                <input type="time" id="slotStartTime" required>
+              </div>
+              <div class="form-group">
+                <label for="slotEndTime">End Time</label>
+                <input type="time" id="slotEndTime" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="slotDaysApplicable">Days Applicable</label>
+              <div class="checkbox-group">
+                <label><input type="checkbox" value="Monday"> Monday</label>
+                <label><input type="checkbox" value="Tuesday"> Tuesday</label>
+                <label><input type="checkbox" value="Wednesday"> Wednesday</label>
+                <label><input type="checkbox" value="Thursday"> Thursday</label>
+                <label><input type="checkbox" value="Friday"> Friday</label>
+                <label><input type="checkbox" value="Saturday"> Saturday</label>
+                <label><input type="checkbox" value="Sunday"> Sunday</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="slotCapacity">Maximum Orders Capacity</label>
+              <input type="number" id="slotCapacity" min="1" value="100" required>
+            </div>
+            <div class="form-group">
+              <label for="slotStatus">Status</label>
+              <select id="slotStatus" required>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+            <div class="form-actions">
+              <button type="submit" id="saveSlotBtn" class="btn-primary">Save Slot</button>
+              <button type="button" id="cancelEditBtn" class="btn-secondary" style="display: none;">Cancel</button>
+            </div>
+          </form>
+          <div id="slotFormMessage" class="form-message"></div>
+        </div>
+
+        <!-- Time Slots Table -->
+        <div class="list-section">
+          <h4>Time Slots List</h4>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Slot Name</th>
+                  <th>Start Time</th>
+                  <th>End Time</th>
+                  <th>Days</th>
+                  <th>Capacity</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="slotsTableBody">
+                <tr><td colspan="8" class="text-center">Loading time slots...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../assets/js/admin/time_slots.js"></script>
+</body>
+</html>
