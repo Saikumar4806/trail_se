@@ -191,6 +191,12 @@
       </div>
 
       <form class="address-form" id="addressForm">
+        <div class="address-mode-toggle" role="tablist" aria-label="Address mode">
+          <button type="button" class="address-mode-btn active" id="newAddressModeBtn">Create New</button>
+          <button type="button" class="address-mode-btn" id="existingAddressModeBtn">Select Existing</button>
+        </div>
+
+        <div id="newAddressSection">
         <div class="form-group">
           <label for="addressStreet" class="form-label">Street Address</label>
           <input type="text" id="addressStreet" class="form-input" placeholder="Enter street address" required />
@@ -247,6 +253,30 @@
         <div class="modal-actions">
           <button type="button" class="modal-btn cancel-btn" id="cancelAddressBtn">Cancel</button>
           <button type="submit" class="modal-btn save-btn">Save Address</button>
+        </div>
+        </div>
+
+        <div id="existingAddressSection" class="existing-address-section" style="display: none;">
+          <div class="existing-address-table-wrap">
+            <table class="existing-address-table">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Street</th>
+                  <th>Area</th>
+                  <th>City</th>
+                  <th>State</th>
+                  <th>Pincode</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="existingAddressesBody">
+                <tr>
+                  <td colspan="7" class="existing-address-empty">Loading addresses...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </form>
     </div>

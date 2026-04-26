@@ -4,10 +4,12 @@ const {
 	getUserSubscriptions,
 	pauseSubscriptionForToday,
 	unpauseSubscriptionForToday,
+	deleteSubscription,
 } = require("../controllers/subscriptionController");
 
 router.get("/user", getUserSubscriptions);
 router.post("/:id/pause", pauseSubscriptionForToday);
 router.post("/:id/unpause", unpauseSubscriptionForToday);
+router.delete("/:id", deleteSubscription);
 
 module.exports = router;

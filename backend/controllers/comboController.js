@@ -92,38 +92,72 @@ const comboController = {
         return res.status(400).json({ success: false, message: 'Invalid item payload' });
       }
 
-      if (!address.street || !address.city || !address.state || !address.pincode || !address.address_type) {
-        return res.status(400).json({
-          success: false,
-          message: 'street, city, state, pincode and address_type are required in address'
-        });
-      }
-
       connection = await db.getConnection();
       await connection.beginTransaction();
 
-      if (address.is_default) {
-        await connection.query('UPDATE addresses SET is_default = 0 WHERE user_id = ?', [Number(user_id)]);
-      }
+      let resolvedAddressId = null;
+      const existingAddressId = Number.parseInt(address.address_id, 10);
 
-      const [addressInsert] = await connection.query(
-        `INSERT INTO addresses
-          (user_id, street, area, city, state, pincode, landmark, latitude, longitude, address_type, is_default)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          Number(user_id),
-          String(address.street).trim(),
-          address.area ? String(address.area).trim() : null,
-          String(address.city).trim(),
-          String(address.state).trim(),
-          String(address.pincode).trim(),
-          address.landmark ? String(address.landmark).trim() : null,
-          address.latitude ?? null,
-          address.longitude ?? null,
-          String(address.address_type).toLowerCase(),
-          address.is_default ? 1 : 0
-        ]
-      );
+      if (Number.isInteger(existingAddressId) && existingAddressId > 0) {
+        const [addressRows] = await connection.query(
+          'SELECT address_id FROM addresses WHERE address_id = ? AND user_id = ? LIMIT 1',
+          [existingAddressId, Number(user_id)]
+        );
+
+        if (addressRows.length === 0) {
+          await connection.rollback();
+          return res.status(404).json({
+            success: false,
+            message: 'Selected address not found for this user'
+          });
+        }
+
+        resolvedAddressId = existingAddressId;
+      } else {
+        if (!address.street || !address.city || !address.state || !address.pincode || !address.address_type) {
+          await connection.rollback();
+          return res.status(400).json({
+            success: false,
+            message: 'street, city, state, pincode and address_type are required in address'
+          });
+        }
+
+        const parsedLatitude = Number(address.latitude);
+        const parsedLongitude = Number(address.longitude);
+
+        if (!Number.isFinite(parsedLatitude) || !Number.isFinite(parsedLongitude)) {
+          await connection.rollback();
+          return res.status(400).json({
+            success: false,
+            message: 'latitude and longitude are required in address'
+          });
+        }
+
+        if (address.is_default) {
+          await connection.query('UPDATE addresses SET is_default = 0 WHERE user_id = ?', [Number(user_id)]);
+        }
+
+        const [addressInsert] = await connection.query(
+          `INSERT INTO addresses
+            (user_id, street, area, city, state, pincode, landmark, latitude, longitude, address_type, is_default)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          [
+            Number(user_id),
+            String(address.street).trim(),
+            address.area ? String(address.area).trim() : null,
+            String(address.city).trim(),
+            String(address.state).trim(),
+            String(address.pincode).trim(),
+            address.landmark ? String(address.landmark).trim() : null,
+            parsedLatitude,
+            parsedLongitude,
+            String(address.address_type).toLowerCase(),
+            address.is_default ? 1 : 0
+          ]
+        );
+
+        resolvedAddressId = addressInsert.insertId;
+      }
 
       const [comboInsert] = await connection.query(
         'INSERT INTO combos (user_id, name, total_amount) VALUES (?, ?, ?)',
@@ -147,7 +181,7 @@ const comboController = {
          VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [
           Number(user_id),
-          addressInsert.insertId,
+          resolvedAddressId,
           comboId,
           plan_type,
           delivery_slot,
@@ -162,7 +196,7 @@ const comboController = {
         success: true,
         message: 'Checkout completed successfully',
         data: {
-          address_id: addressInsert.insertId,
+          address_id: resolvedAddressId,
           combo_id: comboId,
           total_amount: Number(comboTotalAmount),
           subscription_id: subscriptionInsert.insertId,

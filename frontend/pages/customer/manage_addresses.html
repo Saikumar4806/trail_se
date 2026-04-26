@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Addresses - Subscription Delivery System</title>
+  <link rel="stylesheet" href="../../assets/css/Customer/dashboard.css">
+  <link rel="stylesheet" href="../../assets/css/Customer/add_address.css">
+  <link rel="stylesheet" href="../../assets/css/Customer/manage_addresses.css">
+</head>
+<body>
+
+  <div class="navbar">
+    <h2>Manage Addresses</h2>
+    <div class="nav-buttons">
+      <button class="back-btn" id="backBtn">Back</button>
+      <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="account-settings-section">
+      <div class="addresses-container">
+        <div class="addresses-toolbar">
+          <button class="btn-add-address" id="addAddressBtn" type="button">+ Add Address</button>
+          <div id="addressMessage" class="status-message" aria-live="polite"></div>
+        </div>
+
+        <div class="addresses-table-wrap">
+          <table class="addresses-table">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Street</th>
+                <th>Area</th>
+                <th>City</th>
+                <th>State</th>
+                <th>Pincode</th>
+                <th>Default</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="addressesTableBody">
+              <tr>
+                <td colspan="8" class="loading-cell">Loading addresses...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="addressModal" style="display: none;">
+    <div class="modal-content address-modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="addressModalTitle">Add New Address</h2>
+        <button class="modal-close-btn" id="closeAddressModal" type="button">&times;</button>
+      </div>
+
+      <form class="address-form" id="addressForm">
+        <div class="form-group">
+          <label for="addressStreet" class="form-label">Street Address</label>
+          <input type="text" id="addressStreet" class="form-input" placeholder="Enter street address" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="addressArea" class="form-label">Area</label>
+            <input type="text" id="addressArea" class="form-input" placeholder="Enter area/locality">
+          </div>
+          <div class="form-group">
+            <label for="addressCity" class="form-label">City</label>
+            <input type="text" id="addressCity" class="form-input" placeholder="Enter city" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="addressState" class="form-label">State</label>
+            <input type="text" id="addressState" class="form-input" placeholder="Enter state" required>
+          </div>
+          <div class="form-group">
+            <label for="addressPincode" class="form-label">Pincode</label>
+            <input type="text" id="addressPincode" class="form-input" placeholder="Enter pincode" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="addressLandmark" class="form-label">Landmark</label>
+          <input type="text" id="addressLandmark" class="form-input" placeholder="Enter landmark (optional)">
+        </div>
+
+        <div class="form-group">
+          <label for="addressType" class="form-label">Address Type</label>
+          <select id="addressType" class="form-input" required>
+            <option value="">Select address type</option>
+            <option value="home">Home</option>
+            <option value="work">Work</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label for="defaultAddress" class="checkbox-label">
+            <input type="checkbox" id="defaultAddress" class="checkbox-input">
+            <span>Set as default address</span>
+          </label>
+        </div>
+
+        <div class="form-group">
+          <button type="button" class="map-btn" id="selectMapBtn">Select on Map</button>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="modal-btn cancel-btn" id="cancelAddressBtn">Cancel</button>
+          <button type="submit" class="modal-btn save-btn" id="saveAddressBtn">Save Address</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../../assets/js/customer/manage_addresses.js"></script>
+  <script>
+    // Back button handler
+    document.getElementById("backBtn").addEventListener("click", () => {
+      window.location.href = "./dashboard.html";
+    });
+
+    // Logout handler
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+      window.location.href = "../start/login.html";
+    });
+  </script>
+</body>
+</html>

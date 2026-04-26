@@ -226,9 +226,74 @@ const unpauseSubscriptionForTodayById = async (subscriptionId) => {
   }
 };
 
+const deleteSubscriptionByIdForUser = async (subscriptionId, userId) => {
+  const connection = await db.getConnection();
+
+  try {
+    await connection.beginTransaction();
+
+    const [subscriptionRows] = await connection.query(
+      `SELECT subscription_id, combo_id
+       FROM subscriptions
+       WHERE subscription_id = ? AND user_id = ?
+       LIMIT 1`,
+      [subscriptionId, userId]
+    );
+
+    if (subscriptionRows.length === 0) {
+      await connection.rollback();
+      return { success: false, code: "not_found" };
+    }
+
+    const comboId = Number(subscriptionRows[0].combo_id);
+
+    const [pauseTables] = await connection.query(
+      "SHOW TABLES LIKE 'subscription_pauses'"
+    );
+
+    if (pauseTables.length > 0) {
+      await connection.query(
+        "DELETE FROM subscription_pauses WHERE subscription_id = ?",
+        [subscriptionId]
+      );
+    }
+
+    await connection.query(
+      "DELETE FROM orders WHERE subscription_id = ?",
+      [subscriptionId]
+    );
+
+    await connection.query(
+      "DELETE FROM subscriptions WHERE subscription_id = ? AND user_id = ?",
+      [subscriptionId, userId]
+    );
+
+    const [remainingSubscriptionRows] = await connection.query(
+      "SELECT COUNT(*) AS total FROM subscriptions WHERE combo_id = ?",
+      [comboId]
+    );
+
+    if (Number(remainingSubscriptionRows[0]?.total || 0) === 0) {
+      await connection.query(
+        "DELETE FROM combos WHERE combo_id = ?",
+        [comboId]
+      );
+    }
+
+    await connection.commit();
+    return { success: true };
+  } catch (error) {
+    await connection.rollback();
+    throw error;
+  } finally {
+    connection.release();
+  }
+};
+
 module.exports = {
   getSubscriptionsByUserId,
   pauseSubscriptionForTodayById,
   unpauseSubscriptionForTodayById,
+  deleteSubscriptionByIdForUser,
   resumeStalePausedSubscriptions,
 };

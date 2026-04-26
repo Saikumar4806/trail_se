@@ -1,5 +1,16 @@
 const bcrypt = require("bcrypt");
-const { findByEmail, createUser } = require("../models/userModel");
+const {
+  findByEmail,
+  findById,
+  createUser,
+  updateUserProfile,
+} = require("../models/userModel");
+
+const normalizeRole = (role) =>
+  String(role || "")
+    .toLowerCase()
+    .replace(/\s+/g, "_")
+    .trim();
 
 /**
  * Handle user registration
@@ -102,4 +113,143 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login };
+/**
+ * Update customer profile
+ * PUT /api/auth/profile/:id
+ */
+const updateProfile = async (req, res) => {
+  try {
+    const userId = Number.parseInt(req.params.id, 10);
+    const actorId = Number.parseInt(req.header("x-user-id"), 10);
+
+    if (!Number.isInteger(userId) || userId <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid user id",
+      });
+    }
+
+    if (!Number.isInteger(actorId) || actorId <= 0 || actorId !== userId) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized profile update attempt",
+      });
+    }
+
+    const rawName = req.body?.name;
+    const rawEmail = req.body?.email;
+    const rawPhone = req.body?.phone;
+    const rawCurrentPassword = req.body?.currentPassword;
+    const rawNewPassword = req.body?.newPassword;
+
+    const name = String(rawName || "").trim();
+    const email = String(rawEmail || "").trim();
+    const phone = String(rawPhone || "").trim();
+    const currentPassword = String(rawCurrentPassword || "").trim();
+    const newPassword = String(rawNewPassword || "").trim();
+
+    if (!name || name.length < 2) {
+      return res.status(400).json({
+        success: false,
+        message: "Name must be at least 2 characters",
+      });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid email format",
+      });
+    }
+
+    const phoneRegex = /^\d{10,15}$/;
+    if (!phoneRegex.test(phone.replace(/\D/g, ""))) {
+      return res.status(400).json({
+        success: false,
+        message: "Phone must be 10 to 15 digits",
+      });
+    }
+
+    const user = await findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    if (normalizeRole(user.role) !== "customer") {
+      return res.status(403).json({
+        success: false,
+        message: "Only customers can update this profile",
+      });
+    }
+
+    const existingUserWithEmail = await findByEmail(email);
+    if (existingUserWithEmail && existingUserWithEmail.id !== userId) {
+      return res.status(409).json({
+        success: false,
+        message: "Email already registered",
+      });
+    }
+
+    let nextPasswordHash = null;
+    if (newPassword) {
+      if (!currentPassword) {
+        return res.status(400).json({
+          success: false,
+          message: "Current password is required to change password",
+        });
+      }
+
+      if (newPassword.length < 6) {
+        return res.status(400).json({
+          success: false,
+          message: "New password must be at least 6 characters",
+        });
+      }
+
+      const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
+      if (!isCurrentPasswordValid) {
+        return res.status(401).json({
+          success: false,
+          message: "Current password is incorrect",
+        });
+      }
+
+      nextPasswordHash = await bcrypt.hash(newPassword, 10);
+    }
+
+    await updateUserProfile({
+      id: userId,
+      name,
+      email,
+      phone,
+      password: nextPasswordHash,
+    });
+
+    const updatedUser = await findById(userId);
+
+    return res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      data: {
+        id: updatedUser.id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        phone: updatedUser.phone,
+        role: normalizeRole(updatedUser.role),
+        status: String(updatedUser.status || "active").toLowerCase(),
+      },
+    });
+  } catch (error) {
+    console.error("Profile update error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error. Please try again later.",
+    });
+  }
+};
+
+module.exports = { register, login, updateProfile };

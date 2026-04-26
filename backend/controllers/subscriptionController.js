@@ -2,6 +2,7 @@ const {
   getSubscriptionsByUserId,
   pauseSubscriptionForTodayById,
   unpauseSubscriptionForTodayById,
+  deleteSubscriptionByIdForUser,
 } = require("../models/subscriptionModel");
 
 const getUserSubscriptions = async (req, res) => {
@@ -152,8 +153,50 @@ const unpauseSubscriptionForToday = async (req, res) => {
   }
 };
 
+const deleteSubscription = async (req, res) => {
+  try {
+    const subscriptionId = Number(req.params.id);
+    const resolvedUserId = Number(req.query.user_id);
+
+    if (!subscriptionId || Number.isNaN(subscriptionId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Valid subscription id is required.",
+      });
+    }
+
+    if (!resolvedUserId || Number.isNaN(resolvedUserId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Valid user_id is required.",
+      });
+    }
+
+    const result = await deleteSubscriptionByIdForUser(subscriptionId, resolvedUserId);
+
+    if (!result.success) {
+      return res.status(404).json({
+        success: false,
+        message: "Subscription not found.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Subscription deleted successfully.",
+    });
+  } catch (error) {
+    console.error("Delete subscription error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error.",
+    });
+  }
+};
+
 module.exports = {
   getUserSubscriptions,
   pauseSubscriptionForToday,
   unpauseSubscriptionForToday,
+  deleteSubscription,
 };

@@ -125,8 +125,17 @@ const renderSubscriptions = (subscriptions) => {
             <button class="${pauseButtonClass}" data-action="${pauseAction}" data-subscription-id="${subscription.subscription_id}" ${isPauseDisabled ? "disabled" : ""}>
               ${pauseButtonLabel}
             </button>
-            <button class="edit-btn" data-subscription-id="${subscription.subscription_id}">Edit</button>
-            <button class="track-btn" onclick="window.location.href='./tracking.html?subscription_id=${subscription.subscription_id}'">🗺️ Track</button>
+            <button class="track-btn" data-subscription-id="${subscription.subscription_id}" onclick="window.location.href='./tracking.html?subscription_id=${subscription.subscription_id}'">Track</button>
+            <div class="menu-container">
+              <button class="menu-btn" data-subscription-id="${subscription.subscription_id}" aria-label="More options">
+                More
+              </button>
+              <div class="menu-dropdown" data-subscription-id="${subscription.subscription_id}">
+                <a href="#" class="menu-item edit-item" data-subscription-id="${subscription.subscription_id}">Edit</a>
+                <a href="#" class="menu-item check-pauses-item" data-subscription-id="${subscription.subscription_id}">Check Pauses</a>
+                <a href="#" class="menu-item cancel-item" data-subscription-id="${subscription.subscription_id}">Delete</a>
+              </div>
+            </div>
           </div>
         </div>
       `;
@@ -223,6 +232,90 @@ document.addEventListener("DOMContentLoaded", async () => {
         alert(error.message || genericFailureText);
         actionBtn.disabled = false;
         actionBtn.textContent = originalText;
+      }
+    });
+
+    // Menu button toggle handler
+    subscriptionsContainer.addEventListener("click", (event) => {
+      const menuBtn = event.target.closest(".menu-btn");
+      if (!menuBtn) return;
+
+      const menuContainer = menuBtn.closest(".menu-container");
+      const menuDropdown = menuContainer.querySelector(".menu-dropdown");
+
+      // Close all other dropdowns
+      document.querySelectorAll(".menu-dropdown.active").forEach((dropdown) => {
+        if (dropdown !== menuDropdown) {
+          dropdown.classList.remove("active");
+        }
+      });
+
+      // Toggle current dropdown
+      menuDropdown.classList.toggle("active");
+      event.stopPropagation();
+    });
+
+    // Menu item click handlers
+    subscriptionsContainer.addEventListener("click", async (event) => {
+      const menuItem = event.target.closest(".menu-item");
+      if (!menuItem) return;
+
+      event.preventDefault();
+      const subscriptionId = Number(menuItem.getAttribute("data-subscription-id"));
+      if (!subscriptionId || Number.isNaN(subscriptionId)) return;
+
+      if (menuItem.classList.contains("edit-item")) {
+        // Edit functionality - placeholder for now
+        console.log("Edit subscription:", subscriptionId);
+      } else if (menuItem.classList.contains("check-pauses-item")) {
+        // Check pauses functionality - placeholder for now
+        console.log("Check pauses for subscription:", subscriptionId);
+      } else if (menuItem.classList.contains("cancel-item")) {
+        const shouldDelete = window.confirm(
+          "Are you sure you want to delete this subscription? This will also remove related combo and orders."
+        );
+
+        if (!shouldDelete) {
+          const menuDropdown = menuItem.closest(".menu-dropdown");
+          menuDropdown.classList.remove("active");
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `${PAUSE_API_BASE_URL}/${subscriptionId}?user_id=${encodeURIComponent(user.id)}`,
+            {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          const result = await response.json();
+          if (!response.ok || !result.success) {
+            throw new Error(result.message || "Failed to delete subscription");
+          }
+
+          alert(result.message || "Subscription deleted successfully.");
+          await fetchAndRenderSubscriptions(user.id);
+        } catch (error) {
+          console.error("Delete subscription error:", error);
+          alert(error.message || "Failed to delete subscription.");
+        }
+      }
+
+      // Close dropdown after clicking
+      const menuDropdown = menuItem.closest(".menu-dropdown");
+      menuDropdown.classList.remove("active");
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener("click", (event) => {
+      if (!event.target.closest(".menu-container")) {
+        document.querySelectorAll(".menu-dropdown.active").forEach((dropdown) => {
+          dropdown.classList.remove("active");
+        });
       }
     });
   }

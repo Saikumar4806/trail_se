@@ -65,6 +65,32 @@ const updateUserStatus = async (id, status) => {
 };
 
 /**
+ * Update a user's profile details.
+ * @param {object} payload
+ * @param {number} payload.id
+ * @param {string} payload.name
+ * @param {string} payload.email
+ * @param {string} payload.phone
+ * @param {string|null} payload.password
+ * @returns {object} update result
+ */
+const updateUserProfile = async ({ id, name, email, phone, password = null }) => {
+  if (password) {
+    const [result] = await db.query(
+      "UPDATE users SET name = ?, email = ?, phone = ?, password = ? WHERE id = ?",
+      [name, email, phone, password, id]
+    );
+    return result;
+  }
+
+  const [result] = await db.query(
+    "UPDATE users SET name = ?, email = ?, phone = ? WHERE id = ?",
+    [name, email, phone, id]
+  );
+  return result;
+};
+
+/**
  * Count all users in the system.
  * @returns {number}
  */
@@ -91,6 +117,7 @@ module.exports = {
   createUser,
   getUsersByRole,
   updateUserStatus,
+  updateUserProfile,
   getTotalUsersCount,
   getDeliveryPartnersCount,
 };
