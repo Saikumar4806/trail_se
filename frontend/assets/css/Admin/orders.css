@@ -207,14 +207,10 @@ h3 {
 
 .status-badge {
 	display: inline-block;
-	padding: 8px 16px;
-	border-radius: 8px;
+	padding: 5px 10px;
+	border-radius: 999px;
 	font-size: 12px;
-	font-weight: 700;
-	text-transform: uppercase;
-	letter-spacing: 0.5pxad {
-	background-color: #f5f7fa;
-	border-bottom: 2px solid #d9dfe7;
+	font-weight: 600;
 }
 
 .orders-table th,

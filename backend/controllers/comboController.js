@@ -1,6 +1,15 @@
 const ComboModel = require('../models/comboModel');
 const db = require('../config/db');
 
+const PLAN_CHARGES = {
+  weekly: 200,
+  '1_month': 800,
+  '3_months': 2200,
+  yearly: 8000
+};
+
+const DELIVERY_CHARGE = 50;
+
 const toSqlDate = (date) => date.toISOString().slice(0, 10);
 
 const getCalculatedEndDate = (startDateValue, planType) => {
@@ -43,20 +52,24 @@ const comboController = {
         delivery_slot,
         start_date,
         address,
-        combo
+        combo,
+        payment_method,
+        payment_details
       } = req.body;
 
       if (!user_id) {
         return res.status(400).json({ success: false, message: 'user_id is required' });
       }
 
+      const normalizedPlanType = String(plan_type || '').trim();
       const validPlanTypes = ['weekly', '1_month', '3_months', 'yearly'];
-      if (!validPlanTypes.includes(String(plan_type || '').trim())) {
+      if (!validPlanTypes.includes(normalizedPlanType)) {
         return res.status(400).json({ success: false, message: 'Invalid plan_type' });
       }
 
+      const normalizedDeliverySlot = String(delivery_slot || '').trim();
       const validSlots = ['morning', 'evening'];
-      if (!validSlots.includes(String(delivery_slot || '').trim())) {
+      if (!validSlots.includes(normalizedDeliverySlot)) {
         return res.status(400).json({ success: false, message: 'Invalid delivery_slot' });
       }
 
@@ -72,6 +85,31 @@ const comboController = {
         return res.status(400).json({ success: false, message: 'Selected items are required' });
       }
 
+      const validPaymentMethods = ['card', 'upi', 'cash'];
+      const normalizedPaymentMethod = String(payment_method || '').trim().toLowerCase();
+      if (!validPaymentMethods.includes(normalizedPaymentMethod)) {
+        return res.status(400).json({ success: false, message: 'Invalid payment_method' });
+      }
+
+      const paymentDetails = payment_details && typeof payment_details === 'object' ? payment_details : {};
+
+      let cardLastFour = null;
+      let upiId = null;
+
+      if (normalizedPaymentMethod === 'card') {
+        cardLastFour = String(paymentDetails.last_four || '').replace(/\D/g, '').slice(-4);
+        if (cardLastFour.length !== 4) {
+          return res.status(400).json({ success: false, message: 'Valid card last four digits are required' });
+        }
+      }
+
+      if (normalizedPaymentMethod === 'upi') {
+        upiId = String(paymentDetails.upi_id || '').trim();
+        if (!upiId || !upiId.includes('@')) {
+          return res.status(400).json({ success: false, message: 'Valid upi_id is required for UPI payment' });
+        }
+      }
+
       const normalizedItems = combo.items.map((item) => ({
         item_id: Number(item.item_id),
         price: Number(item.price),
@@ -81,6 +119,12 @@ const comboController = {
       const comboTotalAmount = normalizedItems
         .reduce((sum, item) => sum + (item.price * item.quantity), 0)
         .toFixed(2);
+
+      const paymentAmount = Number(
+        (Number(comboTotalAmount) + (PLAN_CHARGES[normalizedPlanType] || 0) + DELIVERY_CHARGE).toFixed(2)
+      );
+
+      const transactionId = `TXN-${Date.now()}-${Math.floor(Math.random() * 1000000).toString().padStart(6, '0')}`;
 
       const hasInvalidItem = normalizedItems.some((item) => (
         !Number.isInteger(item.item_id) || item.item_id <= 0 ||
@@ -173,7 +217,7 @@ const comboController = {
       );
 
       const resolvedStartDate = start_date || toSqlDate(new Date());
-      const calculatedEndDate = getCalculatedEndDate(resolvedStartDate, plan_type);
+      const calculatedEndDate = getCalculatedEndDate(resolvedStartDate, normalizedPlanType);
 
       const [subscriptionInsert] = await connection.query(
         `INSERT INTO subscriptions
@@ -183,12 +227,23 @@ const comboController = {
           Number(user_id),
           resolvedAddressId,
           comboId,
-          plan_type,
-          delivery_slot,
+          normalizedPlanType,
+          normalizedDeliverySlot,
           resolvedStartDate,
           calculatedEndDate
         ]
       );
+
+      const paymentInsert = await ComboModel.createPayment({
+        user_id: Number(user_id),
+        subscription_id: subscriptionInsert.insertId,
+        amount: paymentAmount,
+        payment_method: normalizedPaymentMethod,
+        payment_status: 'completed',
+        upi_id: upiId,
+        card_last4: cardLastFour,
+        transaction_id: transactionId
+      }, connection);
 
       await connection.commit();
 
@@ -200,7 +255,10 @@ const comboController = {
           combo_id: comboId,
           total_amount: Number(comboTotalAmount),
           subscription_id: subscriptionInsert.insertId,
-          inserted_combo_items: comboItemValues.length
+          inserted_combo_items: comboItemValues.length,
+          payment_id: paymentInsert.insertId,
+          payment_amount: paymentAmount,
+          transaction_id: transactionId
         }
       });
     } catch (error) {

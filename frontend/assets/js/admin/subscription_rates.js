@@ -1,4 +1,18 @@
 // Subscription Rates Management
+const getStoredUser = () => {
+  try {
+    return JSON.parse(localStorage.getItem('user') || 'null');
+  } catch (error) {
+    return null;
+  }
+};
+
+const normalizeRole = (role) =>
+  String(role || '')
+    .toLowerCase()
+    .replace(/\s+/g, '_')
+    .trim();
+
 document.addEventListener('DOMContentLoaded', async () => {
   const rateForm = document.getElementById('rateForm');
   const saveRateBtn = document.getElementById('saveRateBtn');
@@ -8,8 +22,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   const logoutBtn = document.getElementById('logoutBtn');
 
   // Check user authentication
-  const user = JSON.parse(localStorage.getItem('user'));
-  if (!user || user.role !== 'admin') {
+  const user = getStoredUser();
+  if (!user || normalizeRole(user.role) !== 'admin') {
+    localStorage.removeItem('user');
     window.location.href = '../../pages/start/login.html';
     return;
   }

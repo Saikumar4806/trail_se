@@ -198,6 +198,28 @@ async function setupDatabase() {
       }
     }
 
+    // Create the payments table
+    const createPaymentsTableQuery = `
+      CREATE TABLE IF NOT EXISTS payments (
+        payment_id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        subscription_id INT,
+        amount DECIMAL(10,2) NOT NULL,
+        payment_method ENUM('card','upi','cash') NOT NULL,
+        payment_status ENUM('pending','completed','failed') DEFAULT 'pending',
+        upi_id VARCHAR(100),
+        card_last4 VARCHAR(4),
+        transaction_id VARCHAR(255),
+        payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (subscription_id) REFERENCES subscriptions(subscription_id) ON DELETE CASCADE
+      );
+    `;
+    await connection.query(createPaymentsTableQuery);
+    console.log("Verified 'payments' table exists and is correctly structured.");
+
     console.log("Database setup is 100% complete! You can now run the server.");
     await connection.end();
 

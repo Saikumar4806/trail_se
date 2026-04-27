@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make Payment - Subscription Delivery System</title>
+    <link rel="stylesheet" href="../../assets/css/Customer/make_payment.css">
+</head>
+<body>
+    <div class="payment-page">
+        <!-- Header -->
+        <div class="payment-header">
+            <h1>Complete Your Payment</h1>
+            <p>Secure payment gateway</p>
+        </div>
+
+        <!-- Main Container -->
+        <div class="payment-page-container">
+            <!-- Left Side - Order Summary -->
+            <div class="payment-order-summary">
+                <h3>Order Summary</h3>
+                <div class="summary-item">
+                    <span>Subscription Plan:</span>
+                    <span id="summaryPlan">-</span>
+                </div>
+                <div class="summary-item">
+                    <span>Delivery Slot:</span>
+                    <span id="summarySlot">-</span>
+                </div>
+                <div class="summary-item">
+                    <span>Items:</span>
+                    <span id="summaryItems">-</span>
+                </div>
+                <div class="summary-item">
+                    <span>Address:</span>
+                    <span id="summaryAddress">-</span>
+                </div>
+                <div class="summary-divider"></div>
+                <div class="summary-total">
+                    <span>Total Amount:</span>
+                    <span id="summaryTotal">₹0.00</span>
+                </div>
+            </div>
+
+            <!-- Right Side - Payment Form -->
+            <div class="payment-form-wrapper">
+                <!-- Payment Method Tabs -->
+                <div class="payment-method-tabs">
+                    <button class="payment-tab-btn active" data-method="card">
+                        <i class="icon">💳</i> Debit/Credit Card
+                    </button>
+                    <button class="payment-tab-btn" data-method="upi">
+                        <i class="icon">📱</i> UPI
+                    </button>
+                </div>
+
+                <!-- Card Payment Form -->
+                <div id="cardPaymentForm" class="payment-form active">
+                    <h2>Payment Details</h2>
+                    <form id="cardForm">
+                        <!-- Cardholder Name -->
+                        <div class="form-group">
+                            <label for="cardholderName">Cardholder Name</label>
+                            <input 
+                                type="text" 
+                                id="cardholderName" 
+                                name="cardholderName" 
+                                placeholder="John Doe"
+                                required
+                            >
+                        </div>
+
+                        <!-- Card Number -->
+                        <div class="form-group">
+                            <label for="cardNumber">Card Number</label>
+                            <div class="card-input-group">
+                                <input 
+                                    type="text" 
+                                    id="cardNumber" 
+                                    name="cardNumber" 
+                                    placeholder="1234 5678 9012 3456"
+                                    maxlength="19"
+                                    required
+                                >
+                                <span id="cardType" class="card-type">💳</span>
+                            </div>
+                        </div>
+
+                        <!-- Expiry and CVV -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="expiryDate">Expiry Date</label>
+                                <input 
+                                    type="text" 
+                                    id="expiryDate" 
+                                    name="expiryDate" 
+                                    placeholder="MM/YY"
+                                    maxlength="5"
+                                    required
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label for="cvv">CVV</label>
+                                <input 
+                                    type="password" 
+                                    id="cvv" 
+                                    name="cvv" 
+                                    placeholder="123"
+                                    maxlength="4"
+                                    required
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Save Card Checkbox -->
+                        <div class="form-group checkbox">
+                            <input type="checkbox" id="saveCard" name="saveCard">
+                            <label for="saveCard">Save this card for future payments</label>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- UPI Payment Form -->
+                <div id="upiPaymentForm" class="payment-form">
+                    <h2>Payment Details</h2>
+                    <form id="upiForm">
+                        <div class="form-group">
+                            <label for="upiId">UPI ID</label>
+                            <input 
+                                type="text" 
+                                id="upiId" 
+                                name="upiId" 
+                                placeholder="yourname@bank"
+                                required
+                            >
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="payment-actions">
+                    <button id="backBtn" class="btn btn-secondary">Back</button>
+                    <button id="paymentBtn" class="btn btn-primary">
+                        <span>Complete Payment</span>
+                        <span id="paymentAmount">₹0.00</span>
+                    </button>
+                </div>
+
+                <!-- Security Info -->
+                <div class="security-info">
+                    <span>🔒</span>
+                    <p>Your payment information is secure and encrypted</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const CHECKOUT_API_URL = 'http://localhost:5000/api/checkout/complete';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initializePaymentPage();
+            setupPaymentForm();
+        });
+
+        function initializePaymentPage() {
+            const checkoutState = JSON.parse(localStorage.getItem('checkoutState') || 'null');
+            if (!checkoutState) {
+                alert('No checkout data found. Please go back to add subscription.');
+                window.location.href = './addSubscription.html';
+                return;
+            }
+
+            // Update summary
+            document.getElementById('summaryPlan').textContent = checkoutState.selectedPlan || '-';
+            document.getElementById('summarySlot').textContent = checkoutState.selectedSlot || '-';
+
+            if (checkoutState.combo && checkoutState.combo.items) {
+                const itemNames = checkoutState.combo.items
+                    .map(item => `${item.name || 'Item'} (${item.quantity})`)
+                    .join(', ');
+                document.getElementById('summaryItems').textContent = itemNames || '-';
+            }
+
+            if (checkoutState.address) {
+                const addr = checkoutState.address;
+                const addressStr = `${addr.street}, ${addr.city} ${addr.pincode}`;
+                document.getElementById('summaryAddress').textContent = addressStr;
+            }
+
+            const total = calculateTotal(checkoutState);
+            document.getElementById('summaryTotal').textContent = `₹${total.toFixed(2)}`;
+            document.getElementById('paymentAmount').textContent = `₹${total.toFixed(2)}`;
+        }
+
+        function calculateTotal(state) {
+            let total = 0;
+            if (state.combo && state.combo.total_amount) {
+                total += state.combo.total_amount;
+            }
+            total += 50; // Delivery charges
+            
+            const planCharges = {
+                'Weekly': 200,
+                '1 Month': 800,
+                '3 Months': 2200,
+                'Yearly': 8000
+            };
+            total += planCharges[state.selectedPlan] || 0;
+            return total;
+        }
+
+        function setupPaymentForm() {
+            const paymentTabs = document.querySelectorAll('.payment-tab-btn');
+            const paymentForms = document.querySelectorAll('.payment-form');
+            const cardNumber = document.getElementById('cardNumber');
+            const expiryDate = document.getElementById('expiryDate');
+            const cvv = document.getElementById('cvv');
+            const backBtn = document.getElementById('backBtn');
+            const paymentBtn = document.getElementById('paymentBtn');
+
+            let currentPaymentMethod = 'card';
+
+            // Back button
+            backBtn.addEventListener('click', () => {
+                window.location.href = './addSubscription.html';
+            });
+
+            // Payment method tabs
+            paymentTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const method = tab.getAttribute('data-method');
+                    currentPaymentMethod = method;
+
+                    paymentTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+
+                    paymentForms.forEach(form => form.classList.remove('active'));
+                    const formId = method === 'card' ? 'cardPaymentForm' : 'upiPaymentForm';
+                    document.getElementById(formId).classList.add('active');
+                });
+            });
+
+            // Card number formatting
+            cardNumber?.addEventListener('input', (e) => {
+                let value = e.target.value.replace(/\s/g, '');
+                let formattedValue = value.replace(/(\d{4})/g, '$1 ').trim();
+                e.target.value = formattedValue;
+                detectCardType(value);
+            });
+
+            const detectCardType = (cardNum) => {
+                const cardTypeEl = document.getElementById('cardType');
+                const firstDigit = cardNum.charAt(0);
+                
+                if (firstDigit === '4') {
+                    cardTypeEl.textContent = '💳 Visa';
+                } else if (firstDigit === '5') {
+                    cardTypeEl.textContent = '💳 Mastercard';
+                } else if (firstDigit === '3') {
+                    cardTypeEl.textContent = '💳 Amex';
+                } else {
+                    cardTypeEl.textContent = '💳';
+                }
+            };
+
+            // Expiry formatting
+            expiryDate?.addEventListener('input', (e) => {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length >= 2) {
+                    value = value.slice(0, 2) + '/' + value.slice(2, 4);
+                }
+                e.target.value = value;
+            });
+
+            // CVV input
+            cvv?.addEventListener('input', (e) => {
+                e.target.value = e.target.value.replace(/\D/g, '');
+            });
+
+            // Payment button
+            paymentBtn.addEventListener('click', async () => {
+                const checkoutState = JSON.parse(localStorage.getItem('checkoutState') || 'null');
+                if (!checkoutState) {
+                    alert('Checkout data not found. Please try again.');
+                    return;
+                }
+
+                let validation;
+                if (currentPaymentMethod === 'card') {
+                    validation = validateCardForm();
+                } else {
+                    validation = validateUpiForm();
+                }
+
+                if (!validation.isValid) {
+                    alert('❌ Error:\n' + validation.errors.join('\n'));
+                    return;
+                }
+
+                const user = JSON.parse(localStorage.getItem('user') || 'null');
+                if (!user || !user.id) {
+                    alert('User not found. Please login again.');
+                    window.location.href = '../../pages/start/login.html';
+                    return;
+                }
+
+                const planTypeMap = {
+                    'Weekly': 'weekly',
+                    '1 Month': '1_month',
+                    '3 Months': '3_months',
+                    'Yearly': 'yearly'
+                };
+
+                const startDate = new Date().toISOString().slice(0, 10);
+
+                const checkoutPayload = {
+                    user_id: Number(user.id),
+                    plan_type: planTypeMap[checkoutState.selectedPlan] || 'weekly',
+                    delivery_slot: checkoutState.selectedSlot,
+                    start_date: startDate,
+                    address: checkoutState.address,
+                    combo: checkoutState.combo,
+                    payment_method: currentPaymentMethod,
+                    payment_details: currentPaymentMethod === 'card' 
+                        ? { last_four: document.getElementById('cardNumber').value.slice(-4) }
+                        : { upi_id: document.getElementById('upiId').value }
+                };
+
+                try {
+                    paymentBtn.textContent = 'Processing...';
+                    paymentBtn.disabled = true;
+
+                    const response = await fetch(CHECKOUT_API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(checkoutPayload)
+                    });
+
+                    const result = await response.json();
+                    if (!response.ok || !result.success) {
+                        throw new Error(result.message || 'Failed to complete checkout');
+                    }
+
+                    alert('✅ Success:\nPayment completed successfully! Subscription created.');
+                    localStorage.removeItem('checkoutState');
+                    setTimeout(() => {
+                        window.location.href = './dashboard.html';
+                    }, 1500);
+                } catch (error) {
+                    console.error('Checkout error:', error);
+                    alert('❌ Error:\n' + (error.message || 'Failed to complete payment. Please try again.'));
+                } finally {
+                    paymentBtn.textContent = 'Complete Payment ₹0.00';
+                    paymentBtn.disabled = false;
+                }
+            });
+        }
+
+        function validateCardForm() {
+            const cardholderName = document.getElementById('cardholderName').value.trim();
+            const cardNum = document.getElementById('cardNumber').value.replace(/\s/g, '');
+            const expiry = document.getElementById('expiryDate').value;
+            const cvvVal = document.getElementById('cvv').value;
+
+            let errors = [];
+
+            if (!cardholderName) {
+                errors.push('Cardholder name is required');
+            }
+
+            if (cardNum.length !== 16) {
+                errors.push('Card number must be 16 digits');
+            }
+
+            if (!expiry || expiry.length !== 5 || !expiry.includes('/')) {
+                errors.push('Expiry date must be in MM/YY format');
+            } else {
+                const [month, year] = expiry.split('/');
+                if (parseInt(month) > 12 || parseInt(month) < 1) {
+                    errors.push('Invalid expiry month');
+                }
+            }
+
+            if (cvvVal.length < 3 || cvvVal.length > 4) {
+                errors.push('CVV must be 3-4 digits');
+            }
+
+            return { isValid: errors.length === 0, errors };
+        }
+
+        function validateUpiForm() {
+            const upiId = document.getElementById('upiId').value.trim();
+            let errors = [];
+
+            if (!upiId) {
+                errors.push('UPI ID is required');
+            } else if (!upiId.includes('@')) {
+                errors.push('Invalid UPI ID format');
+            }
+
+            return { isValid: errors.length === 0, errors };
+        }
+    </script>
+</body>
+</html>

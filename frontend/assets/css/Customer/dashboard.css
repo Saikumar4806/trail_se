@@ -631,6 +631,30 @@ h3 {
   transform: translateY(-1px);
 }
 
+.check-pauses-btn {
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.check-pauses-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(243, 156, 18, 0.4);
+}
+
+.check-pauses-btn:active {
+  transform: translateY(-1px);
+}
+
 /* Account Settings Section Styles */
 .account-settings-section {
   background: white;

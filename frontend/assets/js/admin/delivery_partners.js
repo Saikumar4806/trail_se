@@ -1,12 +1,27 @@
 const ADMIN_API_BASE_URL = "http://localhost:5000/api/admin";
 
+const getStoredUser = () => {
+  try {
+    return JSON.parse(localStorage.getItem("user") || "null");
+  } catch (error) {
+    return null;
+  }
+};
+
+const normalizeRole = (role) =>
+  String(role || "")
+    .toLowerCase()
+    .replace(/\s+/g, "_")
+    .trim();
+
 document.addEventListener("DOMContentLoaded", async () => {
   const partnersTableBody = document.getElementById("partnersTableBody");
   const partnerMessage = document.getElementById("partnerMessage");
   const logoutBtn = document.getElementById("logoutBtn");
 
-  const adminUser = JSON.parse(localStorage.getItem("user") || "null");
-  if (!adminUser || adminUser.role !== "admin") {
+  const adminUser = getStoredUser();
+  if (!adminUser || normalizeRole(adminUser.role) !== "admin") {
+    localStorage.removeItem("user");
     window.location.href = "../../pages/start/login.html";
     return;
   }
