@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profit Analytics - Admin</title>
+  <link rel="stylesheet" href="../../assets/css/Admin/salaries.css">
+</head>
+<body>
+
+  <div class="navbar">
+    <h2 id="welcomeText">Monthly Profit Analytics</h2>
+    <div class="nav-buttons">
+      <button class="back-btn" id="backBtn" onclick="history.back()">Back</button>
+      <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <div class="salary-container">
+        <div class="summary-section">
+          <h4>Profit Dashboard</h4>
+          <p style="margin: 0; color: #555;">
+            This page focuses on business performance: revenue, delivery operating cost, and monthly profit outcomes.
+          </p>
+        </div>
+
+        <div class="filter-section">
+          <h4>Analytics Filters</h4>
+          <div class="filter-controls">
+            <div class="filter-group">
+              <label for="analyticsMonth">Select Month</label>
+              <input type="month" id="analyticsMonth" required>
+            </div>
+            <button id="analyzeBtn" class="btn-primary">Analyze Profit</button>
+            <button id="downloadFinanceReportBtn" class="btn-secondary">Download Finance Report</button>
+          </div>
+          <div id="analyticsMessage" class="form-message"></div>
+        </div>
+
+        <div class="summary-section">
+          <h4>Financial KPIs</h4>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <h5>Subscription Revenue</h5>
+              <p class="stat-value" id="statSubscriptionRevenue">₹0.00</p>
+            </div>
+            <div class="stat-card">
+              <h5>Delivery Operating Cost</h5>
+              <p class="stat-value" id="statSalaryExpense">₹0.00</p>
+            </div>
+            <div class="stat-card">
+              <h5>Gross Profit</h5>
+              <p class="stat-value" id="statGrossProfit">₹0.00</p>
+            </div>
+            <div class="stat-card">
+              <h5>Profit Margin</h5>
+              <p class="stat-value" id="statProfitMargin">0.00%</p>
+            </div>
+            <div class="stat-card">
+              <h5>Payout Ratio</h5>
+              <p class="stat-value" id="statPayoutRatio">0.00%</p>
+            </div>
+            <div class="stat-card">
+              <h5>Revenue per Delivery</h5>
+              <p class="stat-value" id="statRevenuePerDelivery">₹0.00</p>
+            </div>
+            <div class="stat-card">
+              <h5>Salary Cost per Delivery</h5>
+              <p class="stat-value" id="statCostPerDelivery">₹0.00</p>
+            </div>
+            <div class="stat-card">
+              <h5>Total Deliveries</h5>
+              <p class="stat-value" id="statTotalDeliveries">0</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="list-section">
+          <h4>Top Cost Drivers (Delivery Partners)</h4>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Partner ID</th>
+                  <th>Partner Name</th>
+                  <th>Deliveries</th>
+                  <th>Operating Cost (₹)</th>
+                  <th>Salary Status</th>
+                </tr>
+              </thead>
+              <tbody id="financeTableBody">
+                <tr><td colspan="5" class="text-center">Select month and click analyze to view analytics...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../assets/js/admin/profit_analytics.js"></script>
+</body>
+</html>

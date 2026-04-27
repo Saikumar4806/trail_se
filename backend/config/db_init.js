@@ -184,6 +184,27 @@ async function setupDatabase() {
     await connection.query(createOrdersTableQuery);
     console.log("Verified 'orders' table exists and is correctly structured.");
 
+    const createPartnerSalaryRecordsTableQuery = `
+      CREATE TABLE IF NOT EXISTS partner_salary_records (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        partner_id INT NOT NULL,
+        salary_month CHAR(7) NOT NULL,
+        total_deliveries INT NOT NULL DEFAULT 0,
+        base_rate DECIMAL(10,2) NOT NULL DEFAULT 40.00,
+        base_salary DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+        bonus DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+        deductions DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+        net_salary DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+        status ENUM('pending', 'approved', 'paid') NOT NULL DEFAULT 'pending',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        UNIQUE KEY uniq_partner_month (partner_id, salary_month),
+        FOREIGN KEY (partner_id) REFERENCES users(id) ON DELETE CASCADE
+      );
+    `;
+    await connection.query(createPartnerSalaryRecordsTableQuery);
+    console.log("Verified 'partner_salary_records' table exists and is correctly structured.");
+
     // Add partner_id column if it doesn't exist (for existing tables)
     try {
       await connection.query(
