@@ -5,7 +5,8 @@ const state = {
   itemsById: {},
   selected: {},
   pendingAddress: null,
-  pendingCombo: null
+  pendingCombo: null,
+  pendingSubscriptionRate: 0
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -62,12 +63,16 @@ function setupStaticActions() {
         return;
       }
 
+      const planPriceText = selectedPlan.querySelector('.plan-price')?.textContent || '';
+      state.pendingSubscriptionRate = Number.parseFloat(planPriceText.replace(/[^\d.]/g, '')) || 0;
+
       // Save state to localStorage for the payment page
       localStorage.setItem('checkoutState', JSON.stringify({
         selectedPlan: selectedPlan.getAttribute('data-plan'),
         selectedSlot: selectedSlot.value,
         address: state.pendingAddress,
-        combo: state.pendingCombo
+        combo: state.pendingCombo,
+        subscription_rate: state.pendingSubscriptionRate
       }));
 
       // Redirect to payment page
@@ -88,6 +93,9 @@ function setupPlanSelection() {
 
       const selectedCard = btn.closest('.plan-card');
       selectedCard.classList.add('selected', 'active');
+
+      const planPriceText = selectedCard.querySelector('.plan-price')?.textContent || '';
+      state.pendingSubscriptionRate = Number.parseFloat(planPriceText.replace(/[^\d.]/g, '')) || 0;
 
       const planName = selectedCard.querySelector('.plan-name').textContent;
       const selectedPlanDisplay = document.getElementById('selectedPlanDisplay');

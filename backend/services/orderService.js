@@ -133,8 +133,7 @@ const resetOrderToOutForDelivery = async (orderId) => {
 };
 
 const getLatestOrderBySubscription = async (subscriptionId) => {
-  const [orders] = await db.query(
-    `SELECT
+  const queryWithPartnerLocation = `SELECT
       o.order_id,
       o.subscription_id,
       o.customer_id,
@@ -157,10 +156,48 @@ const getLatestOrderBySubscription = async (subscriptionId) => {
     LEFT JOIN users dp ON o.partner_id = dp.id AND dp.role = 'delivery_partner'
     WHERE o.subscription_id = ?
     ORDER BY o.delivery_date DESC, o.order_id DESC
-    LIMIT 1`,
-    [subscriptionId]
-  );
-  return orders.length > 0 ? orders[0] : null;
+    LIMIT 1`;
+
+  const queryWithoutPartnerLocation = `SELECT
+      o.order_id,
+      o.subscription_id,
+      o.customer_id,
+      o.address_id,
+      o.delivery_date,
+      o.delivery_slot,
+      o.total_amount,
+      o.status,
+      o.partner_id,
+      a.latitude AS customer_lat,
+      a.longitude AS customer_lng,
+      a.street,
+      a.area,
+      u.name AS customer_name,
+      NULL AS partner_lat,
+      NULL AS partner_lng
+    FROM orders o
+    JOIN addresses a ON o.address_id = a.address_id
+    JOIN users u ON o.customer_id = u.id
+    WHERE o.subscription_id = ?
+    ORDER BY o.delivery_date DESC, o.order_id DESC
+    LIMIT 1`;
+
+  try {
+    const [orders] = await db.query(queryWithPartnerLocation, [subscriptionId]);
+    return orders.length > 0 ? orders[0] : null;
+  } catch (error) {
+    const missingPartnerLocationColumn =
+      error &&
+      error.code === "ER_BAD_FIELD_ERROR" &&
+      /current_lat|current_lng/.test(String(error.sqlMessage || ""));
+
+    if (!missingPartnerLocationColumn) {
+      throw error;
+    }
+
+    const [orders] = await db.query(queryWithoutPartnerLocation, [subscriptionId]);
+    return orders.length > 0 ? orders[0] : null;
+  }
 };
 
 module.exports = {

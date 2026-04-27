@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Make Payment - Subscription Delivery System</title>
     <link rel="stylesheet" href="../../assets/css/Customer/make_payment.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../../assets/js/shared/alerts.js"></script>
 </head>
 <body>
     <div class="payment-page">
@@ -194,20 +196,9 @@
         }
 
         function calculateTotal(state) {
-            let total = 0;
-            if (state.combo && state.combo.total_amount) {
-                total += state.combo.total_amount;
-            }
-            total += 50; // Delivery charges
-            
-            const planCharges = {
-                'Weekly': 200,
-                '1 Month': 800,
-                '3 Months': 2200,
-                'Yearly': 8000
-            };
-            total += planCharges[state.selectedPlan] || 0;
-            return total;
+            const baseRate = Number(state.subscription_rate) || 0;
+            const cartRate = Number(state.combo?.total_amount) || 0;
+            return baseRate + cartRate;
         }
 
         function setupPaymentForm() {
@@ -321,6 +312,7 @@
                     start_date: startDate,
                     address: checkoutState.address,
                     combo: checkoutState.combo,
+                    subscription_rate: Number(checkoutState.subscription_rate) || 0,
                     payment_method: currentPaymentMethod,
                     payment_details: currentPaymentMethod === 'card' 
                         ? { last_four: document.getElementById('cardNumber').value.slice(-4) }
@@ -351,7 +343,9 @@
                     console.error('Checkout error:', error);
                     alert('❌ Error:\n' + (error.message || 'Failed to complete payment. Please try again.'));
                 } finally {
-                    paymentBtn.textContent = 'Complete Payment ₹0.00';
+                    const checkoutState = JSON.parse(localStorage.getItem('checkoutState') || 'null');
+                    const finalAmount = checkoutState ? calculateTotal(checkoutState) : 0;
+                    paymentBtn.innerHTML = `<span>Complete Payment</span><span id="paymentAmount">₹${finalAmount.toFixed(2)}</span>`;
                     paymentBtn.disabled = false;
                 }
             });

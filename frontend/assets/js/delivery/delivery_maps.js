@@ -298,6 +298,19 @@ function setupDemoButton() {
   });
 }
 
+function syncLocationToServer(lat, lng) {
+  try {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user && user.id) {
+      fetch(`${API_BASE}/delivery/set-location`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ partner_id: user.id, lat: lat, lng: lng }),
+      }).catch(() => {});
+    }
+  } catch (err) { /* ignore silently */ }
+}
+
 function startDemo() {
   if (demoRouteCoords.length < 2) return;
 
@@ -324,9 +337,11 @@ function startDemo() {
     dashArray: null,
   }).addTo(map);
 
+  // Sync initial position immediately so customer map picks it up
+  syncLocationToServer(demoRouteCoords[0][0], demoRouteCoords[0][1]);
+
   demoIndex = 0;
   const totalSteps = demoRouteCoords.length;
-  // Task 3: slowed to 1200ms per step, step size reduced too
   const stepSize = Math.max(1, Math.floor(totalSteps / 80));
 
   demoInterval = setInterval(async () => {
@@ -350,22 +365,26 @@ function startDemo() {
     // Pan map to follow scooter
     map.panTo(pos, { animate: true, duration: 0.4 });
 
-    // Task 4: Check if we've reached a delivery stop
+    // Check if we've reached a delivery stop
     for (let s = 0; s < demoStopIndices.length; s++) {
       if (Math.abs(demoIndex - demoStopIndices[s]) <= stepSize) {
         const order = demoDeliveryOrder[s];
         if (order && order.status === "out_for_delivery") {
-          // Pause demo and prompt Mark Done
           clearInterval(demoInterval);
           demoInterval = null;
-          await promptMarkDone(order, s);
+          // Sync position at the stop so customer sees partner arrived
+          syncLocationToServer(pos[0], pos[1]);
+          promptMarkDone(order, s);
           return;
         }
       }
     }
 
     demoIndex += stepSize;
-  }, 1200); // Task 3: slowed from 500ms to 1200ms
+
+    // Sync live location to backend on every tick for real-time customer tracking
+    syncLocationToServer(pos[0], pos[1]);
+  }, 1200);
 }
 
 async function promptMarkDone(order, stopIdx) {
@@ -377,17 +396,8 @@ async function promptMarkDone(order, stopIdx) {
     btn.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
-  // Poll until the order is marked delivered (by the user clicking Mark Done)
-  const pollInterval = setInterval(async () => {
-    const updated = deliveries.find((d) => d.order_id === order.order_id);
-    if (updated && updated.status === "delivered") {
-      clearInterval(pollInterval);
-      demoDeliveryOrder[stopIdx] = updated;
-      // Resume demo from current position
-      demoIndex += Math.max(1, Math.floor(demoRouteCoords.length / 80));
-      startDemoFrom(demoIndex);
-    }
-  }, 1000);
+  // No polling needed; when the user clicks 'Mark Done', markDeliveryDone() 
+  // will be called, which handles route recalculation and demo resumption.
 }
 
 function startDemoFrom(fromIndex) {
@@ -397,6 +407,27 @@ function startDemoFrom(fromIndex) {
   const demoBtn = document.getElementById("demoBtn");
   demoBtn.textContent = "⏹️ Stop Demo";
   demoBtn.classList.add("stop");
+
+  document.getElementById("progressContainer").style.display = "block";
+
+  // Re-create scooter marker if it was cleared (e.g. by plotRoute -> clearMap)
+  if (!demoMarker) {
+    demoMarker = L.marker(demoRouteCoords[fromIndex], {
+      icon: createScooterIcon(),
+      zIndexOffset: 2000,
+    }).addTo(map);
+    demoMarker.bindPopup(`<div class="route-popup"><strong>🛵 You (Demo)</strong></div>`);
+  }
+
+  // Re-create demo polyline if it was cleared
+  if (!demoPolyline) {
+    demoPolyline = L.polyline(demoRouteCoords.slice(fromIndex), {
+      color: "#667eea",
+      weight: 5,
+      opacity: 0.85,
+      dashArray: null,
+    }).addTo(map);
+  }
 
   const totalSteps = demoRouteCoords.length;
   const stepSize = Math.max(1, Math.floor(totalSteps / 80));
@@ -425,13 +456,16 @@ function startDemoFrom(fromIndex) {
         if (order && order.status === "out_for_delivery") {
           clearInterval(demoInterval);
           demoInterval = null;
-          await promptMarkDone(order, s);
+          promptMarkDone(order, s);
           return;
         }
       }
     }
 
     demoIndex += stepSize;
+
+    // Sync live location to backend on every tick for real-time customer tracking
+    syncLocationToServer(pos[0], pos[1]);
   }, 1200);
 }
 
@@ -683,12 +717,19 @@ async function markDeliveryDone(orderId) {
 
     renderDeliveries();
 
-    if (demoInterval) {
-      // Demo is running — only refresh the dot markers, don't tear down the demo
-      refreshDeliveryMarkers();
-    } else {
-      // No demo active — safe to do a full re-plot
-      await plotRoute(deliveries);
+    // Update partner location to the current scooter position before replotting
+    if (demoMarker) {
+      const currentPos = demoMarker.getLatLng();
+      partnerLat = currentPos.lat;
+      partnerLng = currentPos.lng;
+    }
+
+    // Always replot to generate a new route excluding the delivered order
+    await plotRoute(deliveries);
+
+    // If there is still a route left, resume demo from the beginning of the new route
+    if (demoRouteCoords.length >= 2) {
+      startDemoFrom(0);
     }
 
     showNotification(`✅ Order #${orderId} marked as delivered!`, "success");

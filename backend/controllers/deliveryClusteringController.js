@@ -4,6 +4,24 @@ const {
   getPartnerRoute,
 } = require("../services/deliveryClustering");
 
+const ensurePartnerLocationColumns = async () => {
+  try {
+    await db.query(`ALTER TABLE users ADD COLUMN current_lat DECIMAL(10,8) DEFAULT NULL`);
+  } catch (error) {
+    if (!error || error.code !== "ER_DUP_FIELDNAME") {
+      throw error;
+    }
+  }
+
+  try {
+    await db.query(`ALTER TABLE users ADD COLUMN current_lng DECIMAL(11,8) DEFAULT NULL`);
+  } catch (error) {
+    if (!error || error.code !== "ER_DUP_FIELDNAME") {
+      throw error;
+    }
+  }
+};
+
 /**
  * POST /api/admin/generate-routes
  * Body: { date: "YYYY-MM-DD", slot: "morning" | "evening" }
@@ -112,11 +130,30 @@ const setPartnerLocation = async (req, res) => {
       });
     }
 
-    // Columns are guaranteed to exist (added by db_init.js on setup)
-    const [result] = await db.query(
-      `UPDATE users SET current_lat = ?, current_lng = ? WHERE id = ? AND role = 'delivery_partner'`,
-      [parsedLat, parsedLng, Number(partner_id)]
-    );
+    let result;
+
+    try {
+      [result] = await db.query(
+        `UPDATE users SET current_lat = ?, current_lng = ? WHERE id = ? AND role = 'delivery_partner'`,
+        [parsedLat, parsedLng, Number(partner_id)]
+      );
+    } catch (error) {
+      const missingPartnerLocationColumn =
+        error &&
+        error.code === "ER_BAD_FIELD_ERROR" &&
+        /current_lat|current_lng/.test(String(error.sqlMessage || ""));
+
+      if (!missingPartnerLocationColumn) {
+        throw error;
+      }
+
+      await ensurePartnerLocationColumns();
+
+      [result] = await db.query(
+        `UPDATE users SET current_lat = ?, current_lng = ? WHERE id = ? AND role = 'delivery_partner'`,
+        [parsedLat, parsedLng, Number(partner_id)]
+      );
+    }
 
     if (result.affectedRows === 0) {
       return res.status(404).json({

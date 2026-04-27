@@ -9,9 +9,8 @@ let partnerMarker = null;
 let customerMarker = null;
 let routePolyline = null;
 let routeCoords = [];
-let demoInterval = null;
-let demoIndex = 0;
 let orderData = null;
+let trackingInterval = null;
 
 // ─────────── Init ───────────
 document.addEventListener("DOMContentLoaded", async () => {
@@ -44,7 +43,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   initMap();
   await loadTrackingData(subscriptionId);
-  setupDemoButton();
+
+  // Poll for updates every 1 second for smooth live tracking sync
+  trackingInterval = setInterval(() => {
+    loadTrackingData(subscriptionId, true);
+  }, 1000);
 });
 
 // ─────────── Map ───────────
@@ -80,18 +83,21 @@ function createCustomerIcon() {
 }
 
 // ─────────── Load Tracking Data ───────────
-async function loadTrackingData(subscriptionId) {
+async function loadTrackingData(subscriptionId, isPolling = false) {
   try {
     const res = await fetch(`${API_BASE}/orders/track?subscription_id=${subscriptionId}`);
     const data = await res.json();
 
     if (!data.success || !data.data) {
-      setStatus("No order found", "");
-      document.getElementById("infoDetails").innerHTML =
-        '<p style="color:#999;text-align:center;padding:20px;">No active order found for this subscription.</p>';
+      if (!isPolling) {
+        setStatus("No order found", "");
+        document.getElementById("infoDetails").innerHTML =
+          '<p style="color:#999;text-align:center;padding:20px;">No active order found for this subscription.</p>';
+      }
       return;
     }
 
+    const previousStatus = orderData ? orderData.status : null;
     orderData = data.data;
 
     // Update info panel
@@ -104,67 +110,104 @@ async function loadTrackingData(subscriptionId) {
     const isDelivered = orderData.status === "delivered";
     setStatus(isDelivered ? "Delivered" : "Out for Delivery", isDelivered ? "delivered" : "in-transit");
 
-    // Place customer marker
+    // Check if status just changed to delivered
+    if (isPolling && previousStatus === "out_for_delivery" && isDelivered) {
+      showNotification("✅ Delivery completed! The partner has arrived.", "success");
+      if (trackingInterval) clearInterval(trackingInterval);
+      if (routePolyline) {
+        routePolyline.setLatLngs([]);
+      }
+    }
+
+    // Place or update customer marker
     const custLat = parseFloat(orderData.customer_lat);
     const custLng = parseFloat(orderData.customer_lng);
 
-    customerMarker = L.marker([custLat, custLng], {
-      icon: createCustomerIcon(),
-    }).addTo(map);
-    customerMarker.bindPopup(
-      `<div class="route-popup"><strong>📍 Delivery Address</strong><br>${orderData.street}, ${orderData.area}</div>`
-    );
+    if (customerMarker) {
+      customerMarker.setLatLng([custLat, custLng]);
+    } else {
+      customerMarker = L.marker([custLat, custLng], {
+        icon: createCustomerIcon(),
+      }).addTo(map);
+      customerMarker.bindPopup(
+        `<div class="route-popup"><strong>📍 Delivery Address</strong><br>${orderData.street}, ${orderData.area}</div>`
+      );
+    }
 
     // ── Use delivery partner's saved location, or show a status message ──
     const partnerLat = orderData.partner_lat != null ? parseFloat(orderData.partner_lat) : null;
     const partnerLng = orderData.partner_lng != null ? parseFloat(orderData.partner_lng) : null;
 
     if (partnerLat === null || partnerLng === null || isNaN(partnerLat) || isNaN(partnerLng)) {
-      // Partner hasn't set their location yet — show a friendly message
-      const pendingMessages = [
-        "🚀 Delivery is about to start — hang tight!",
-        "🛵 Your rider is getting ready to head out.",
-        "⏳ Riders are currently busy with other deliveries.",
-        "📦 Delivery preparation is in progress.",
-        "🗺️ Your delivery partner is being assigned.",
-      ];
-      const msg = pendingMessages[Math.floor(Math.random() * pendingMessages.length)];
+      if (!isPolling) {
+        const pendingMessages = [
+          "🚀 Delivery is about to start — hang tight!",
+          "🛵 Your rider is getting ready to head out.",
+          "⏳ Riders are currently busy with other deliveries.",
+          "📦 Delivery preparation is in progress.",
+          "🗺️ Your delivery partner is being assigned.",
+        ];
+        const msg = pendingMessages[Math.floor(Math.random() * pendingMessages.length)];
 
-      document.getElementById("infoDetails").innerHTML += `
-        <div class="info-row" style="margin-top:12px;">
-          <span class="info-value" style="color:#f39c12;font-style:italic;">${msg}</span>
-        </div>`;
+        document.getElementById("infoDetails").innerHTML += `
+          <div class="info-row" style="margin-top:12px;">
+            <span class="info-value" style="color:#f39c12;font-style:italic;">${msg}</span>
+          </div>`;
 
-      // Keep demo button disabled and show placeholder on map
-      map.setView([custLat, custLng], DEFAULT_ZOOM);
-      setStatus("Awaiting Partner", "in-transit");
+        map.setView([custLat, custLng], DEFAULT_ZOOM);
+        setStatus("Awaiting Partner", "in-transit");
+      }
       return;
     }
 
-    // Place partner at their saved location
-    partnerMarker = L.marker([partnerLat, partnerLng], {
-      icon: createPartnerIcon(),
-      zIndexOffset: 1000,
-    }).addTo(map);
-    partnerMarker.bindPopup(
-      `<div class="route-popup"><strong>🛵 Delivery Partner</strong><br>En route to your address</div>`
-    );
+    // Place or update partner at their saved location
+    if (partnerMarker) {
+      partnerMarker.setLatLng([partnerLat, partnerLng]);
+      // Pan to follow partner during polling if not delivered
+      if (isPolling && !isDelivered) {
+        map.panTo([partnerLat, partnerLng], { animate: true, duration: 1.0 });
+      }
+    } else {
+      partnerMarker = L.marker([partnerLat, partnerLng], {
+        icon: createPartnerIcon(),
+        zIndexOffset: 1000,
+      }).addTo(map);
+      partnerMarker.bindPopup(
+        `<div class="route-popup"><strong>🛵 Delivery Partner</strong><br>En route to your address</div>`
+      );
 
-    // Fetch OSRM route from partner's saved location → customer
-    await fetchAndDrawRoute([partnerLat, partnerLng], [custLat, custLng]);
+      // Only fit bounds on first load
+      const bounds = L.latLngBounds([
+        [partnerLat, partnerLng],
+        [custLat, custLng],
+      ]);
+      map.fitBounds(bounds, { padding: [60, 60] });
+    }
 
-    // Fit map to show both markers
-    const bounds = L.latLngBounds([
-      [partnerLat, partnerLng],
-      [custLat, custLng],
-    ]);
-    map.fitBounds(bounds, { padding: [60, 60] });
+    // Optional: Draw a straight line or OSRM route if not delivered
+    if (!isDelivered) {
+      // For simplicity during polling, we can draw a simple line, or skip if we want to avoid OSRM rate limits.
+      // We will re-fetch route only if it's the initial load.
+      if (!isPolling) {
+        await fetchAndDrawRoute([partnerLat, partnerLng], [custLat, custLng]);
+      } else {
+        // Shrink route polyline — show only remaining road ahead
+        if (routePolyline && routeCoords.length >= 2) {
+          let closestIdx = 0;
+          let minDist = Infinity;
+          routeCoords.forEach((coord, i) => {
+            const d = Math.hypot(coord[0] - partnerLat, coord[1] - partnerLng);
+            if (d < minDist) { minDist = d; closestIdx = i; }
+          });
+          const remaining = routeCoords.slice(closestIdx);
+          routePolyline.setLatLngs(remaining);
+        }
+      }
+    }
 
-    // Enable demo button
-    document.getElementById("demoBtn").disabled = false;
   } catch (err) {
     console.error("Error loading tracking data:", err);
-    setStatus("Error", "");
+    if (!isPolling) setStatus("Error", "");
   }
 }
 
@@ -205,136 +248,7 @@ async function fetchAndDrawRoute(start, end) {
   }).addTo(map);
 }
 
-// ─────────── Demo Animation ───────────
-function setupDemoButton() {
-  const demoBtn = document.getElementById("demoBtn");
 
-  demoBtn.addEventListener("click", () => {
-    if (demoInterval) {
-      stopDemo();
-    } else {
-      startDemo();
-    }
-  });
-}
-
-function startDemo() {
-  if (routeCoords.length < 2) return;
-
-  const demoBtn = document.getElementById("demoBtn");
-  demoBtn.textContent = "⏹️ Stop Demo";
-  demoBtn.classList.add("stop");
-
-  const progressContainer = document.getElementById("progressContainer");
-  progressContainer.style.display = "block";
-
-  setStatus("Demo Active", "demo-active");
-
-  demoIndex = 0;
-  const totalSteps = routeCoords.length;
-
-  // Task 3: Slowed — move every 1200ms with smaller step size
-  const stepSize = Math.max(1, Math.floor(totalSteps / 80));
-
-  demoInterval = setInterval(() => {
-    if (demoIndex >= totalSteps) {
-      // Arrived at destination
-      completeDemo();
-      return;
-    }
-
-    const pos = routeCoords[demoIndex];
-    partnerMarker.setLatLng(pos);
-
-    // Update progress
-    const progress = Math.round((demoIndex / (totalSteps - 1)) * 100);
-    document.getElementById("progressBar").style.width = `${progress}%`;
-    document.getElementById("progressText").textContent = `${progress}%`;
-
-    // Trim the route polyline to show remaining path
-    const remaining = routeCoords.slice(demoIndex);
-    if (routePolyline) {
-      routePolyline.setLatLngs(remaining);
-    }
-
-    // Keep map centered on partner
-    map.panTo(pos, { animate: true, duration: 0.4 });
-
-    demoIndex += stepSize;
-  }, 1200); // Slowed from 500ms
-}
-
-function completeDemo() {
-  stopDemo();
-
-  // Snap partner to final position
-  const finalPos = routeCoords[routeCoords.length - 1];
-  partnerMarker.setLatLng(finalPos);
-
-  // Clear remaining route
-  if (routePolyline) {
-    routePolyline.setLatLngs([]);
-  }
-
-  // Update progress to 100%
-  document.getElementById("progressBar").style.width = "100%";
-  document.getElementById("progressText").textContent = "100%";
-
-  setStatus("Delivered", "delivered");
-
-  // Show completion notification
-  showNotification("✅ Delivery completed! The partner has arrived.", "success");
-
-  const demoBtn = document.getElementById("demoBtn");
-  demoBtn.textContent = "🔄 Replay Demo";
-  demoBtn.classList.remove("stop");
-
-  // Allow replay
-  demoBtn.addEventListener(
-    "click",
-    () => {
-      resetDemo();
-    },
-    { once: true }
-  );
-}
-
-function stopDemo() {
-  if (demoInterval) {
-    clearInterval(demoInterval);
-    demoInterval = null;
-  }
-
-  const demoBtn = document.getElementById("demoBtn");
-  demoBtn.textContent = "🚀 Start Demo";
-  demoBtn.classList.remove("stop");
-
-  setStatus(orderData?.status === "delivered" ? "Delivered" : "Out for Delivery",
-    orderData?.status === "delivered" ? "delivered" : "in-transit");
-}
-
-function resetDemo() {
-  // Reset partner to start position
-  if (routeCoords.length > 0) {
-    partnerMarker.setLatLng(routeCoords[0]);
-
-    // Redraw full route
-    if (routePolyline) {
-      routePolyline.setLatLngs(routeCoords);
-    }
-
-    // Reset progress
-    document.getElementById("progressBar").style.width = "0%";
-    document.getElementById("progressText").textContent = "0%";
-
-    // Fit bounds
-    const bounds = L.latLngBounds(routeCoords);
-    map.fitBounds(bounds, { padding: [60, 60] });
-  }
-
-  demoIndex = 0;
-  startDemo();
-}
 
 // ─────────── Helpers ───────────
 function setStatus(text, className) {

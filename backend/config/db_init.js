@@ -52,6 +52,33 @@ async function setupDatabase() {
       }
     }
 
+    // Add delivery partner live location columns if they don't exist
+    try {
+      await connection.query(
+        "ALTER TABLE users ADD COLUMN current_lat DECIMAL(10,8) DEFAULT NULL AFTER status"
+      );
+      console.log("Added 'current_lat' column to users table.");
+    } catch (alterErr) {
+      if (alterErr.code === 'ER_DUP_FIELDNAME') {
+        console.log("'current_lat' column already exists in users table.");
+      } else {
+        throw alterErr;
+      }
+    }
+
+    try {
+      await connection.query(
+        "ALTER TABLE users ADD COLUMN current_lng DECIMAL(11,8) DEFAULT NULL AFTER current_lat"
+      );
+      console.log("Added 'current_lng' column to users table.");
+    } catch (alterErr) {
+      if (alterErr.code === 'ER_DUP_FIELDNAME') {
+        console.log("'current_lng' column already exists in users table.");
+      } else {
+        throw alterErr;
+      }
+    }
+
     // Automatically create the default admin user with hashed password
     const adminEmail = 'admin@gmail.com';
     const [rows] = await connection.query('SELECT * FROM users WHERE email = ?', [adminEmail]);
