@@ -1,0 +1,688 @@
+/* Payment Page Styles */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fa;
+}
+
+.payment-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.payment-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.payment-header h1 {
+    margin: 0 0 10px 0;
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.payment-header p {
+    margin: 0;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.payment-page-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    padding: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    flex: 1;
+}
+
+/* Order Summary Section */
+.payment-order-summary {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    height: fit-content;
+    position: sticky;
+    top: 20px;
+}
+
+.payment-order-summary h3 {
+    margin: 0 0 20px 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 14px;
+}
+
+.summary-item span:first-child {
+    font-weight: 500;
+    color: #666;
+}
+
+.summary-item span:last-child {
+    font-weight: 600;
+    color: #333;
+}
+
+.summary-divider {
+    height: 2px;
+    background: #e0e0e0;
+    margin: 15px 0;
+}
+
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 18px;
+    font-weight: 700;
+    color: #667eea;
+    padding-top: 10px;
+}
+
+/* Payment Form Wrapper */
+.payment-form-wrapper {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.payment-form-wrapper h2 {
+    margin: 0 0 20px 0;
+    font-size: 22px;
+    color: #333;
+}
+
+/* Payment Method Tabs */
+.payment-method-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.payment-tab-btn {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid #e0e0e0;
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #666;
+}
+
+.payment-tab-btn:hover {
+    border-color: #667eea;
+    background-color: #f5f7ff;
+}
+
+.payment-tab-btn.active {
+    border-color: #667eea;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.payment-tab-btn .icon {
+    font-size: 18px;
+}
+
+/* Payment Form */
+.payment-form {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.payment-form.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Form Groups */
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-group input::placeholder {
+    color: #999;
+}
+
+/* Card Input with Icon */
+.card-input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.card-input-group input {
+    padding-right: 45px;
+}
+
+.card-type {
+    position: absolute;
+    right: 12px;
+    font-size: 24px;
+    pointer-events: none;
+}
+
+/* Checkbox Styling */
+.form-group.checkbox {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.form-group.checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin: 0 10px 0 0;
+    cursor: pointer;
+    accent-color: #667eea;
+}
+
+.form-group.checkbox label {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: normal;
+    cursor: pointer;
+}
+
+/* Payment Actions */
+.payment-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 30px;
+    margin-bottom: 15px;
+}
+
+.btn {
+    flex: 1;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    flex: 2;
+}
+
+.btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+}
+
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    background: #f0f0f0;
+    color: #333;
+    border: 1px solid #e0e0e0;
+}
+
+.btn-secondary:hover {
+    background: #e0e0e0;
+}
+
+/* Security Info */
+.security-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background-color: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    font-size: 12px;
+    color: #166534;
+}
+
+.security-info span {
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.security-info p {
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .payment-header {
+        padding: 30px 20px;
+    }
+
+    .payment-header h1 {
+        font-size: 24px;
+    }
+
+    .payment-page-container {
+        grid-template-columns: 1fr;
+        gap: 25px;
+        padding: 20px;
+    }
+
+    .payment-order-summary {
+        position: static;
+        padding: 20px;
+    }
+
+    .payment-form-wrapper {
+        padding: 20px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .payment-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn {
+        flex: 1 !important;
+    }
+
+    .payment-method-tabs {
+        flex-direction: column;
+    }
+
+    .payment-tab-btn {
+        flex: 1;
+    }
+}
+
+/* Payment Method Tabs */
+.payment-method-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.payment-tab-btn {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid #e0e0e0;
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #666;
+}
+
+.payment-tab-btn:hover {
+    border-color: #667eea;
+    background-color: #f5f7ff;
+}
+
+.payment-tab-btn.active {
+    border-color: #667eea;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.payment-tab-btn .icon {
+    font-size: 18px;
+}
+
+/* Payment Form Styles */
+.payment-form {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.payment-form.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Form Groups */
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-group input::placeholder {
+    color: #999;
+}
+
+/* Card Input with Icon */
+.card-input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.card-input-group input {
+    padding-right: 45px;
+}
+
+.card-type {
+    position: absolute;
+    right: 12px;
+    font-size: 24px;
+    pointer-events: none;
+}
+
+/* Checkbox Styling */
+.form-group.checkbox {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.form-group.checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin: 0 10px 0 0;
+    cursor: pointer;
+    accent-color: #667eea;
+}
+
+.form-group.checkbox label {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: normal;
+    cursor: pointer;
+}
+
+/* Payment Actions */
+.payment-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 30px;
+    margin-bottom: 15px;
+}
+
+.btn {
+    flex: 1;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    flex: 2;
+}
+
+.btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+}
+
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    background: #f0f0f0;
+    color: #333;
+    border: 1px solid #e0e0e0;
+}
+
+.btn-secondary:hover {
+    background: #e0e0e0;
+}
+
+/* Security Info */
+.security-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background-color: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    font-size: 12px;
+    color: #166534;
+}
+
+.security-info span {
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.security-info p {
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .payment-modal {
+        padding: 10px;
+    }
+
+    .payment-modal-content {
+        padding: 20px;
+        width: 95%;
+        max-height: 95vh;
+    }
+
+    .payment-container {
+        grid-template-columns: 1fr;
+        gap: 25px;
+        min-height: auto;
+    }
+
+    .order-summary {
+        padding: 20px;
+        order: 2;
+    }
+
+    .payment-form-section {
+        order: 1;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .payment-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn {
+        flex: 1 !important;
+    }
+
+    .payment-method-tabs {
+        flex-direction: column;
+    }
+
+    .payment-tab-btn {
+        flex: 1;
+    }
+
+    .close-payment-btn {
+        right: 15px;
+        top: 15px;
+    }
+}
+
+/* Loading State */
+.btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.btn.loading {
+    position: relative;
+}
+
+.btn.loading::after {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-left: 8px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Error and Success States */
+.form-group.error input {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.error-message {
+    color: #ef4444;
+    font-size: 12px;
+    margin-top: 6px;
+    display: none;
+}
+
+.form-group.error .error-message {
+    display: block;
+}

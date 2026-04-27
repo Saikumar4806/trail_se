@@ -19,6 +19,38 @@ const ComboModel = {
     );
 
     return result;
+  },
+
+  createPayment: async (
+    {
+      user_id,
+      subscription_id = null,
+      amount,
+      payment_method,
+      payment_status = 'completed',
+      upi_id = null,
+      card_last4 = null,
+      transaction_id = null
+    },
+    connection = db
+  ) => {
+    const [result] = await connection.query(
+      `INSERT INTO payments
+        (user_id, subscription_id, amount, payment_method, payment_status, upi_id, card_last4, transaction_id)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        user_id,
+        subscription_id,
+        amount,
+        payment_method,
+        payment_status,
+        upi_id,
+        card_last4,
+        transaction_id
+      ]
+    );
+
+    return result;
   }
 };
 

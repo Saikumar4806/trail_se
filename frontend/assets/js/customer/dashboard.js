@@ -268,8 +268,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Edit functionality - placeholder for now
         console.log("Edit subscription:", subscriptionId);
       } else if (menuItem.classList.contains("check-pauses-item")) {
-        // Check pauses functionality - placeholder for now
-        console.log("Check pauses for subscription:", subscriptionId);
+        // Navigate to check pauses page
+        window.location.href = "./check_pauses.html";
       } else if (menuItem.classList.contains("cancel-item")) {
         const shouldDelete = window.confirm(
           "Are you sure you want to delete this subscription? This will also remove related combo and orders."

@@ -36,8 +36,43 @@ function setupStaticActions() {
     window.setupAddressModal(state);
   }
 
-  if (typeof window.setupPaymentModal === 'function') {
-    window.setupPaymentModal(state, CHECKOUT_API_URL);
+  // Make Payment Button - Redirect to payment page
+  const makePaymentBtn = document.getElementById('makePaymentBtn');
+  if (makePaymentBtn) {
+    makePaymentBtn.addEventListener('click', () => {
+      const selectedPlan = document.querySelector('.plan-card.active');
+      if (!selectedPlan) {
+        alert('Please select a plan first!');
+        return;
+      }
+
+      const selectedSlot = document.querySelector('input[name="deliverySlot"]:checked');
+      if (!selectedSlot) {
+        alert('Please select a delivery slot!');
+        return;
+      }
+
+      if (!state.pendingAddress) {
+        alert('Please save address details before payment!');
+        return;
+      }
+
+      if (!state.pendingCombo) {
+        alert('Please save your item selection before payment!');
+        return;
+      }
+
+      // Save state to localStorage for the payment page
+      localStorage.setItem('checkoutState', JSON.stringify({
+        selectedPlan: selectedPlan.getAttribute('data-plan'),
+        selectedSlot: selectedSlot.value,
+        address: state.pendingAddress,
+        combo: state.pendingCombo
+      }));
+
+      // Redirect to payment page
+      window.location.href = './make_payment.html';
+    });
   }
 }
 
@@ -368,7 +403,6 @@ function setupSaveSelection() {
         items,
         total_amount: Number(totalAmount.toFixed(2))
       };
-      alert('Selection saved for checkout. It will be added after payment is completed.');
     } catch (error) {
       console.error('Save selection error:', error);
       alert('Failed to save selection details. Please try again.');

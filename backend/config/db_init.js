@@ -198,34 +198,6 @@ async function setupDatabase() {
       }
     }
 
-    // Add current_lat column if it doesn't exist (delivery partner GPS location)
-    try {
-      await connection.query(
-        `ALTER TABLE users ADD COLUMN current_lat DECIMAL(10,8) DEFAULT NULL`
-      );
-      console.log("Added 'current_lat' column to users table.");
-    } catch (alterErr) {
-      if (alterErr.code === 'ER_DUP_FIELDNAME') {
-        console.log("'current_lat' column already exists in users table.");
-      } else {
-        throw alterErr;
-      }
-    }
-
-    // Add current_lng column if it doesn't exist (delivery partner GPS location)
-    try {
-      await connection.query(
-        `ALTER TABLE users ADD COLUMN current_lng DECIMAL(11,8) DEFAULT NULL`
-      );
-      console.log("Added 'current_lng' column to users table.");
-    } catch (alterErr) {
-      if (alterErr.code === 'ER_DUP_FIELDNAME') {
-        console.log("'current_lng' column already exists in users table.");
-      } else {
-        throw alterErr;
-      }
-    }
-
     console.log("Database setup is 100% complete! You can now run the server.");
     await connection.end();
 

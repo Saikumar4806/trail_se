@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Check Pauses - Subscription Delivery System</title>
+  <link rel="stylesheet" href="../../assets/css/Customer/check_pauses.css">
+</head>
+<body>
+
+  <div class="navbar">
+    <h2>Check Pauses</h2>
+    <div class="nav-buttons">
+      <button class="back-btn" id="backBtn" onclick="history.back()">Back</button>
+      <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Header Section -->
+    <div class="pauses-header">
+      <h3>Pause History</h3>
+      <p class="subtitle">View all pauses applied to your subscription</p>
+    </div>
+
+    <!-- Pauses Table Section -->
+    <div class="pauses-section">
+      <table class="pauses-table" id="pausesTable">
+        <thead>
+          <tr>
+            <th>Pause ID</th>
+            <th>Pause Date</th>
+            <th>Resume Date</th>
+            <th>Days Paused</th>
+            <th>Reason</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="pausesTableBody">
+          <!-- Data will be populated by JS -->
+        </tbody>
+      </table>
+      <div class="no-pauses-message" id="noPausesMessage" style="display: none;">
+        <p>No pauses found for your subscription</p>
+      </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="stats-section">
+      <div class="stat-card">
+        <div class="stat-number" id="totalPauses">0</div>
+        <div class="stat-label">Total Pauses</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="activePauses">0</div>
+        <div class="stat-label">Active Pauses</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="resumedPauses">0</div>
+        <div class="stat-label">Resumed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="totalDaysPaused">0</div>
+        <div class="stat-label">Total Days Paused</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../assets/js/customer/check_pauses.js"></script>
+</body>
+</html>
