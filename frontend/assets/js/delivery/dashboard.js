@@ -169,12 +169,11 @@ function markOrderDelivered(orderId, buttonElement) {
 }
 
 function showNotification(message) {
-  // Create a temporary notification
   const notification = document.createElement('div');
   notification.style.cssText = `
     position: fixed;
     top: 100px;
-    right: 20px;
+    left: 20px;
     background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
     color: white;
     padding: 16px 24px;
@@ -182,31 +181,23 @@ function showNotification(message) {
     box-shadow: 0 8px 20px rgba(46, 204, 113, 0.3);
     font-weight: 600;
     z-index: 10000;
-    animation: slideIn 0.3s ease;
+    animation: slideInLeft 0.3s ease;
   `;
   notification.textContent = message;
 
   document.body.appendChild(notification);
 
-  // Add animation
   const style = document.createElement('style');
   style.textContent = `
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateX(400px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-400px); }
+      to   { opacity: 1; transform: translateX(0); }
     }
   `;
   document.head.appendChild(style);
 
-  // Remove after 3 seconds
   setTimeout(() => {
-    notification.style.animation = 'slideIn 0.3s ease reverse';
+    notification.style.animation = 'slideInLeft 0.3s ease reverse';
     setTimeout(() => notification.remove(), 300);
   }, 3000);
 }

@@ -124,6 +124,14 @@ const markOrderDelivered = async (orderId) => {
   return result.affectedRows > 0;
 };
 
+const resetOrderToOutForDelivery = async (orderId) => {
+  const [result] = await db.query(
+    `UPDATE orders SET status = 'out_for_delivery' WHERE order_id = ? AND status = 'delivered'`,
+    [orderId]
+  );
+  return result.affectedRows > 0;
+};
+
 const getLatestOrderBySubscription = async (subscriptionId) => {
   const [orders] = await db.query(
     `SELECT
@@ -140,10 +148,13 @@ const getLatestOrderBySubscription = async (subscriptionId) => {
       a.longitude AS customer_lng,
       a.street,
       a.area,
-      u.name AS customer_name
+      u.name AS customer_name,
+      dp.current_lat AS partner_lat,
+      dp.current_lng AS partner_lng
     FROM orders o
     JOIN addresses a ON o.address_id = a.address_id
     JOIN users u ON o.customer_id = u.id
+    LEFT JOIN users dp ON o.partner_id = dp.id AND dp.role = 'delivery_partner'
     WHERE o.subscription_id = ?
     ORDER BY o.delivery_date DESC, o.order_id DESC
     LIMIT 1`,
@@ -157,5 +168,6 @@ module.exports = {
   getOrdersByDate,
   generateDailyOrders,
   markOrderDelivered,
+  resetOrderToOutForDelivery,
   getLatestOrderBySubscription,
 };

@@ -1,3 +1,4 @@
+const db = require("../config/db");
 const {
   generateDeliveryRoutes,
   getPartnerRoute,
@@ -85,4 +86,57 @@ const getMyRoute = async (req, res) => {
   }
 };
 
-module.exports = { generateRoutes, getMyRoute };
+/**
+ * PATCH /api/delivery/set-location
+ * Body: { partner_id: number, lat: number, lng: number }
+ * Saves the delivery partner's current GPS location to the users table.
+ */
+const setPartnerLocation = async (req, res) => {
+  try {
+    const { partner_id, lat, lng } = req.body;
+
+    if (!partner_id || lat === undefined || lng === undefined) {
+      return res.status(400).json({
+        success: false,
+        message: "partner_id, lat, and lng are required.",
+      });
+    }
+
+    const parsedLat = parseFloat(lat);
+    const parsedLng = parseFloat(lng);
+
+    if (Number.isNaN(parsedLat) || Number.isNaN(parsedLng)) {
+      return res.status(400).json({
+        success: false,
+        message: "lat and lng must be valid numbers.",
+      });
+    }
+
+    // Columns are guaranteed to exist (added by db_init.js on setup)
+    const [result] = await db.query(
+      `UPDATE users SET current_lat = ?, current_lng = ? WHERE id = ? AND role = 'delivery_partner'`,
+      [parsedLat, parsedLng, Number(partner_id)]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Delivery partner not found.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Location saved successfully.",
+    });
+  } catch (error) {
+    console.error("Set partner location error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error.",
+    });
+  }
+};
+
+module.exports = { generateRoutes, getMyRoute, setPartnerLocation };
+

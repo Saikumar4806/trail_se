@@ -115,12 +115,34 @@ async function loadTrackingData(subscriptionId) {
       `<div class="route-popup"><strong>📍 Delivery Address</strong><br>${orderData.street}, ${orderData.area}</div>`
     );
 
-    // Generate a demo starting point ~1-2km away from customer
-    const startLat = custLat + (Math.random() * 0.008 + 0.004) * (Math.random() > 0.5 ? 1 : -1);
-    const startLng = custLng + (Math.random() * 0.008 + 0.004) * (Math.random() > 0.5 ? 1 : -1);
+    // ── Use delivery partner's saved location, or show a status message ──
+    const partnerLat = orderData.partner_lat != null ? parseFloat(orderData.partner_lat) : null;
+    const partnerLng = orderData.partner_lng != null ? parseFloat(orderData.partner_lng) : null;
 
-    // Place partner at start
-    partnerMarker = L.marker([startLat, startLng], {
+    if (partnerLat === null || partnerLng === null || isNaN(partnerLat) || isNaN(partnerLng)) {
+      // Partner hasn't set their location yet — show a friendly message
+      const pendingMessages = [
+        "🚀 Delivery is about to start — hang tight!",
+        "🛵 Your rider is getting ready to head out.",
+        "⏳ Riders are currently busy with other deliveries.",
+        "📦 Delivery preparation is in progress.",
+        "🗺️ Your delivery partner is being assigned.",
+      ];
+      const msg = pendingMessages[Math.floor(Math.random() * pendingMessages.length)];
+
+      document.getElementById("infoDetails").innerHTML += `
+        <div class="info-row" style="margin-top:12px;">
+          <span class="info-value" style="color:#f39c12;font-style:italic;">${msg}</span>
+        </div>`;
+
+      // Keep demo button disabled and show placeholder on map
+      map.setView([custLat, custLng], DEFAULT_ZOOM);
+      setStatus("Awaiting Partner", "in-transit");
+      return;
+    }
+
+    // Place partner at their saved location
+    partnerMarker = L.marker([partnerLat, partnerLng], {
       icon: createPartnerIcon(),
       zIndexOffset: 1000,
     }).addTo(map);
@@ -128,12 +150,12 @@ async function loadTrackingData(subscriptionId) {
       `<div class="route-popup"><strong>🛵 Delivery Partner</strong><br>En route to your address</div>`
     );
 
-    // Fetch OSRM route
-    await fetchAndDrawRoute([startLat, startLng], [custLat, custLng]);
+    // Fetch OSRM route from partner's saved location → customer
+    await fetchAndDrawRoute([partnerLat, partnerLng], [custLat, custLng]);
 
     // Fit map to show both markers
     const bounds = L.latLngBounds([
-      [startLat, startLng],
+      [partnerLat, partnerLng],
       [custLat, custLng],
     ]);
     map.fitBounds(bounds, { padding: [60, 60] });
@@ -211,8 +233,8 @@ function startDemo() {
   demoIndex = 0;
   const totalSteps = routeCoords.length;
 
-  // Move every 500ms — adjust step size for smooth animation
-  const stepSize = Math.max(1, Math.floor(totalSteps / 100));
+  // Task 3: Slowed — move every 1200ms with smaller step size
+  const stepSize = Math.max(1, Math.floor(totalSteps / 80));
 
   demoInterval = setInterval(() => {
     if (demoIndex >= totalSteps) {
@@ -236,10 +258,10 @@ function startDemo() {
     }
 
     // Keep map centered on partner
-    map.panTo(pos, { animate: true, duration: 0.3 });
+    map.panTo(pos, { animate: true, duration: 0.4 });
 
     demoIndex += stepSize;
-  }, 500);
+  }, 1200); // Slowed from 500ms
 }
 
 function completeDemo() {
@@ -322,18 +344,19 @@ function setStatus(text, className) {
   if (className) statusEl.classList.add(className);
 }
 
+// Task 6: Notifications on left side
 function showNotification(message, type = "success") {
   const colors = {
     success: "linear-gradient(135deg, #2ecc71 0%, #27ae60 100%)",
-    error: "linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)",
-    info: "linear-gradient(135deg, #3498db 0%, #2980b9 100%)",
+    error:   "linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)",
+    info:    "linear-gradient(135deg, #3498db 0%, #2980b9 100%)",
   };
 
   const notification = document.createElement("div");
   notification.style.cssText = `
     position: fixed;
     top: 100px;
-    right: 20px;
+    left: 20px;
     background: ${colors[type] || colors.success};
     color: white;
     padding: 16px 24px;
@@ -341,7 +364,7 @@ function showNotification(message, type = "success") {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     font-weight: 600;
     z-index: 10000;
-    animation: slideIn 0.3s ease;
+    animation: slideInLeft 0.3s ease;
     max-width: 350px;
   `;
   notification.textContent = message;
@@ -351,16 +374,16 @@ function showNotification(message, type = "success") {
     const style = document.createElement("style");
     style.setAttribute("data-notification", "true");
     style.textContent = `
-      @keyframes slideIn {
-        from { opacity: 0; transform: translateX(400px); }
-        to { opacity: 1; transform: translateX(0); }
+      @keyframes slideInLeft {
+        from { opacity: 0; transform: translateX(-400px); }
+        to   { opacity: 1; transform: translateX(0); }
       }
     `;
     document.head.appendChild(style);
   }
 
   setTimeout(() => {
-    notification.style.animation = "slideIn 0.3s ease reverse";
+    notification.style.animation = "slideInLeft 0.3s ease reverse";
     setTimeout(() => notification.remove(), 300);
   }, 3500);
 }

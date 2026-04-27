@@ -17,6 +17,11 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+-- Migration: delivery partner's current GPS location (set via the map page)
+ALTER TABLE users
+  ADD COLUMN IF NOT EXISTS current_lat DECIMAL(10,8) DEFAULT NULL,
+  ADD COLUMN IF NOT EXISTS current_lng DECIMAL(11,8) DEFAULT NULL;
+
 -- =============================================
 -- Subscription Delivery System — Items Table
 -- =============================================

@@ -3,6 +3,7 @@ const {
   getOrdersByDate,
   generateDailyOrders,
   markOrderDelivered,
+  resetOrderToOutForDelivery,
   getLatestOrderBySubscription,
 } = require("../services/orderService");
 
@@ -142,10 +143,44 @@ const getTrackingInfo = async (req, res) => {
   }
 };
 
+const resetOrderForDemo = async (req, res) => {
+  try {
+    const orderId = Number(req.params.id);
+
+    if (!orderId || Number.isNaN(orderId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Valid order ID is required.",
+      });
+    }
+
+    const updated = await resetOrderToOutForDelivery(orderId);
+
+    if (!updated) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found or not in delivered state.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Order reset to out_for_delivery for demo replay.",
+    });
+  } catch (error) {
+    console.error("Reset order for demo error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error.",
+    });
+  }
+};
+
 module.exports = {
   getUserOrders,
   getAdminOrdersByDate,
   generateTodayDemoOrders,
   markDelivered,
+  resetOrderForDemo,
   getTrackingInfo,
 };
