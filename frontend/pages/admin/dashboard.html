@@ -20,13 +20,17 @@
 
   <div class="container">
     <div class="card">
-      <h3>System Overview</h3>
-      <p id="dashboardMessage">Loading data...</p>
-      <ul>
-        <li>Total Customers: <strong id="statUsers">0</strong></li>
-        <li>Active Delivery Partners: <strong id="statPartners">0</strong></li>
-        <li>Today's Orders: <strong id="statOrders">0</strong></li>
-      </ul>
+      <p id="dashboardMessage" class="dashboard-message">Loading data...</p>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-label">Total Customers</span>
+          <strong id="statUsers" class="stat-value">0</strong>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Delivery Partners</span>
+          <strong id="statPartners" class="stat-value">0</strong>
+        </div>
+      </div>
     </div>
 
     <div class="card">

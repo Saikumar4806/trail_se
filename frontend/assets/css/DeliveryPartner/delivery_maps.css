@@ -240,14 +240,14 @@ body {
   letter-spacing: 1px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  background: white;
+  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
   color: white;
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.35);
+  box-shadow: 0 6px 20px rgba(46, 204, 113, 0.35);
 }
 
 .demo-btn:hover:not(:disabled) {
   transform: translateY(-3px);
-  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.45);
+  box-shadow: 0 10px 30px rgba(46, 204, 113, 0.45);
 }
 
 .demo-btn:disabled {

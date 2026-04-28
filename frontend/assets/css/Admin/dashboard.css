@@ -94,6 +94,45 @@ h3 {
 }
 
 /* Dashboard Specific Styles */
+.dashboard-message {
+  margin: 0 0 20px 0;
+  color: #666;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, #f8fffb 0%, #ecfdf3 100%);
+  border: 1px solid #bdeccf;
+  border-radius: 14px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 10px 24px rgba(46, 204, 113, 0.08);
+}
+
+.stat-label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: #2c3e50;
+}
+
+.stat-value {
+  font-size: 42px;
+  line-height: 1;
+  font-weight: 800;
+  color: #27ae60;
+}
+
 .feature-grid { 
   display: grid; 
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); 

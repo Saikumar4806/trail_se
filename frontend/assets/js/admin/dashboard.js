@@ -28,9 +28,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (response.ok && result.success) {
       document.getElementById("dashboardMessage").textContent = result.data.message;
-      document.getElementById("statUsers").textContent = result.data.stats.totalUsers;
-      document.getElementById("statPartners").textContent = result.data.stats.activePartners;
-      document.getElementById("statOrders").textContent = result.data.stats.todaysOrders;
+      const statUsers = document.getElementById("statUsers");
+      const statPartners = document.getElementById("statPartners");
+      const statOrders = document.getElementById("statOrders");
+
+      if (statUsers) statUsers.textContent = result.data.stats.totalUsers;
+      if (statPartners) statPartners.textContent = result.data.stats.activePartners;
+      if (statOrders) statOrders.textContent = result.data.stats.todaysOrders;
     } else {
       document.getElementById("dashboardMessage").textContent = "Failed to load dashboard data.";
     }
