@@ -44,7 +44,7 @@ const demoPauses = [
 
 const getStoredUser = () => {
   try {
-    return JSON.parse(localStorage.getItem("user") || "null");
+    return JSON.parse(sessionStorage.getItem("user") || "null");
   } catch (error) {
     return null;
   }
@@ -171,7 +171,7 @@ const setupLogout = () => {
   const logoutBtn = document.getElementById("logoutBtn");
   if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
-      localStorage.removeItem("user");
+      sessionStorage.removeItem("user");
       window.location.href = "../../pages/start/login.html";
     });
   }
@@ -192,3 +192,4 @@ document.addEventListener("DOMContentLoaded", () => {
   // Setup logout button
   setupLogout();
 });
+

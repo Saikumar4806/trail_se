@@ -6,7 +6,7 @@
 
 body {
   font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: white;
   min-height: 100vh;
 }
 
@@ -22,7 +22,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18); border: 1px solid #d1d8e0;
 }
 
 .navbar h2 {
@@ -53,7 +53,7 @@ body {
   background: rgba(255, 255, 255, 0.35);
   border-color: white;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18); border: 1px solid #d1d8e0;
 }
 
 .container {
@@ -70,7 +70,7 @@ body {
   min-width: 380px;
   background: white;
   border-radius: 16px;
-  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18); border: 1px solid #d1d8e0;
   padding: 28px;
   display: flex;
   flex-direction: column;
@@ -116,7 +116,7 @@ body {
 }
 
 .tracking-status.demo-active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: white;
   color: white;
   animation: pulse 1.5s infinite;
 }
@@ -174,7 +174,7 @@ body {
   letter-spacing: 1px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: white;
   color: white;
   box-shadow: 0 6px 20px rgba(102, 126, 234, 0.35);
 }
@@ -241,7 +241,7 @@ body {
   flex: 1;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18); border: 1px solid #d1d8e0;
 }
 
 #map {
@@ -268,7 +268,7 @@ body {
 .delivery-partner-marker {
   width: 36px;
   height: 36px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: white;
   border-radius: 50%;
   border: 3px solid white;
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.5);
@@ -313,4 +313,51 @@ body {
   .map-section {
     min-height: 400px;
   }
+}
+
+
+
+
+
+
+/* Standardized Navbar Buttons (Injected) */
+.nav-btn, .back-btn, .cart-btn, .history-btn {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  padding: 8px 20px !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-decoration: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+}
+
+.nav-btn:hover, .back-btn:hover, .cart-btn:hover, .history-btn:hover {
+  background: white !important;
+  color: #27ae60 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+.logout-btn {
+  background: #ff4757 !important;
+  color: white !important;
+  border: none !important;
+  padding: 8px 20px !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  cursor: pointer !important;
+}
+
+.logout-btn:hover {
+  background: #ff6b81 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3) !important;
 }

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delivery History - Delivery Partner</title>
+  <link rel="stylesheet" href="../../assets/css/DeliveryPartner/dashboard.css">
+  <style>
+    .history-card {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+      border: 1px solid #d1d8e0;
+      margin-top: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+    th {
+      background-color: #f8f9fa;
+      color: #34495e;
+      font-weight: 600;
+    }
+    .status-delivered {
+      color: #2ecc71;
+      font-weight: 600;
+      background: #e8f8f0;
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+    .back-nav {
+      margin-bottom: 20px;
+    }
+    .back-nav a {
+      color: #3498db;
+      text-decoration: none;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="navbar">
+    <h2>Delivery History</h2>
+    <div class="nav-buttons">
+      <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="back-nav">
+      <a href="dashboard.html">← Back to Dashboard</a>
+    </div>
+
+    <div class="history-card">
+      <h3>All Past Deliveries</h3>
+      <table id="historyTable">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Address</th>
+            <th>Date</th>
+            <th>Slot</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="historyContainer">
+          <tr>
+            <td colspan="6" style="text-align: center; padding: 40px;">Loading history...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="../../assets/js/delivery/history.js"></script>
+</body>
+</html>

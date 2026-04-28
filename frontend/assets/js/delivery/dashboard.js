@@ -26,7 +26,7 @@ const demoOrders = [
 ];
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(sessionStorage.getItem("user"));
 
   const normalizedRole = user && user.role
     ? String(user.role).toLowerCase().replace(/ /g, "_")
@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Logout button
   document.getElementById("logoutBtn").addEventListener("click", () => {
-    localStorage.removeItem("user");
+    sessionStorage.removeItem("user");
     window.location.href = "../../pages/start/login.html";
   });
 
@@ -77,7 +77,10 @@ function initializeDashboard() {
 
 async function loadDashboardData() {
   try {
-    const response = await fetch(API_URL, {
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    if (!user || !user.id) return;
+
+    const response = await fetch(`${API_URL}?partner_id=${user.id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json"
@@ -86,13 +89,13 @@ async function loadDashboardData() {
 
     const result = await response.json();
 
-    if (response.ok && result.success && result.data.orders && result.data.orders.length > 0) {
+    if (response.ok && result.success && result.data) {
       // Update with real data if available
-      const orders = result.data.orders;
+      const orders = result.data.orders || [];
       const stats = result.data.stats;
       
-      document.getElementById("todayOrders").textContent = stats.assignedDeliveries || orders.length;
-      document.getElementById("completedOrders").textContent = stats.completedToday || 0;
+      document.getElementById("todayOrders").textContent = stats.assignedDeliveries;
+      document.getElementById("completedOrders").textContent = stats.completedToday;
       document.getElementById("todayEarnings").textContent = `₹${(stats.todayEarnings || 0).toFixed(2)}`;
       document.getElementById("totalEarnings").textContent = `₹${(stats.totalEarnings || 0).toFixed(2)}`;
       document.getElementById("totalOrderCount").textContent = orders.length;
@@ -100,7 +103,7 @@ async function loadDashboardData() {
       renderOrders(orders);
     }
   } catch (err) {
-    console.log("Using demo data (server not available)");
+    console.log("Error loading dashboard data:", err);
   }
 }
 
@@ -144,28 +147,48 @@ function getStatusClass(status) {
   return 'status-pending';
 }
 
-function markOrderDelivered(orderId, buttonElement) {
-  // Find the order item
-  const orderItem = buttonElement.closest('.order-item');
-  const statusBadge = orderItem.querySelector('.status-badge');
-  
-  // Update status badge
-  statusBadge.textContent = 'DELIVERED';
-  statusBadge.className = 'status-badge status-delivered';
-  
-  // Replace button with completion message
-  buttonElement.outerHTML = '<span class="delivery-complete">✅ Completed</span>';
+async function markOrderDelivered(orderId, buttonElement) {
+  try {
+    const response = await fetch(`http://localhost:5000/api/orders/${orderId}/deliver`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
 
-  // Update completed count
-  const currentCompleted = parseInt(document.getElementById("completedOrders").textContent);
-  document.getElementById("completedOrders").textContent = currentCompleted + 1;
+    const result = await response.json();
 
-  // Update earnings (₹50 per delivery)
-  const currentEarnings = parseFloat(document.getElementById("todayEarnings").textContent.replace('₹', ''));
-  document.getElementById("todayEarnings").textContent = `₹${(currentEarnings + 50).toFixed(2)}`;
+    if (response.ok && result.success) {
+      // Find the order item
+      const orderItem = buttonElement.closest('.order-item');
+      const statusBadge = orderItem.querySelector('.status-badge');
+      
+      // Update status badge
+      statusBadge.textContent = 'DELIVERED';
+      statusBadge.className = 'status-badge status-delivered';
+      
+      // Replace button with completion message
+      buttonElement.outerHTML = '<span class="delivery-complete">✅ Completed</span>';
 
-  // Show success message
-  showNotification(`✅ Order #${orderId} marked as delivered!`);
+      // Update completed count
+      const currentCompleted = parseInt(document.getElementById("completedOrders").textContent);
+      document.getElementById("completedOrders").textContent = currentCompleted + 1;
+
+      // Update earnings (₹50 per delivery)
+      const currentEarningsText = document.getElementById("todayEarnings").textContent.replace('₹', '');
+      const currentEarnings = parseFloat(currentEarningsText);
+      document.getElementById("todayEarnings").textContent = `₹${(currentEarnings + 50).toFixed(2)}`;
+
+      // Show success message
+      showNotification(`✅ Order #${orderId} marked as delivered!`);
+    } else {
+      console.error("Failed to mark delivered:", result.message);
+      showNotification(`❌ Error: ${result.message || 'Could not update status'}`);
+    }
+  } catch (err) {
+    console.error("Error marking order delivered:", err);
+    showNotification("❌ Network error. Please try again.");
+  }
 }
 
 function showNotification(message) {
@@ -201,3 +224,4 @@ function showNotification(message) {
     setTimeout(() => notification.remove(), 300);
   }, 3000);
 }
+

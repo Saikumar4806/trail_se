@@ -1,7 +1,7 @@
 // Time Slots Management
 const getStoredUser = () => {
   try {
-    return JSON.parse(localStorage.getItem('user') || 'null');
+    return JSON.parse(sessionStorage.getItem('user') || 'null');
   } catch (error) {
     return null;
   }
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Check user authentication
   const user = getStoredUser();
   if (!user || normalizeRole(user.role) !== 'admin') {
-    localStorage.removeItem('user');
+    sessionStorage.removeItem('user');
     window.location.href = '../../pages/start/login.html';
     return;
   }
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Logout
   logoutBtn.addEventListener('click', () => {
-    localStorage.removeItem('user');
+    sessionStorage.removeItem('user');
     window.location.href = '../../pages/start/login.html';
   });
 
@@ -138,3 +138,4 @@ function deleteSlot(id) {
     console.log('Delete slot:', id);
   }
 }
+

@@ -2,7 +2,7 @@ const ADMIN_API_BASE_URL = "http://localhost:5000/api/admin";
 
 const getStoredUser = () => {
   try {
-    return JSON.parse(localStorage.getItem("user") || "null");
+    return JSON.parse(sessionStorage.getItem("user") || "null");
   } catch (error) {
     return null;
   }
@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const adminUser = getStoredUser();
   if (!adminUser || normalizeRole(adminUser.role) !== "admin") {
-    localStorage.removeItem("user");
+    sessionStorage.removeItem("user");
     window.location.href = "../../pages/start/login.html";
     return;
   }
@@ -131,7 +131,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   filterStatus.addEventListener("change", applyFilters);
 
   logoutBtn.addEventListener("click", () => {
-    localStorage.removeItem("user");
+    sessionStorage.removeItem("user");
     window.location.href = "../../pages/start/login.html";
   });
 
@@ -168,4 +168,5 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   await loadCustomers();
 });
+
 

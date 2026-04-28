@@ -32,7 +32,7 @@ let demoPolyline = null;           // the live shrinking polyline
 
 // ─────────── Init ───────────
 document.addEventListener("DOMContentLoaded", () => {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(sessionStorage.getItem("user"));
   const normalizedRole =
     user && user.role ? String(user.role).toLowerCase().replace(/ /g, "_") : null;
 
@@ -300,7 +300,7 @@ function setupDemoButton() {
 
 function syncLocationToServer(lat, lng) {
   try {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(sessionStorage.getItem("user"));
     if (user && user.id) {
       fetch(`${API_BASE}/delivery/set-location`, {
         method: "PATCH",
@@ -502,7 +502,7 @@ function stopDemo() {
 
 // Task 4: Replay resets all delivered orders back to out_for_delivery in DB
 async function replayDemo() {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(sessionStorage.getItem("user"));
   const date = document.getElementById("routeDate").value;
   const slot = document.getElementById("routeSlot").value;
 
@@ -566,7 +566,7 @@ function setMyLocation() {
 
       // Persist location to DB so customers can see it on the tracking demo
       try {
-        const user = JSON.parse(localStorage.getItem("user"));
+        const user = JSON.parse(sessionStorage.getItem("user"));
         await fetch(`${API_BASE}/delivery/set-location`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -592,7 +592,7 @@ function setMyLocation() {
 
 // ─────────── Load Route API ───────────
 async function loadMyRoute() {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(sessionStorage.getItem("user"));
   const date = document.getElementById("routeDate").value;
   const slot = document.getElementById("routeSlot").value;
 
@@ -791,7 +791,7 @@ function setupEventListeners() {
   });
 
   document.getElementById("logoutBtn").addEventListener("click", () => {
-    localStorage.removeItem("user");
+    sessionStorage.removeItem("user");
     window.location.href = "../../pages/start/login.html";
   });
 
@@ -852,3 +852,4 @@ function showNotification(message, type = "success") {
     setTimeout(() => notification.remove(), 300);
   }, 3000);
 }
+

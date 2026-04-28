@@ -96,7 +96,7 @@ const filterOrders = () => {
 
 // DOM Content Loaded
 document.addEventListener('DOMContentLoaded', async () => {
-  const user = JSON.parse(localStorage.getItem('user'));
+  const user = JSON.parse(sessionStorage.getItem('user'));
 
   const normalizedRole = user && user.role
     ? String(user.role).toLowerCase().replace(/ /g, '_')
@@ -127,7 +127,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Handle logout
   document.getElementById('logoutBtn').addEventListener('click', () => {
-    localStorage.removeItem('user');
+    sessionStorage.removeItem('user');
     window.location.href = '../../pages/start/login.html';
   });
 });
+

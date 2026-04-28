@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let user = null;
 
   try {
-    user = JSON.parse(localStorage.getItem("user"));
+    user = JSON.parse(sessionStorage.getItem("user"));
   } catch (error) {
     console.error("Error reading user context:", error);
   }
@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Load user profile data
   const loadUserProfile = () => {
     try {
-      const currentUser = JSON.parse(localStorage.getItem("user"));
+      const currentUser = JSON.parse(sessionStorage.getItem("user"));
       if (currentUser) {
         user = currentUser;
         document.getElementById("profileName").value = currentUser.name || "";
@@ -155,7 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
       delete updatedUser.newPassword;
 
       user = updatedUser;
-      localStorage.setItem("user", JSON.stringify(updatedUser));
+      sessionStorage.setItem("user", JSON.stringify(updatedUser));
 
       profileMessage.textContent = result.message || "Profile updated successfully!";
       profileMessage.classList.add("show", "success");
@@ -184,3 +184,4 @@ document.addEventListener("DOMContentLoaded", () => {
   // Load profile on page load
   loadUserProfile();
 });
+

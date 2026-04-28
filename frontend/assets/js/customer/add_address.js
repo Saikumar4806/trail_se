@@ -142,7 +142,7 @@ window.setupAddressModal = function setupAddressModal(state) {
 	async function loadExistingAddresses() {
 		if (!existingAddressesBody) return;
 
-		const user = JSON.parse(localStorage.getItem('user') || 'null');
+		const user = JSON.parse(sessionStorage.getItem('user') || 'null');
 		if (!user || !user.id) {
 			existingAddressesBody.innerHTML = `
 				<tr>
@@ -245,7 +245,7 @@ window.setupAddressModal = function setupAddressModal(state) {
 		selectedExistingAddressId = addressId;
 		renderExistingAddresses();
 
-		const user = JSON.parse(localStorage.getItem('user') || 'null');
+		const user = JSON.parse(sessionStorage.getItem('user') || 'null');
 		state.pendingAddress = {
 			address_id: Number(selectedAddress.address_id),
 			user_id: Number(user?.id || 0),
@@ -273,7 +273,7 @@ window.setupAddressModal = function setupAddressModal(state) {
 			return;
 		}
 
-		const user = JSON.parse(localStorage.getItem('user') || 'null');
+		const user = JSON.parse(sessionStorage.getItem('user') || 'null');
 		if (!user || !user.id) {
 			alert('User not found. Please login again.');
 			window.location.href = '../../pages/start/login.html';
@@ -338,3 +338,4 @@ window.setupAddressModal = function setupAddressModal(state) {
 
 	syncSaveAddressButton();
 };
+

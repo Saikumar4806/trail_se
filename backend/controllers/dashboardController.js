@@ -48,33 +48,71 @@ const getAdminDashboard = async (req, res) => {
   }
 };
 
+const db = require("../config/db");
+
 /**
  * Controller for Delivery Partner Dashboard Data
  * GET /api/dashboard/partner
- * Returns delivery assignments, earnings, and status breakdown for today
  */
 const getPartnerDashboard = async (req, res) => {
   try {
-    // Demo data structure showing what will be fetched in future sprints
-    // In Sprint 5+ this will fetch actual assigned routes, orders, and earnings
-    const dashboardData = {
-      message: "Welcome to your Delivery Dashboard! Here you can track today's deliveries, earnings, and performance.",
-      stats: {
-        assignedDeliveries: 0,
-        completedToday: 0,
-        todayEarnings: 0.00,
-        deliveryStatus: {
-          assigned: 0,
-          inTransit: 0,
-          delivered: 0,
-          failed: 0
-        }
-      }
+    const partnerId = Number(req.query.partner_id);
+
+    if (!partnerId || Number.isNaN(partnerId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Valid partner_id is required.",
+      });
+    }
+
+    // 1. Fetch Today's Orders for this partner
+    const [orders] = await db.query(
+      `SELECT 
+        o.order_id AS id, 
+        u.name AS customerName, 
+        CONCAT(a.street, ', ', a.area) AS address, 
+        o.delivery_slot AS slot, 
+        o.status 
+      FROM orders o
+      JOIN users u ON o.customer_id = u.id
+      JOIN addresses a ON o.address_id = a.address_id
+      WHERE o.partner_id = ? AND o.order_date = CURDATE()`,
+      [partnerId]
+    );
+
+    // 2. Calculate Stats
+    const totalAssigned = orders.length;
+    const completedToday = orders.filter(o => o.status === 'delivered').length;
+    const todayEarnings = completedToday * 50.00;
+
+    // 3. Fetch Total Lifetime Earnings
+    const [lifetimeRows] = await db.query(
+      `SELECT COUNT(*) AS totalCompleted FROM orders WHERE partner_id = ? AND status = 'delivered'`,
+      [partnerId]
+    );
+    const totalEarnings = (lifetimeRows[0].totalCompleted || 0) * 50.00;
+
+    // 4. Status Breakdown for Today
+    const statusBreakdown = {
+      assigned: totalAssigned - completedToday,
+      delivered: completedToday,
+      inTransit: orders.filter(o => o.status === 'in_transit' || o.status === 'out_for_delivery').length,
+      failed: 0 // Placeholder until failed status is implemented
     };
 
     return res.status(200).json({
       success: true,
-      data: dashboardData,
+      data: {
+        message: "Actual delivery data retrieved successfully.",
+        orders: orders,
+        stats: {
+          assignedDeliveries: totalAssigned,
+          completedToday: completedToday,
+          todayEarnings: todayEarnings,
+          totalEarnings: totalEarnings,
+          deliveryStatus: statusBreakdown
+        }
+      },
     });
   } catch (error) {
     console.error("Dashboard error:", error);

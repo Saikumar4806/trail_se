@@ -1,7 +1,7 @@
 const ADDRESSES_API_BASE = "http://localhost:5000/api/addresses";
 
 document.addEventListener("DOMContentLoaded", () => {
-  const user = JSON.parse(localStorage.getItem("user") || "null");
+  const user = JSON.parse(sessionStorage.getItem("user") || "null");
   const normalizedRole = user?.role
     ? String(user.role).toLowerCase().replace(/\s+/g, "_")
     : "";
@@ -347,4 +347,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loadAddresses();
 });
+
 

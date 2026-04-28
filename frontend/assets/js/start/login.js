@@ -93,9 +93,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        // Store user info in localStorage for use across pages.
+        // Store user info in sessionStorage for use across pages.
         const user = { ...data.user, role: data.user.role.toLowerCase().replace(/ /g, "_") };
-        localStorage.setItem("user", JSON.stringify(user));
+        sessionStorage.setItem("user", JSON.stringify(user));
 
         showStatus("Login successful! Redirecting…", "success");
 
@@ -119,3 +119,4 @@ document.addEventListener("DOMContentLoaded", () => {
   emailInput.addEventListener("input", () => { emailError.textContent = ""; });
   passwordInput.addEventListener("input", () => { passwordError.textContent = ""; });
 });
+

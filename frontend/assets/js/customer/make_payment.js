@@ -262,7 +262,7 @@ window.setupPaymentModal = function setupPaymentModal(state, checkoutApiUrl) {
             return;
         }
 
-        const user = JSON.parse(localStorage.getItem('user') || 'null');
+        const user = JSON.parse(sessionStorage.getItem('user') || 'null');
         if (!user || !user.id) {
             showAlert('error', 'User not found. Please login again.');
             window.location.href = '../../pages/start/login.html';
@@ -364,3 +364,4 @@ document.addEventListener('DOMContentLoaded', () => {
         // Payment modal setup will be called by the parent page
     }
 });
+

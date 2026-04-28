@@ -5,6 +5,7 @@ const {
   markOrderDelivered,
   resetOrderToOutForDelivery,
   getLatestOrderBySubscription,
+  getOrdersByPartnerId,
 } = require("../services/orderService");
 
 const getUserOrders = async (req, res) => {
@@ -176,6 +177,32 @@ const resetOrderForDemo = async (req, res) => {
   }
 };
 
+const getPartnerOrders = async (req, res) => {
+  try {
+    const partnerId = Number(req.query.partner_id);
+
+    if (!partnerId || Number.isNaN(partnerId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Valid partner_id is required.",
+      });
+    }
+
+    const orders = await getOrdersByPartnerId(partnerId);
+
+    return res.status(200).json({
+      success: true,
+      data: orders,
+    });
+  } catch (error) {
+    console.error("Get partner orders error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error.",
+    });
+  }
+};
+
 module.exports = {
   getUserOrders,
   getAdminOrdersByDate,
@@ -183,4 +210,5 @@ module.exports = {
   markDelivered,
   resetOrderForDemo,
   getTrackingInfo,
+  getPartnerOrders,
 };

@@ -260,3 +260,4 @@ saveLocationBtn.addEventListener('click', function () {
 cancelMapBtn.addEventListener('click', function () {
   window.close();
 });
+

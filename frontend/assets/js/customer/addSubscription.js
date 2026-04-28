@@ -305,7 +305,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            const user = JSON.parse(localStorage.getItem('user') || 'null');
+            const user = JSON.parse(sessionStorage.getItem('user') || 'null');
             const userId = user && user.id;
 
             if (!userId) {
@@ -353,3 +353,4 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+

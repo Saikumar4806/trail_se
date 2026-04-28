@@ -200,6 +200,31 @@ const getLatestOrderBySubscription = async (subscriptionId) => {
   }
 };
 
+const getOrdersByPartnerId = async (partnerId) => {
+  const [orders] = await db.query(
+    `SELECT
+      o.order_id,
+      o.subscription_id,
+      o.customer_id,
+      o.address_id,
+      o.order_date,
+      o.delivery_date,
+      o.delivery_slot,
+      o.total_amount,
+      o.status,
+      u.name AS customer_name,
+      CONCAT(a.street, ', ', a.area) AS address
+    FROM orders o
+    JOIN users u ON o.customer_id = u.id
+    JOIN addresses a ON o.address_id = a.address_id
+    WHERE o.partner_id = ?
+    ORDER BY o.delivery_date DESC, o.order_id DESC`,
+    [partnerId]
+  );
+
+  return orders;
+};
+
 module.exports = {
   getOrdersByCustomerId,
   getOrdersByDate,
@@ -207,4 +232,5 @@ module.exports = {
   markOrderDelivered,
   resetOrderToOutForDelivery,
   getLatestOrderBySubscription,
+  getOrdersByPartnerId,
 };

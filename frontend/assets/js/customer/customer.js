@@ -28,7 +28,7 @@ function setupStaticActions() {
   const logoutBtn = document.getElementById('logoutBtn');
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
-      localStorage.removeItem('user');
+      sessionStorage.removeItem('user');
       window.location.href = '../../pages/start/login.html';
     });
   }
@@ -66,8 +66,8 @@ function setupStaticActions() {
       const planPriceText = selectedPlan.querySelector('.plan-price')?.textContent || '';
       state.pendingSubscriptionRate = Number.parseFloat(planPriceText.replace(/[^\d.]/g, '')) || 0;
 
-      // Save state to localStorage for the payment page
-      localStorage.setItem('checkoutState', JSON.stringify({
+      // Save state to sessionStorage for the payment page
+      sessionStorage.setItem('checkoutState', JSON.stringify({
         selectedPlan: selectedPlan.getAttribute('data-plan'),
         selectedSlot: selectedSlot.value,
         address: state.pendingAddress,
@@ -397,7 +397,7 @@ function setupSaveSelection() {
       return;
     }
 
-    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    const user = JSON.parse(sessionStorage.getItem('user') || 'null');
     if (!user || !user.id) {
       alert('User not found. Please login again.');
       window.location.href = '../../pages/start/login.html';
@@ -417,3 +417,4 @@ function setupSaveSelection() {
     }
   });
 }
+

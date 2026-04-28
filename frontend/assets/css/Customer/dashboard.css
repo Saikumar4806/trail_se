@@ -6,7 +6,7 @@ body {
   font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; 
   margin: 0; 
   padding: 0; 
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: white;
   min-height: 100vh;
 }
 
@@ -22,7 +22,7 @@ body {
   display: flex; 
   justify-content: space-between; 
   align-items: center;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18); border: 1px solid #d1d8e0;
 }
 
 .navbar h2 { 
@@ -57,7 +57,7 @@ body {
   background: rgba(255, 255, 255, 0.35);
   border-color: white;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18); border: 1px solid #d1d8e0;
 }
 
 .cart-dropdown { 
@@ -144,7 +144,7 @@ body {
   background: rgba(255, 255, 255, 0.35);
   border-color: white;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18); border: 1px solid #d1d8e0;
 }
 
 .logout-btn { 
@@ -163,7 +163,7 @@ body {
   background: rgba(255, 255, 255, 0.35);
   border-color: white;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18); border: 1px solid #d1d8e0;
 }
 
 .container { 
@@ -176,7 +176,7 @@ body {
   background: white; 
   padding: 20px; 
   border-radius: 16px; 
-  box-shadow: 0 10px 35px rgba(0,0,0,0.08); 
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18); border: 1px solid #d1d8e0; 
   margin-bottom: 20px; 
 }
 
@@ -259,7 +259,7 @@ h3 {
   background: white; 
   padding: 35px; 
   border-radius: 16px; 
-  box-shadow: 0 10px 35px rgba(0,0,0,0.08); 
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18); border: 1px solid #d1d8e0; 
 }
 
 .subscriptions-header {
@@ -325,10 +325,10 @@ h3 {
 
 .subscription-card { 
   background: #ffffff; 
-  border: 2px solid #e0e0e0;
+  border: 1px solid #d1d8e0;
   border-radius: 12px; 
   padding: 25px; 
-  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18); border: 1px solid #d1d8e0;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
 }
 
@@ -420,13 +420,13 @@ h3 {
 .pause-btn { 
   background-color: #fff3cd; 
   color: #856404;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18); border: 1px solid #d1d8e0;
 }
 
 .pause-btn:hover { 
   background-color: #ffe0b2;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18); border: 1px solid #d1d8e0;
 }
 
 .pause-btn:disabled,
@@ -451,13 +451,13 @@ h3 {
 .check-pauses-btn { 
   background-color: #e1f5ff; 
   color: #0277bd;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18); border: 1px solid #d1d8e0;
 }
 
 .check-pauses-btn:hover { 
   background-color: #b3e5fc;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18); border: 1px solid #d1d8e0;
 }
 
 .edit-btn { 
@@ -474,13 +474,13 @@ h3 {
   text-align: center; 
   background-color: #e3f2fd; 
   color: #0277bd;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18); border: 1px solid #d1d8e0;
 }
 
 .edit-btn:hover { 
   background-color: #bbdefb;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18); border: 1px solid #d1d8e0;
 }
 
 .track-btn {
@@ -523,7 +523,7 @@ h3 {
   text-align: center;
   background-color: #f5f5f5;
   color: #333;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18); border: 1px solid #d1d8e0;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   width: 100%;
   display: flex;
@@ -537,7 +537,7 @@ h3 {
 .menu-btn:hover {
   background-color: #e8e8e8;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18); border: 1px solid #d1d8e0;
 }
 
 .menu-dropdown {
@@ -660,7 +660,7 @@ h3 {
   background: white;
   padding: 35px;
   border-radius: 16px;
-  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18); border: 1px solid #d1d8e0;
   margin-top: 30px;
 }
 
@@ -732,4 +732,51 @@ h3 {
   .container { 
     padding: 15px; 
   }
+}
+
+
+
+
+
+
+/* Standardized Navbar Buttons (Injected) */
+.nav-btn, .back-btn, .cart-btn, .history-btn {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  padding: 8px 20px !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-decoration: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+}
+
+.nav-btn:hover, .back-btn:hover, .cart-btn:hover, .history-btn:hover {
+  background: white !important;
+  color: #27ae60 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+.logout-btn {
+  background: #ff4757 !important;
+  color: white !important;
+  border: none !important;
+  padding: 8px 20px !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  cursor: pointer !important;
+}
+
+.logout-btn:hover {
+  background: #ff6b81 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3) !important;
 }

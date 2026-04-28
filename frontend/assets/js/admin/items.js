@@ -1,7 +1,7 @@
 const API_URL = "http://localhost:5000/api/dashboard/admin";
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(sessionStorage.getItem("user"));
 
   const normalizedRole = user && user.role
     ? String(user.role).toLowerCase().replace(/ /g, "_")
@@ -233,8 +233,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   const logoutBtn = document.getElementById("logoutBtn");
   if (logoutBtn) {
       logoutBtn.addEventListener("click", () => {
-        localStorage.removeItem("user");
+        sessionStorage.removeItem("user");
         window.location.href = "../../pages/start/login.html";
       });
   }
 });
+

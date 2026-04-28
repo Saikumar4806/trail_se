@@ -180,7 +180,7 @@
 
 .address-form .form-input {
 	width: 100%;
-	border: 2px solid #e0e0e0;
+	border: 1px solid #d1d8e0;
 	border-radius: 8px;
 	padding: 12px 16px;
 	font-size: 14px;
@@ -286,7 +286,7 @@
 .address-form .modal-btn:first-child:hover {
 	background-color: #d5dbdb;
 	transform: translateY(-2px);
-	box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18); border: 1px solid #d1d8e0;
 }
 
 .address-form .modal-btn:last-child {
@@ -317,4 +317,51 @@
 	.address-mode-toggle {
 		grid-template-columns: 1fr;
 	}
+}
+
+
+
+
+
+
+/* Standardized Navbar Buttons (Injected) */
+.nav-btn, .back-btn, .cart-btn, .history-btn {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  padding: 8px 20px !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-decoration: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+}
+
+.nav-btn:hover, .back-btn:hover, .cart-btn:hover, .history-btn:hover {
+  background: white !important;
+  color: #27ae60 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+.logout-btn {
+  background: #ff4757 !important;
+  color: white !important;
+  border: none !important;
+  padding: 8px 20px !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  cursor: pointer !important;
+}
+
+.logout-btn:hover {
+  background: #ff6b81 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3) !important;
 }
