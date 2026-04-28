@@ -261,7 +261,7 @@ window.setupAddressModal = function setupAddressModal(state) {
 			is_default: Number(selectedAddress.is_default) === 1,
 		};
 
-		alert('Existing address selected for checkout.');
+		alert('✅ Success: Address is selected successfully.');
 		syncSaveAddressButton();
 		closeModal();
 	});

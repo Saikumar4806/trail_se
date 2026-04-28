@@ -264,6 +264,11 @@ const deleteSubscriptionByIdForUser = async (subscriptionId, userId) => {
     );
 
     await connection.query(
+      "DELETE FROM payments WHERE subscription_id = ?",
+      [subscriptionId]
+    );
+
+    await connection.query(
       "DELETE FROM subscriptions WHERE subscription_id = ? AND user_id = ?",
       [subscriptionId, userId]
     );

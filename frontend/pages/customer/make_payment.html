@@ -38,6 +38,29 @@
                     <span id="summaryAddress">-</span>
                 </div>
                 <div class="summary-divider"></div>
+                
+                <!-- Price Breakdown -->
+                <div class="price-breakdown">
+                    <h4 class="breakdown-title">Price Breakdown</h4>
+                    <div class="breakdown-item">
+                        <span>Base Rate:</span>
+                        <span id="breakdownBaseRate">₹0.00</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Items Amount:</span>
+                        <span id="breakdownCartAmount">₹0.00</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Subscription Period:</span>
+                        <span id="breakdownDays">0 days</span>
+                    </div>
+                    <div class="breakdown-item breakdown-formula">
+                        <span>Calculation:</span>
+                        <span id="breakdownFormula">₹0 + (₹0 × 0 days)</span>
+                    </div>
+                    <div class="summary-divider"></div>
+                </div>
+                
                 <div class="summary-total">
                     <span>Total Amount:</span>
                     <span id="summaryTotal">₹0.00</span>
@@ -159,6 +182,14 @@
 
     <script>
         const CHECKOUT_API_URL = 'http://localhost:5000/api/checkout/complete';
+        
+        // Plan days mapping
+        const planDaysMap = {
+            'Weekly': 7,
+            '1 Month': 30,
+            '3 Months': 90,
+            'Yearly': 365
+        };
 
         document.addEventListener('DOMContentLoaded', () => {
             initializePaymentPage();
@@ -166,7 +197,7 @@
         });
 
         function initializePaymentPage() {
-            const checkoutState = JSON.parse(localStorage.getItem('checkoutState') || 'null');
+            const checkoutState = JSON.parse(sessionStorage.getItem('checkoutState') || 'null');
             if (!checkoutState) {
                 alert('No checkout data found. Please go back to add subscription.');
                 window.location.href = './addSubscription.html';
@@ -190,15 +221,45 @@
                 document.getElementById('summaryAddress').textContent = addressStr;
             }
 
-            const total = calculateTotal(checkoutState);
+            // Calculate and display breakdown
+            const { total, breakdown } = calculateTotalWithBreakdown(checkoutState);
+            displayBreakdown(breakdown);
             document.getElementById('summaryTotal').textContent = `₹${total.toFixed(2)}`;
             document.getElementById('paymentAmount').textContent = `₹${total.toFixed(2)}`;
         }
 
-        function calculateTotal(state) {
+        function calculateTotalWithBreakdown(state) {
             const baseRate = Number(state.subscription_rate) || 0;
-            const cartRate = Number(state.combo?.total_amount) || 0;
-            return baseRate + cartRate;
+            const cartAmount = Number(state.combo?.total_amount) || 0;
+            const planName = state.selectedPlan || '';
+            const days = planDaysMap[planName] || 0;
+            
+            // Formula: base_rate + (cart_amount * days)
+            const total = baseRate + (cartAmount * days);
+            
+            return {
+                total,
+                breakdown: {
+                    baseRate,
+                    cartAmount,
+                    days,
+                    planName
+                }
+            };
+        }
+
+        function displayBreakdown(breakdown) {
+            document.getElementById('breakdownBaseRate').textContent = `₹${breakdown.baseRate.toFixed(2)}`;
+            document.getElementById('breakdownCartAmount').textContent = `₹${breakdown.cartAmount.toFixed(2)}`;
+            document.getElementById('breakdownDays').textContent = `${breakdown.days} days (${breakdown.planName})`;
+            
+            const formula = `₹${breakdown.baseRate.toFixed(2)} + (₹${breakdown.cartAmount.toFixed(2)} × ${breakdown.days} days)`;
+            document.getElementById('breakdownFormula').textContent = formula;
+        }
+
+        function calculateTotal(state) {
+            const { total } = calculateTotalWithBreakdown(state);
+            return total;
         }
 
         function setupPaymentForm() {
@@ -271,7 +332,7 @@
 
             // Payment button
             paymentBtn.addEventListener('click', async () => {
-                const checkoutState = JSON.parse(localStorage.getItem('checkoutState') || 'null');
+                const checkoutState = JSON.parse(sessionStorage.getItem('checkoutState') || 'null');
                 if (!checkoutState) {
                     alert('Checkout data not found. Please try again.');
                     return;
@@ -289,7 +350,7 @@
                     return;
                 }
 
-                const user = JSON.parse(localStorage.getItem('user') || 'null');
+                const user = JSON.parse(sessionStorage.getItem('user') || 'null');
                 if (!user || !user.id) {
                     alert('User not found. Please login again.');
                     window.location.href = '../../pages/start/login.html';
@@ -335,7 +396,7 @@
                     }
 
                     alert('✅ Success:\nPayment completed successfully! Subscription created.');
-                    localStorage.removeItem('checkoutState');
+                    sessionStorage.removeItem('checkoutState');
                     setTimeout(() => {
                         window.location.href = './dashboard.html';
                     }, 1500);
@@ -343,7 +404,7 @@
                     console.error('Checkout error:', error);
                     alert('❌ Error:\n' + (error.message || 'Failed to complete payment. Please try again.'));
                 } finally {
-                    const checkoutState = JSON.parse(localStorage.getItem('checkoutState') || 'null');
+                    const checkoutState = JSON.parse(sessionStorage.getItem('checkoutState') || 'null');
                     const finalAmount = checkoutState ? calculateTotal(checkoutState) : 0;
                     paymentBtn.innerHTML = `<span>Complete Payment</span><span id="paymentAmount">₹${finalAmount.toFixed(2)}</span>`;
                     paymentBtn.disabled = false;

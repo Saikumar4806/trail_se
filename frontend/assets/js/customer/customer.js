@@ -411,6 +411,8 @@ function setupSaveSelection() {
         items,
         total_amount: Number(totalAmount.toFixed(2))
       };
+
+      alert('✅ Success: Items are saved successfully. You can proceed to payment.');
     } catch (error) {
       console.error('Save selection error:', error);
       alert('Failed to save selection details. Please try again.');
