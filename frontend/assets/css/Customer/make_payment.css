@@ -68,6 +68,20 @@ body {
     font-size: 14px;
 }
 
+.summary-item-items {
+    display: block;
+}
+
+.summary-item-items > span:first-child {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.summary-item-items .summary-items-list {
+    width: 100%;
+    min-width: 0;
+}
+
 .summary-item span:first-child {
     font-weight: 500;
     color: #666;
@@ -76,6 +90,36 @@ body {
 .summary-item span:last-child {
     font-weight: 600;
     color: #333;
+}
+
+/* Borderless table-like items list in order summary */
+.summary-items-list {
+    display: block;
+    min-width: 240px;
+}
+
+.summary-item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 8px 0;
+}
+
+.summary-item-text {
+    color: #333;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.summary-item-text.name {
+    text-align: left;
+    flex: 1;
+}
+
+.summary-item-text.qty {
+    text-align: right;
+    white-space: nowrap;
 }
 
 .summary-divider {

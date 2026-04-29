@@ -200,7 +200,9 @@ async function loadTrackingData(subscriptionId, isPolling = false) {
             if (d < minDist) { minDist = d; closestIdx = i; }
           });
           const remaining = routeCoords.slice(closestIdx);
-          routePolyline.setLatLngs(remaining);
+          if (remaining.length > 0) {
+            routePolyline.setLatLngs(remaining);
+          }
         }
       }
     }
@@ -225,9 +227,9 @@ async function fetchAndDrawRoute(start, end) {
       routeCoords = data.routes[0].geometry.coordinates.map((c) => [c[1], c[0]]);
 
       routePolyline = L.polyline(routeCoords, {
-        color: "#667eea",
-        weight: 5,
-        opacity: 0.8,
+        color: "#3498db",
+        weight: 7,
+        opacity: 0.95,
         lineJoin: "round",
         lineCap: "round",
       }).addTo(map);
@@ -241,9 +243,9 @@ async function fetchAndDrawRoute(start, end) {
   // Fallback: straight line
   routeCoords = [start, end];
   routePolyline = L.polyline(routeCoords, {
-    color: "#667eea",
-    weight: 4,
-    opacity: 0.7,
+    color: "#3498db",
+    weight: 6,
+    opacity: 0.9,
     dashArray: "8, 6",
   }).addTo(map);
 }

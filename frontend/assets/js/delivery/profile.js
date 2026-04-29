@@ -29,6 +29,22 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.href = "../start/login.html";
   });
 
+  // Cancel button - reset form to original values
+  const cancelBtn = document.getElementById("cancelBtn");
+  if (cancelBtn) {
+    cancelBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      document.getElementById("profileName").value = user.name || "";
+      document.getElementById("profileEmail").value = user.email || "";
+      document.getElementById("profilePhone").value = user.phone || "";
+      document.getElementById("currentPassword").value = "";
+      document.getElementById("newPassword").value = "";
+      statusMessage.textContent = "";
+      statusMessage.className = "status-message";
+      statusMessage.style.display = "none";
+    });
+  }
+
   // Handle Form Submission
   profileForm.addEventListener("submit", async (e) => {
     e.preventDefault();

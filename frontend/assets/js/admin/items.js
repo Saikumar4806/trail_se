@@ -170,8 +170,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       };
     
       // Global delete function
-      window.deleteItem = async (id) => {
-        if (!confirm("Are you sure you want to delete this item?")) return;
+        window.deleteItem = async (id) => {
+          const confirmed = await window.swalConfirm("Are you sure you want to delete this item?");
+          if (!confirmed) return;
     
         try {
           const response = await fetch(`${ITEMS_API_URL}/${id}`, {

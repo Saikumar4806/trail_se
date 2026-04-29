@@ -129,10 +129,10 @@ function editRate(id) {
   console.log('Edit rate:', id);
 }
 
-function deleteRate(id) {
+async function deleteRate(id) {
+  const ok = await window.swalConfirm('Are you sure you want to delete this subscription rate?');
+  if (!ok) return;
   // TODO: Delete rate
-  if (confirm('Are you sure you want to delete this subscription rate?')) {
-    console.log('Delete rate:', id);
-  }
+  console.log('Delete rate:', id);
 }
 

@@ -179,10 +179,12 @@ const updateProfile = async (req, res) => {
       });
     }
 
-    if (normalizeRole(user.role) !== "customer") {
+    // Allow customers and delivery partners to update their own profiles
+    const roleNormalized = normalizeRole(user.role);
+    if (!["customer", "delivery_partner"].includes(roleNormalized)) {
       return res.status(403).json({
         success: false,
-        message: "Only customers can update this profile",
+        message: "Only customers and delivery partners can update this profile",
       });
     }
 

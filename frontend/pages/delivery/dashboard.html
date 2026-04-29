@@ -13,8 +13,7 @@
   <div class="navbar">
     <h2 id="welcomeText">Delivery Partner Dashboard</h2>
     <div class="nav-buttons">
-      <button class="nav-btn" onclick="window.location.href='history.html'">Delivery History</button>
-      <button class="nav-btn" onclick="window.location.href='profile.html'">Manage Profile</button>
+      <button class="back-btn" id="backBtn" onclick="history.back()">Back</button>
       <button class="logout-btn" id="logoutBtn">Logout</button>
     </div>
   </div>
@@ -54,6 +53,15 @@
 
       <div class="orders-container" id="ordersContainer">
         <div class="no-orders">No orders assigned for today</div>
+      </div>
+    </div>
+
+    <!-- Account Settings Section -->
+    <div class="account-settings-section">
+      <h3>Account Settings</h3>
+      <div class="settings-buttons-container">
+        <button class="settings-btn" onclick="window.location.href='./history.html'">Delivery History</button>
+        <button class="settings-btn" onclick="window.location.href='./profile.html'">Manage Profile</button>
       </div>
     </div>
   </div>

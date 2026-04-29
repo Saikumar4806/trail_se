@@ -271,12 +271,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Navigate to check pauses page
         window.location.href = "./check_pauses.html";
       } else if (menuItem.classList.contains("cancel-item")) {
-        const shouldDelete = window.confirm(
-          "Are you sure you want to delete this subscription? This will also remove related combo and orders."
+        const menuDropdown = menuItem.closest(".menu-dropdown");
+
+        const userConfirmed = await window.swalConfirm(
+          'Are you sure you want to delete this subscription? This will also remove related combo and orders.'
         );
 
-        if (!shouldDelete) {
-          const menuDropdown = menuItem.closest(".menu-dropdown");
+        if (!userConfirmed) {
           menuDropdown.classList.remove("active");
           return;
         }
@@ -297,11 +298,30 @@ document.addEventListener("DOMContentLoaded", async () => {
             throw new Error(result.message || "Failed to delete subscription");
           }
 
-          alert(result.message || "Subscription deleted successfully.");
+          if (window.Swal && typeof window.Swal.fire === 'function') {
+            await window.Swal.fire({
+              icon: 'success',
+              title: 'Deleted',
+              text: result.message || 'Subscription deleted successfully.',
+              confirmButtonText: 'OK',
+            });
+          } else {
+            alert(result.message || "Subscription deleted successfully.");
+          }
+
           await fetchAndRenderSubscriptions(user.id);
         } catch (error) {
           console.error("Delete subscription error:", error);
-          alert(error.message || "Failed to delete subscription.");
+          if (window.Swal && typeof window.Swal.fire === 'function') {
+            await window.Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: error.message || 'Failed to delete subscription.',
+              confirmButtonText: 'OK',
+            });
+          } else {
+            alert(error.message || "Failed to delete subscription.");
+          }
         }
       }
 

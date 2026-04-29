@@ -137,13 +137,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   window.changeCustomerStatus = async (userId, nextStatus) => {
     const action = nextStatus === "blocked" ? "block" : "unblock";
-    const confirmed = window.confirm(
-      `Are you sure you want to ${action} this customer?`
-    );
-
-    if (!confirmed) {
-      return;
-    }
+    const confirmed = await window.swalConfirm(`Are you sure you want to ${action} this customer?`);
+    if (!confirmed) return;
 
     try {
       const response = await fetch(`${ADMIN_API_BASE_URL}/users/${userId}/status`, {

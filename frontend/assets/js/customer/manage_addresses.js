@@ -266,7 +266,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const handleDeleteAddress = async (addressId) => {
-    const hasConfirmed = window.confirm("Are you sure you want to delete this address?");
+    const hasConfirmed = await window.swalConfirm("Are you sure you want to delete this address?");
     if (!hasConfirmed) return;
 
     try {

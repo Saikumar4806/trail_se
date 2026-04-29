@@ -316,7 +316,9 @@ function getSelectedItemsPayload() {
     return {
       item_id: Number(itemId),
       price: Number(item.price),
-      quantity: Number(quantity)
+      quantity: Number(quantity),
+      name: item?.name || null,
+      unit: item?.unit || item?.quantity_unit || null
     };
   }).filter((entry) => entry.quantity > 0);
 }

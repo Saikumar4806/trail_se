@@ -132,10 +132,10 @@ function editSlot(id) {
   console.log('Edit slot:', id);
 }
 
-function deleteSlot(id) {
+async function deleteSlot(id) {
+  const ok = await window.swalConfirm('Are you sure you want to delete this time slot?');
+  if (!ok) return;
   // TODO: Delete slot
-  if (confirm('Are you sure you want to delete this time slot?')) {
-    console.log('Delete slot:', id);
-  }
+  console.log('Delete slot:', id);
 }
 

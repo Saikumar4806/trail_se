@@ -29,9 +29,9 @@
                     <span>Delivery Slot:</span>
                     <span id="summarySlot">-</span>
                 </div>
-                <div class="summary-item">
+                <div class="summary-item summary-item-items">
                     <span>Items:</span>
-                    <span id="summaryItems">-</span>
+                    <div id="summaryItems" class="summary-items-list">-</div>
                 </div>
                 <div class="summary-item">
                     <span>Address:</span>
@@ -209,10 +209,29 @@
             document.getElementById('summarySlot').textContent = checkoutState.selectedSlot || '-';
 
             if (checkoutState.combo && checkoutState.combo.items) {
-                const itemNames = checkoutState.combo.items
-                    .map(item => `${item.name || 'Item'} (${item.quantity})`)
-                    .join(', ');
-                document.getElementById('summaryItems').textContent = itemNames || '-';
+                const itemsContainer = document.getElementById('summaryItems');
+                itemsContainer.innerHTML = '';
+
+                const escapeHtml = (str) => String(str == null ? '' : str)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+
+                checkoutState.combo.items.forEach((item) => {
+                    const name = item.name || item.item_name || (item.item_id ? `Item #${item.item_id}` : 'Item');
+                    const qty = Number(item.quantity) || 0;
+                    const row = document.createElement('div');
+                    row.className = 'summary-item-row';
+                    row.innerHTML = `
+                        <span class="summary-item-text name">${escapeHtml(name)}</span>
+                        <span class="summary-item-text qty">x ${escapeHtml(String(qty))}</span>
+                    `;
+                    itemsContainer.appendChild(row);
+                });
+
+                if (!checkoutState.combo.items.length) itemsContainer.textContent = '-';
             }
 
             if (checkoutState.address) {
