@@ -131,7 +131,7 @@ function renderOrders(orders) {
           <span class="status-badge ${statusClass}">${order.status ? order.status.toUpperCase() : 'PENDING'}</span>
           ${isDelivered 
             ? '<span class="delivery-complete">✅ Completed</span>'
-            : `<button class="mark-delivered-btn" onclick="markOrderDelivered(${order.id}, this)">Mark Delivered</button>`
+            : ''
           }
         </div>
       </div>

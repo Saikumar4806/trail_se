@@ -109,3 +109,19 @@ CREATE TABLE IF NOT EXISTS subscriptions (
     FOREIGN KEY (address_id) REFERENCES addresses(address_id) ON DELETE CASCADE,
     FOREIGN KEY (combo_id) REFERENCES combos(combo_id) ON DELETE CASCADE
 );
+
+-- =============================================
+-- Subscription Delivery System — Subscription Pauses Table
+-- =============================================
+
+CREATE TABLE IF NOT EXISTS subscription_pauses (
+    pause_id INT AUTO_INCREMENT PRIMARY KEY,
+    subscription_id INT NOT NULL,
+    pause_date DATE NOT NULL,
+    resume_date DATE,
+    reason VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (subscription_id) REFERENCES subscriptions(subscription_id) ON DELETE CASCADE,
+    INDEX idx_subscription_id (subscription_id),
+    INDEX idx_pause_date (pause_date)
+);

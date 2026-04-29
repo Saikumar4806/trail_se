@@ -12,7 +12,7 @@ const db = require("../config/db");
 async function generateDeliveryRoutes(deliveryDate, deliverySlot) {
   // 1. Fetch available delivery partners
   const [partners] = await db.query(
-    `SELECT id, name, email FROM users WHERE role = 'delivery_partner'`
+    `SELECT id, name, email FROM users WHERE role = 'delivery_partner' AND status = 'active'`
   );
 
   if (partners.length === 0) {

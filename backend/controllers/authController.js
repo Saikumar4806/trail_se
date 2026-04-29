@@ -87,7 +87,7 @@ const login = async (req, res) => {
     if (normalizedStatus === "blocked") {
       return res.status(403).json({
         success: false,
-        message: "Your account is blocked. Please contact admin.",
+        message: "You account is bloacked please contact admin.",
       });
     }
 

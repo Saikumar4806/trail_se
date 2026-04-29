@@ -103,6 +103,17 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => {
           window.location.href = getRedirectPath(user.role);
         }, 1000);
+      } else if (response.status === 403) {
+        if (window.Swal && typeof window.Swal.fire === "function") {
+          await window.Swal.fire({
+            icon: "error",
+            title: "Blocked Account",
+            text: "You account is bloacked please contact admin.",
+            confirmButtonText: "OK",
+          });
+        } else {
+          alert("You account is bloacked please contact admin.");
+        }
       } else {
         showStatus(data.message || "Login failed. Please try again.", "error");
       }

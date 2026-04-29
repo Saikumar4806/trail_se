@@ -295,10 +295,29 @@ const deleteSubscriptionByIdForUser = async (subscriptionId, userId) => {
   }
 };
 
+const getPausesBySubscriptionId = async (subscriptionId) => {
+  const [rows] = await db.query(
+    `SELECT
+      pause_id,
+      subscription_id,
+      pause_date,
+      resume_date,
+      reason,
+      created_at
+    FROM subscription_pauses
+    WHERE subscription_id = ?
+    ORDER BY pause_date DESC`,
+    [subscriptionId]
+  );
+
+  return rows;
+};
+
 module.exports = {
   getSubscriptionsByUserId,
   pauseSubscriptionForTodayById,
   unpauseSubscriptionForTodayById,
   deleteSubscriptionByIdForUser,
   resumeStalePausedSubscriptions,
+  getPausesBySubscriptionId,
 };

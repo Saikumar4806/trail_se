@@ -268,13 +268,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Edit functionality - placeholder for now
         console.log("Edit subscription:", subscriptionId);
       } else if (menuItem.classList.contains("check-pauses-item")) {
-        // Navigate to check pauses page
-        window.location.href = "./check_pauses.html";
+        // Navigate to check pauses page with subscription_id
+        window.location.href = `./check_pauses.html?subscription_id=${subscriptionId}`;
       } else if (menuItem.classList.contains("cancel-item")) {
         const menuDropdown = menuItem.closest(".menu-dropdown");
 
         const userConfirmed = await window.swalConfirm(
-          'Are you sure you want to delete this subscription? This will also remove related combo and orders.'
+          'By deleting this subscription, you will not get further orders and there is no refund.'
         );
 
         if (!userConfirmed) {

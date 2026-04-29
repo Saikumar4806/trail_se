@@ -112,7 +112,7 @@ async function loadTrackingData(subscriptionId, isPolling = false) {
 
     // Check if status just changed to delivered
     if (isPolling && previousStatus === "out_for_delivery" && isDelivered) {
-      showNotification("✅ Delivery completed! The partner has arrived.", "success");
+      showNotification("✅ Delivery partner has reached your location.", "success");
       if (trackingInterval) clearInterval(trackingInterval);
       if (routePolyline) {
         routePolyline.setLatLngs([]);
