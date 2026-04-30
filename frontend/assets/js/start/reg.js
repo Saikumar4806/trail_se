@@ -86,13 +86,13 @@ document.addEventListener("DOMContentLoaded", () => {
       valid = false;
     }
 
-    // Phone (10-15 digits)
-    const phoneRegex = /^\d{10,15}$/;
+    // Phone (exactly 10 digits)
+    const phoneRegex = /^\d{10}$/;
     if (!phoneInput.value.trim()) {
       phoneError.textContent = "Phone is required";
       valid = false;
     } else if (!phoneRegex.test(phoneInput.value.trim())) {
-      phoneError.textContent = "Enter 10–15 digits only";
+      phoneError.textContent = "Enter exactly 10 digits";
       valid = false;
     }
 

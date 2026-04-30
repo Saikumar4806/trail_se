@@ -28,10 +28,10 @@ const validateRegistration = (req, res, next) => {
     errors.push("Password must be at least 6 characters long");
   }
 
-  // Phone validation (10-15 digits)
-  const phoneRegex = /^\d{10,15}$/;
+  // Phone validation (exactly 10 digits)
+  const phoneRegex = /^\d{10}$/;
   if (!phoneRegex.test(phone)) {
-    errors.push("Phone must be 10 to 15 digits");
+    errors.push("Phone number must be exactly 10 digits");
   }
 
   // Role validation

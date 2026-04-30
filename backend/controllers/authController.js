@@ -163,11 +163,11 @@ const updateProfile = async (req, res) => {
       });
     }
 
-    const phoneRegex = /^\d{10,15}$/;
+    const phoneRegex = /^\d{10}$/;
     if (!phoneRegex.test(phone.replace(/\D/g, ""))) {
       return res.status(400).json({
         success: false,
-        message: "Phone must be 10 to 15 digits",
+        message: "Phone number must be exactly 10 digits",
       });
     }
 
