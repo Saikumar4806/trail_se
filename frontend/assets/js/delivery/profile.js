@@ -40,14 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (cancelBtn) {
     cancelBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      document.getElementById("profileName").value = user.name || "";
-      document.getElementById("profileEmail").value = user.email || "";
-      document.getElementById("profilePhone").value = user.phone || "";
-      document.getElementById("currentPassword").value = "";
-      document.getElementById("newPassword").value = "";
-      statusMessage.textContent = "";
-      statusMessage.className = "status-message";
-      statusMessage.style.display = "none";
+      window.location.href = "./dashboard.html";
     });
   }
 
@@ -56,6 +49,9 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
 
     clearErrors();
+    statusMessage.textContent = "";
+    statusMessage.className = "status-message";
+    statusMessage.style.display = "none";
 
     const name = profileName.value.trim();
     const email = profileEmail.value.trim();
@@ -64,6 +60,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const newPassword = newPasswordInput.value.trim();
 
     if (!validateProfileForm({ name, email, phone, currentPassword, newPassword })) {
+      return;
+    }
+
+    const hasProfileChanges = (
+      name !== String(user.name || "")
+      || email !== String(user.email || "")
+      || phone !== String(user.phone || "")
+    );
+    const hasPasswordChange = Boolean(newPassword || currentPassword);
+
+    if (!hasProfileChanges && !hasPasswordChange) {
+      showStatus("No changes were made.", "error");
       return;
     }
 
@@ -167,6 +175,9 @@ document.addEventListener("DOMContentLoaded", () => {
         valid = false;
       } else if (newPassword.length < 6) {
         setError("newPassword", "New password must be at least 6 characters");
+        valid = false;
+      } else if (newPassword === currentPassword) {
+        setError("newPassword", "Try a new password");
         valid = false;
       }
     }
