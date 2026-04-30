@@ -39,14 +39,17 @@
       <!-- Password -->
       <div class="field">
         <label for="password">Password</label>
-        <input 
-          type="password" 
-          id="password" 
-          name="password" 
-          placeholder="Enter your password" 
-          required 
-          autocomplete="current-password"
-        />
+        <div class="password-wrap">
+          <input 
+            type="password" 
+            id="password" 
+            name="password" 
+            placeholder="Enter your password" 
+            required 
+            autocomplete="current-password"
+          />
+          <button type="button" class="password-toggle-btn" data-target="password" aria-label="Show password" title="Show/Hide Password">👁</button>
+        </div>
         <span class="err" id="passwordError"></span>
       </div>
 

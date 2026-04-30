@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const confirmPasswordInput = document.getElementById("confirmPassword");
   const phoneInput = document.getElementById("phone");
   const roleInput = document.getElementById("role");
+  const passwordToggleBtns = document.querySelectorAll(".password-toggle-btn");
 
   // Error span references
   const nameError = document.getElementById("nameError");
@@ -162,5 +163,16 @@ document.addEventListener("DOMContentLoaded", () => {
   confirmPasswordInput.addEventListener("input", () => { confirmPasswordError.textContent = ""; });
   phoneInput.addEventListener("input", () => { phoneError.textContent = ""; });
   roleInput.addEventListener("change", () => { roleError.textContent = ""; });
+
+  passwordToggleBtns.forEach((toggleBtn) => {
+    toggleBtn.addEventListener("click", () => {
+      const targetId = toggleBtn.getAttribute("data-target");
+      const targetInput = document.getElementById(targetId);
+      if (!targetInput) return;
+
+      const isPassword = targetInput.type === "password";
+      targetInput.type = isPassword ? "text" : "password";
+    });
+  });
 });
 

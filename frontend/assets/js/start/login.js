@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Input references
   const emailInput = document.getElementById("email");
   const passwordInput = document.getElementById("password");
+  const passwordToggleBtns = document.querySelectorAll(".password-toggle-btn");
 
   // Error span references
   const emailError = document.getElementById("emailError");
@@ -129,5 +130,16 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- Clear per-field error on user input ---
   emailInput.addEventListener("input", () => { emailError.textContent = ""; });
   passwordInput.addEventListener("input", () => { passwordError.textContent = ""; });
+
+  passwordToggleBtns.forEach((toggleBtn) => {
+    toggleBtn.addEventListener("click", () => {
+      const targetId = toggleBtn.getAttribute("data-target");
+      const targetInput = document.getElementById(targetId);
+      if (!targetInput) return;
+
+      const isPassword = targetInput.type === "password";
+      targetInput.type = isPassword ? "text" : "password";
+    });
+  });
 });
 

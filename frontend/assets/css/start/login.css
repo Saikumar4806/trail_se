@@ -121,6 +121,28 @@ body {
   color: #999;
 }
 
+.password-wrap {
+  position: relative;
+}
+
+.password-wrap input {
+  padding-right: 42px;
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #666;
+  font-size: 16px;
+  line-height: 1;
+  padding: 2px;
+}
+
 /* Per-field error */
 .err {
   display: block;

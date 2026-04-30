@@ -36,6 +36,16 @@ const formatPlanType = (planType) => {
     .replace(/\b\w/g, (char) => char.toUpperCase());
 };
 
+const formatDeliverySlot = (slotValue) => {
+  const normalized = String(slotValue || "").trim().toLowerCase();
+  if (!normalized) return "N/A";
+
+  if (normalized === "morning") return "Morning";
+  if (normalized === "evening") return "Evening";
+
+  return normalized.replace(/\b\w/g, (char) => char.toUpperCase());
+};
+
 const getStatusLabel = (subscription) => {
   if (Number(subscription.is_paused_today) === 1) {
     return "Tomorrow's order paused";
@@ -133,6 +143,7 @@ const renderSubscriptions = (subscriptions) => {
           </div>
           <div class="subscription-details">
             <p><strong>Plan Type:</strong> ${subscription.plan_type || "N/A"}</p>
+            <p><strong>Time Slot:</strong> ${formatDeliverySlot(subscription.delivery_slot)}</p>
             <p><strong>Start Date:</strong> ${formatDate(subscription.start_date)}</p>
             <p><strong>End Date:</strong> ${formatDate(subscription.end_date)}</p>
             <p><strong>Status:</strong> ${getStatusLabel(subscription)}</p>

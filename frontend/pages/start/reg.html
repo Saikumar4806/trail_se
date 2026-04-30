@@ -39,16 +39,22 @@
       <!-- Password -->
       <div class="field">
         <label for="password">Password</label>
-        <input type="password" id="password" name="password" placeholder="Min 6 characters" required
-          autocomplete="new-password" />
+        <div class="password-wrap">
+          <input type="password" id="password" name="password" placeholder="Min 6 characters" required
+            autocomplete="new-password" />
+          <button type="button" class="password-toggle-btn" data-target="password" aria-label="Show password" title="Show/Hide Password">👁</button>
+        </div>
         <span class="err" id="passwordError"></span>
       </div>
 
       <!-- Confirm Password -->
       <div class="field">
         <label for="confirmPassword">Confirm Password</label>
-        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Re-enter password" required
-          autocomplete="new-password" />
+        <div class="password-wrap">
+          <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Re-enter password" required
+            autocomplete="new-password" />
+          <button type="button" class="password-toggle-btn" data-target="confirmPassword" aria-label="Show confirm password" title="Show/Hide Password">👁</button>
+        </div>
         <span class="err" id="confirmPasswordError"></span>
       </div>
 

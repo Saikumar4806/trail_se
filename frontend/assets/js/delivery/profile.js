@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const profilePhone = document.getElementById("profilePhone");
   const currentPasswordInput = document.getElementById("currentPassword");
   const newPasswordInput = document.getElementById("newPassword");
+  const passwordToggleBtns = document.querySelectorAll(".password-toggle-btn");
 
   const user = JSON.parse(sessionStorage.getItem("user"));
 
@@ -175,5 +176,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   [profileName, profileEmail, profilePhone, currentPasswordInput, newPasswordInput].forEach((inputEl) => {
     inputEl?.addEventListener("input", clearErrors);
+  });
+
+  passwordToggleBtns.forEach((toggleBtn) => {
+    toggleBtn.addEventListener("click", () => {
+      const targetId = toggleBtn.getAttribute("data-target");
+      const targetInput = document.getElementById(targetId);
+      if (!targetInput) return;
+
+      const isPassword = targetInput.type === "password";
+      targetInput.type = isPassword ? "text" : "password";
+    });
   });
 });

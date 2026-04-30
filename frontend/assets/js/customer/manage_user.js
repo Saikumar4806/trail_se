@@ -4,6 +4,8 @@ const PROFILE_API_BASE = "http://localhost:5000/api/auth/profile";
 document.addEventListener("DOMContentLoaded", () => {
   const profileForm = document.getElementById("profileForm");
   const profileMessage = document.getElementById("profileMessage");
+  const passwordToggleBtns = document.querySelectorAll(".password-toggle-btn");
+  const cancelBtn = document.getElementById("cancelBtn");
 
   if (!profileForm) return;
 
@@ -80,6 +82,8 @@ document.addEventListener("DOMContentLoaded", () => {
         errors.newPassword = "New password is required";
       } else if (newPassword.length < 6) {
         errors.newPassword = "New password must be at least 6 characters";
+      } else if (newPassword === currentPassword) {
+        errors.newPassword = "Try a new password";
       }
       if (newPassword !== confirmPassword) {
         errors.confirmPassword = "Passwords do not match";
@@ -110,20 +114,39 @@ document.addEventListener("DOMContentLoaded", () => {
   profileForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     clearErrors();
+    profileMessage.textContent = "";
+    profileMessage.classList.remove("show", "success", "error");
 
     if (!validateProfileForm()) return;
 
     const userId = user.id;
+    const name = document.getElementById("profileName").value.trim();
+    const email = document.getElementById("profileEmail").value.trim();
+    const phone = document.getElementById("profilePhone").value.trim();
+    const newPassword = document.getElementById("newPassword").value.trim();
+    const currentPassword = document.getElementById("currentPassword").value.trim();
+
+    const hasProfileChanges = (
+      name !== String(user.name || "")
+      || email !== String(user.email || "")
+      || phone !== String(user.phone || "")
+    );
+    const hasPasswordChange = Boolean(newPassword || currentPassword);
+
+    if (!hasProfileChanges && !hasPasswordChange) {
+      profileMessage.textContent = "No changes were made.";
+      profileMessage.classList.add("show", "error");
+      return;
+    }
 
     const formData = {
-      name: document.getElementById("profileName").value.trim(),
-      email: document.getElementById("profileEmail").value.trim(),
-      phone: document.getElementById("profilePhone").value.trim(),
+      name,
+      email,
+      phone,
     };
 
-    const newPassword = document.getElementById("newPassword").value.trim();
     if (newPassword) {
-      formData.currentPassword = document.getElementById("currentPassword").value.trim();
+      formData.currentPassword = currentPassword;
       formData.newPassword = newPassword;
     }
 
@@ -166,8 +189,8 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("confirmNewPassword").value = "";
 
       setTimeout(() => {
-        profileMessage.classList.remove("show");
-      }, 4000);
+        window.location.href = "./dashboard.html";
+      }, 800);
     } catch (error) {
       console.error("Profile update error:", error);
       profileMessage.textContent = error.message || "Failed to update profile";
@@ -175,13 +198,22 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Reset form
-  profileForm.addEventListener("reset", () => {
-    clearErrors();
-    loadUserProfile();
+  cancelBtn?.addEventListener("click", () => {
+    window.location.href = "./dashboard.html";
   });
 
   // Load profile on page load
   loadUserProfile();
+
+  passwordToggleBtns.forEach((toggleBtn) => {
+    toggleBtn.addEventListener("click", () => {
+      const targetId = toggleBtn.getAttribute("data-target");
+      const targetInput = document.getElementById(targetId);
+      if (!targetInput) return;
+
+      const isPassword = targetInput.type === "password";
+      targetInput.type = isPassword ? "text" : "password";
+    });
+  });
 });
 
