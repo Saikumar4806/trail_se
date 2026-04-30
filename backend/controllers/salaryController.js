@@ -128,7 +128,6 @@ const getMonthSalaryOverview = async (req, res) => {
       LEFT JOIN orders o
         ON o.partner_id = u.id
         AND DATE_FORMAT(o.delivery_date, '%Y-%m') = ?
-        AND o.status = 'delivered'
       WHERE LOWER(REPLACE(u.role, ' ', '_')) = 'delivery_partner'
       ${partnerFilterSql}
       GROUP BY u.id, u.name, u.status
@@ -209,8 +208,7 @@ const getMonthSalaryOverview = async (req, res) => {
     const [revenueRows] = await db.query(
       `SELECT COALESCE(SUM(total_amount), 0) AS subscription_revenue
        FROM orders
-       WHERE DATE_FORMAT(delivery_date, '%Y-%m') = ?
-         AND status = 'delivered'`,
+       WHERE DATE_FORMAT(delivery_date, '%Y-%m') = ?`,
       [month]
     );
 
