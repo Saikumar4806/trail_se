@@ -111,6 +111,18 @@ const getDeliveryPartnersCount = async () => {
   return rows[0]?.activePartners || 0;
 };
 
+/**
+ * Count all customers in the system.
+ * @returns {number}
+ */
+const getCustomersCount = async () => {
+  const [rows] = await db.query(
+    "SELECT COUNT(*) AS totalCustomers FROM users WHERE LOWER(REPLACE(role, ' ', '_')) = ?",
+    ["customer"]
+  );
+  return rows[0]?.totalCustomers || 0;
+};
+
 module.exports = {
   findByEmail,
   findById,
@@ -120,4 +132,5 @@ module.exports = {
   updateUserProfile,
   getTotalUsersCount,
   getDeliveryPartnersCount,
+  getCustomersCount,
 };

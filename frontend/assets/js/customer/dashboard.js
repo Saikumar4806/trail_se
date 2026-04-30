@@ -18,6 +18,24 @@ const formatPrice = (priceValue) => {
   return `Rs. ${numericPrice.toFixed(2)}`;
 };
 
+const formatPlanType = (planType) => {
+  const normalized = String(planType || "").trim().toLowerCase().replace(/\s+/g, "_");
+  if (!normalized) return "N/A";
+
+  const planTypeMap = {
+    weekly: "Weekly",
+    "1_month": "1 Month",
+    "3_months": "3 Months",
+    yearly: "Yearly",
+  };
+
+  if (planTypeMap[normalized]) return planTypeMap[normalized];
+
+  return normalized
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+};
+
 const getStatusLabel = (subscription) => {
   if (Number(subscription.is_paused_today) === 1) {
     return "Tomorrow's order paused";
@@ -110,7 +128,7 @@ const renderSubscriptions = (subscriptions) => {
       return `
         <div class="subscription-card" data-subscription-id="${subscription.subscription_id}">
           <div class="subscription-header">
-            <h4>${subscription.plan_type || "N/A"}</h4>
+            <h4>${formatPlanType(subscription.plan_type)}</h4>
             <span class="subscription-status ${safeStatusClass}">${displayStatus}</span>
           </div>
           <div class="subscription-details">
@@ -125,7 +143,7 @@ const renderSubscriptions = (subscriptions) => {
             <button class="${pauseButtonClass}" data-action="${pauseAction}" data-subscription-id="${subscription.subscription_id}" ${isPauseDisabled ? "disabled" : ""}>
               ${pauseButtonLabel}
             </button>
-            <button class="track-btn" data-subscription-id="${subscription.subscription_id}" onclick="window.location.href='./tracking.html?subscription_id=${subscription.subscription_id}'">Track</button>
+            <button class="track-btn" data-subscription-id="${subscription.subscription_id}" data-paused-tomorrow="${isPausedForTomorrow ? "1" : "0"}">Track</button>
             <div class="menu-container">
               <button class="menu-btn" data-subscription-id="${subscription.subscription_id}" aria-label="More options">
                 More
@@ -194,6 +212,32 @@ document.addEventListener("DOMContentLoaded", async () => {
   const subscriptionsContainer = document.getElementById("subscriptionsContainer");
   if (subscriptionsContainer) {
     subscriptionsContainer.addEventListener("click", async (event) => {
+      const trackBtn = event.target.closest(".track-btn");
+      if (trackBtn) {
+        const subscriptionId = Number(trackBtn.getAttribute("data-subscription-id"));
+        const isPausedTomorrow = Number(trackBtn.getAttribute("data-paused-tomorrow")) === 1;
+
+        if (!subscriptionId || Number.isNaN(subscriptionId)) return;
+
+        if (isPausedTomorrow) {
+          const pausedMessage = "Today's order is paused, so you can't track it right now.";
+          if (window.Swal && typeof window.Swal.fire === "function") {
+            await window.Swal.fire({
+              icon: "info",
+              title: "Order Paused",
+              text: pausedMessage,
+              confirmButtonText: "OK",
+            });
+          } else {
+            alert(pausedMessage);
+          }
+          return;
+        }
+
+        window.location.href = `./tracking.html?subscription_id=${subscriptionId}`;
+        return;
+      }
+
       const actionBtn = event.target.closest(".pause-btn, .unpause-btn");
       if (!actionBtn || actionBtn.disabled) return;
 

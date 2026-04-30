@@ -31,6 +31,16 @@
       border-radius: 8px;
       font-size: 16px;
     }
+    .error-msg {
+      color: #e74c3c;
+      font-size: 12px;
+      margin-top: 6px;
+      display: none;
+      font-weight: 600;
+    }
+    .error-msg.show {
+      display: block;
+    }
     .btn-group {
       display: flex;
       gap: 15px;
@@ -94,14 +104,17 @@
         <div class="form-group">
           <label for="profileName">Full Name</label>
           <input type="text" id="profileName" required>
+          <span class="error-msg" id="nameError"></span>
         </div>
         <div class="form-group">
           <label for="profileEmail">Email Address</label>
           <input type="email" id="profileEmail" required>
+          <span class="error-msg" id="emailError"></span>
         </div>
         <div class="form-group">
           <label for="profilePhone">Phone Number</label>
           <input type="tel" id="profilePhone" required>
+          <span class="error-msg" id="phoneError"></span>
         </div>
         
         <hr style="margin: 30px 0; border: 0; border-top: 1px solid #eee;">
@@ -110,10 +123,12 @@
         <div class="form-group">
           <label for="currentPassword">Current Password</label>
           <input type="password" id="currentPassword">
+          <span class="error-msg" id="currentPasswordError"></span>
         </div>
         <div class="form-group">
           <label for="newPassword">New Password</label>
           <input type="password" id="newPassword">
+          <span class="error-msg" id="newPasswordError"></span>
         </div>
         
         <div class="btn-group">

@@ -5,6 +5,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const profileForm = document.getElementById("profileForm");
   const statusMessage = document.getElementById("statusMessage");
   const logoutBtn = document.getElementById("logoutBtn");
+  const profileName = document.getElementById("profileName");
+  const profileEmail = document.getElementById("profileEmail");
+  const profilePhone = document.getElementById("profilePhone");
+  const currentPasswordInput = document.getElementById("currentPassword");
+  const newPasswordInput = document.getElementById("newPassword");
 
   const user = JSON.parse(sessionStorage.getItem("user"));
 
@@ -48,12 +53,18 @@ document.addEventListener("DOMContentLoaded", () => {
   // Handle Form Submission
   profileForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    
-    const name = document.getElementById("profileName").value.trim();
-    const email = document.getElementById("profileEmail").value.trim();
-    const phone = document.getElementById("profilePhone").value.trim();
-    const currentPassword = document.getElementById("currentPassword").value;
-    const newPassword = document.getElementById("newPassword").value;
+
+    clearErrors();
+
+    const name = profileName.value.trim();
+    const email = profileEmail.value.trim();
+    const phone = profilePhone.value.trim();
+    const currentPassword = currentPasswordInput.value.trim();
+    const newPassword = newPasswordInput.value.trim();
+
+    if (!validateProfileForm({ name, email, phone, currentPassword, newPassword })) {
+      return;
+    }
 
     const payload = { name, email, phone };
     if (newPassword) {
@@ -84,8 +95,8 @@ document.addEventListener("DOMContentLoaded", () => {
         sessionStorage.setItem("user", JSON.stringify(updatedUser));
         
         // Clear password fields
-        document.getElementById("currentPassword").value = "";
-        document.getElementById("newPassword").value = "";
+        currentPasswordInput.value = "";
+        newPasswordInput.value = "";
       } else {
         showStatus(result.message || "Failed to update profile", "error");
       }
@@ -98,8 +109,71 @@ document.addEventListener("DOMContentLoaded", () => {
   function showStatus(msg, type) {
     statusMessage.textContent = msg;
     statusMessage.className = `status-message ${type}`;
+    statusMessage.style.display = "block";
     setTimeout(() => {
       statusMessage.style.display = "none";
     }, 5000);
   }
+
+  function clearErrors() {
+    document.querySelectorAll(".error-msg").forEach((el) => {
+      el.textContent = "";
+      el.classList.remove("show");
+    });
+  }
+
+  function setError(field, message) {
+    const errorEl = document.getElementById(`${field}Error`);
+    if (!errorEl) return;
+    errorEl.textContent = message;
+    errorEl.classList.add("show");
+  }
+
+  function validateProfileForm({ name, email, phone, currentPassword, newPassword }) {
+    let valid = true;
+
+    if (!name) {
+      setError("name", "Name is required");
+      valid = false;
+    } else if (name.length < 2) {
+      setError("name", "Name must be at least 2 characters");
+      valid = false;
+    }
+
+    if (!email) {
+      setError("email", "Email is required");
+      valid = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError("email", "Please enter a valid email");
+      valid = false;
+    }
+
+    if (!phone) {
+      setError("phone", "Phone number is required");
+      valid = false;
+    } else if (!/^\d{10}$/.test(phone)) {
+      setError("phone", "Phone number must be exactly 10 digits");
+      valid = false;
+    }
+
+    if (newPassword || currentPassword) {
+      if (!currentPassword) {
+        setError("currentPassword", "Current password is required");
+        valid = false;
+      }
+      if (!newPassword) {
+        setError("newPassword", "New password is required");
+        valid = false;
+      } else if (newPassword.length < 6) {
+        setError("newPassword", "New password must be at least 6 characters");
+        valid = false;
+      }
+    }
+
+    return valid;
+  }
+
+  [profileName, profileEmail, profilePhone, currentPasswordInput, newPasswordInput].forEach((inputEl) => {
+    inputEl?.addEventListener("input", clearErrors);
+  });
 });

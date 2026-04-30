@@ -1,6 +1,6 @@
 const {
-  getTotalUsersCount,
   getDeliveryPartnersCount,
+  getCustomersCount,
 } = require("../models/userModel");
 
 /**
@@ -29,7 +29,7 @@ const getCustomerDashboard = async (req, res) => {
  */
 const getAdminDashboard = async (req, res) => {
   try {
-    const totalUsers = await getTotalUsersCount();
+    const totalCustomers = await getCustomersCount();
     const activePartners = await getDeliveryPartnersCount();
 
     // Order module is not implemented yet, so keep this as 0 for now.
@@ -39,7 +39,7 @@ const getAdminDashboard = async (req, res) => {
       success: true,
       data: {
         message: "Welcome to the Admin Dashboard!",
-        stats: { totalUsers, activePartners, todaysOrders },
+        stats: { totalUsers: totalCustomers, totalCustomers, activePartners, todaysOrders },
       },
     });
   } catch (error) {

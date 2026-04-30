@@ -89,6 +89,34 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
+  const showComingSoonAlert = async () => {
+    const message = "This feature will be added soon.";
+    if (window.Swal && typeof window.Swal.fire === "function") {
+      await window.Swal.fire({
+        icon: "info",
+        title: "Coming Soon",
+        text: message,
+        confirmButtonText: "OK",
+      });
+      return;
+    }
+    alert(message);
+  };
+
+  const manageSlotsBtn = document.getElementById("manageSlotsBtn");
+  if (manageSlotsBtn) {
+    manageSlotsBtn.addEventListener("click", async () => {
+      await showComingSoonAlert();
+    });
+  }
+
+  const manageRatesBtn = document.getElementById("manageRatesBtn");
+  if (manageRatesBtn) {
+    manageRatesBtn.addEventListener("click", async () => {
+      await showComingSoonAlert();
+    });
+  }
+
 
   document.getElementById("logoutBtn").addEventListener("click", () => {
     sessionStorage.removeItem("user");

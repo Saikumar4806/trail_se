@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             <td>${item.id}</td>
             <td>${item.name}</td>
             <td>${item.category || '-'}</td>
-            <td>$${Number(item.price).toFixed(2)}</td>
+            <td>${Number(item.price).toFixed(2)}</td>
             <td>${item.unit || '-'}</td>
             <td>${item.quantity}</td>
             <td>${item.quantity_unit || '-'}</td>
