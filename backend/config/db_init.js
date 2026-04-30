@@ -187,6 +187,47 @@ async function setupDatabase() {
     await connection.query(createSubscriptionsTableQuery);
     console.log("Verified 'subscriptions' table exists and is correctly structured.");
 
+    // Create the subscription_pauses table
+    const createSubscriptionPausesTableQuery = `
+      CREATE TABLE IF NOT EXISTS subscription_pauses (
+        pause_id INT AUTO_INCREMENT PRIMARY KEY,
+        subscription_id INT NOT NULL,
+        pause_date DATE NOT NULL,
+        resume_date DATE,
+        reason VARCHAR(255),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (subscription_id) REFERENCES subscriptions(subscription_id) ON DELETE CASCADE,
+        INDEX idx_subscription_id (subscription_id),
+        INDEX idx_pause_date (pause_date)
+      );
+    `;
+    await connection.query(createSubscriptionPausesTableQuery);
+    console.log("Verified 'subscription_pauses' table exists and is correctly structured.");
+
+    // Create the payments table
+    const createPaymentsTableQuery = `
+      CREATE TABLE IF NOT EXISTS payments (
+        payment_id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        subscription_id INT DEFAULT NULL,
+        amount DECIMAL(10,2) NOT NULL,
+        payment_method ENUM('card', 'upi', 'cash') NOT NULL,
+        payment_status ENUM('pending', 'completed', 'failed') DEFAULT 'pending',
+        upi_id VARCHAR(100),
+        card_last4 VARCHAR(4),
+        transaction_id VARCHAR(255),
+        payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (subscription_id) REFERENCES subscriptions(subscription_id) ON DELETE CASCADE,
+        INDEX idx_payment_user_id (user_id),
+        INDEX idx_payment_subscription_id (subscription_id)
+      );
+    `;
+    await connection.query(createPaymentsTableQuery);
+    console.log("Verified 'payments' table exists and is correctly structured.");
+
     // Create the orders table
     const createOrdersTableQuery = `
       CREATE TABLE IF NOT EXISTS orders (

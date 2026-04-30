@@ -13,6 +13,8 @@ window.setupAddressModal = function setupAddressModal(state) {
 	const newAddressSection = document.getElementById('newAddressSection');
 	const existingAddressSection = document.getElementById('existingAddressSection');
 	const existingAddressesBody = document.getElementById('existingAddressesBody');
+	const pincodeInput = document.getElementById('addressPincode');
+	const pincodeError = document.getElementById('addressPincodeError');
 
 	if (!addAddressBtn || !addressModal || !addressForm) return;
 
@@ -31,6 +33,14 @@ window.setupAddressModal = function setupAddressModal(state) {
 
 	function closeModal() {
 		addressModal.style.display = 'none';
+	}
+
+	function clearPincodeError() {
+		if (pincodeError) pincodeError.textContent = '';
+	}
+
+	function showPincodeError(message) {
+		if (pincodeError) pincodeError.textContent = message;
 	}
 
 	function syncSaveAddressButton() {
@@ -81,6 +91,7 @@ window.setupAddressModal = function setupAddressModal(state) {
 			if (city) city.value = '';
 			if (addrState) addrState.value = '';
 			if (pincode) pincode.value = '';
+			clearPincodeError();
 			if (landmark) landmark.value = '';
 			if (addressType) addressType.value = '';
 			if (defaultAddress) defaultAddress.checked = false;
@@ -97,6 +108,7 @@ window.setupAddressModal = function setupAddressModal(state) {
 		if (city) city.value = address.city || '';
 		if (addrState) addrState.value = address.state || '';
 		if (pincode) pincode.value = address.pincode || '';
+		clearPincodeError();
 		if (landmark) landmark.value = address.landmark || '';
 		if (addressType) addressType.value = address.address_type || '';
 		if (defaultAddress) defaultAddress.checked = Boolean(address.is_default);
@@ -268,6 +280,7 @@ window.setupAddressModal = function setupAddressModal(state) {
 
 	addressForm.addEventListener('submit', (event) => {
 		event.preventDefault();
+		clearPincodeError();
 
 		if (currentMode !== 'new') {
 			return;
@@ -293,6 +306,10 @@ window.setupAddressModal = function setupAddressModal(state) {
 		if (!city) { alert('Please enter a city.'); return; }
 		if (!addrState) { alert('Please enter a state.'); return; }
 		if (!pincode) { alert('Please enter a pincode.'); return; }
+		if (!/^\d{6}$/.test(pincode)) {
+			showPincodeError('Pincode must be exactly 6 digits.');
+			return;
+		}
 		if (!addressType) { alert('Please select an address type.'); return; }
 		if (selectedLatitude === null || selectedLongitude === null) {
 			alert('Please select a location on the map.');
@@ -334,6 +351,10 @@ window.setupAddressModal = function setupAddressModal(state) {
 				saveBtn.disabled = false;
 			}
 		}
+	});
+
+	pincodeInput?.addEventListener('input', () => {
+		clearPincodeError();
 	});
 
 	syncSaveAddressButton();

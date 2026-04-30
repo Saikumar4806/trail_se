@@ -125,3 +125,26 @@ CREATE TABLE IF NOT EXISTS subscription_pauses (
     INDEX idx_subscription_id (subscription_id),
     INDEX idx_pause_date (pause_date)
 );
+
+-- =============================================
+-- Subscription Delivery System — Payments Table
+-- =============================================
+
+CREATE TABLE IF NOT EXISTS payments (
+    payment_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    subscription_id INT DEFAULT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    payment_method ENUM('card', 'upi', 'cash') NOT NULL,
+    payment_status ENUM('pending', 'completed', 'failed') DEFAULT 'pending',
+    upi_id VARCHAR(100),
+    card_last4 VARCHAR(4),
+    transaction_id VARCHAR(255),
+    payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (subscription_id) REFERENCES subscriptions(subscription_id) ON DELETE CASCADE,
+    INDEX idx_payment_user_id (user_id),
+    INDEX idx_payment_subscription_id (subscription_id)
+);
